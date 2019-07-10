@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import de.arm.bot.dca.DCAStatus;
 import de.arm.bot.info.Direction;
 import de.arm.bot.info.TurnInfo;
 import de.arm.bot.io.Output;
@@ -129,7 +130,6 @@ public class Cell {
 	}
 	
 	public Direction getDirectionWithLowestCost() {
-		Output.logDebug("THE FUCKING STACK SIZE IS "+processing.size());
 		processing.clear();
 		//cache.clear();
 		stopHere=Integer.MAX_VALUE;
@@ -149,6 +149,7 @@ public class Cell {
 	}
 	
 	private int getCost(int cost) {
+		if(processing.size()>20)return Integer.MAX_VALUE/2;
 		if(cost>(stopHere))return Integer.MAX_VALUE/2;
 		if(processing.contains(this))return Integer.MAX_VALUE/2;
 		//Output.logDebug("Calculation cost for "+x+" "+y);
@@ -161,12 +162,12 @@ public class Cell {
 		}*/
 		//TODO Work with FINISH
 		if(this.getStatus().equals(Status.FLOOR)||this.getStatus().equals(Status.FINISH)) {
-			Output.logDebug(x+" "+y+" is free!"+ret);
+			//Output.logDebug(x+" "+y+" is free!"+ret);
 			processing.pop();
 			return ret;
 		}
 		if(this.getStatus().equals(Status.WALL)) {
-			Output.logDebug(x+" "+y+" is wall");
+			//Output.logDebug(x+" "+y+" is wall");
 			processing.pop();
 			return Integer.MAX_VALUE/2;
 		}
@@ -177,7 +178,7 @@ public class Cell {
 		costForNeighbours.add(easternCell.getCost(ret));
 		//TODO Wrap cells when hitting top
 		int co=costForNeighbours.stream().min(Comparator.comparing(Integer::valueOf)).get();
-		Output.logDebug("Cost for "+x+" "+y+": "+(ret+co));
+		//Output.logDebug("Cost for "+x+" "+y+": "+(ret+co));
 		//cache.put(this,co);
 		processing.pop();
 		return co;
@@ -189,6 +190,20 @@ public class Cell {
 		easternCell.setStatus(turnInfo.getEasternCellStatus());
 		westernCell.setStatus(turnInfo.getWesternCellStatus());
 		southernCell.setStatus(turnInfo.getSouthernCellStatus());
+	}
+	
+	public boolean isDead() {
+		return status.isDead();
+	}
+	
+	public DCAStatus getDCAStatus() {
+		int deadCellsNearby=0;
+		if(northernCell.isDead())deadCellsNearby++;
+		if(southernCell.isDead())deadCellsNearby++;
+		if(westernCell.isDead())deadCellsNearby++;
+		if(easternCell.isDead())deadCellsNearby++;
+		
+		return DCAStatus.get(deadCellsNearby);
 	}
 	
 	@Override

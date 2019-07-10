@@ -47,4 +47,8 @@ public abstract class KI {
 		}
 	}
 	
+	public Maze getMaze() {
+		return maze;
+	}
+	
 }

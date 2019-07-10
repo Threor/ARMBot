@@ -1,6 +1,9 @@
 package de.arm.bot.model;
 
 import java.awt.Point;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import de.arm.bot.io.Output;
 
@@ -49,5 +52,11 @@ public class Maze {
 			}
 		}
 	}
-
+	
+	public List<Cell> getAllDiscoveredCells() {
+		return Arrays.stream(cells)
+				.flatMap(Arrays::stream)
+				.filter(c->!c.getStatus().equals(Status.NOT_DISCOVERED))
+				.collect(Collectors.toList());
+	}
 }
