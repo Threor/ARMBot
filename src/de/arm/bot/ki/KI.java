@@ -45,6 +45,14 @@ public abstract class KI {
 			case SOUTH:newPosition=new Point(current.x,current.y+1);break;
 			default:Output.logDebug("Critical error, "+direction+" is unknown");
 		}
+		validatePoint();
+	}
+	
+	private void validatePoint() {
+		if (newPosition.x<0) newPosition.x+=maze.getLength();
+		if (newPosition.y<0) newPosition.y+=maze.getHeight();
+		if (newPosition.x>maze.getLength()-1) newPosition.x-=maze.getLength();
+		if (newPosition.y>maze.getHeight()-1) newPosition.y-=maze.getHeight();
 	}
 	
 	public Maze getMaze() {
