@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import de.arm.bot.info.Direction;
 import de.arm.bot.info.TurnInfo;
@@ -22,6 +23,12 @@ public class Cell {
 	private Cell westernCell;
 	private Cell southernCell;
 	private Cell easternCell;
+	
+	private static Stack<Cell> processing=new Stack<>();
+	//TODO Maybe this could fuck up but i hope it does not
+	private static HashMap<Cell,Integer> cache=new HashMap<>();
+	
+	private static int stopHere;
 	
 	public static final Cell VOID=new Cell();
 	
@@ -115,30 +122,64 @@ public class Cell {
 		this.status = status;
 	}
 	
-	public Direction getDirectionWithLowestCost() {
-		Map<Integer,Direction> costForDirection=new HashMap<>();
-		costForDirection.put(northernCell.getCost(Direction.SOUTH, 0), Direction.NORTH);
-		costForDirection.put(southernCell.getCost(Direction.NORTH, 0), Direction.SOUTH);
-		costForDirection.put(westernCell.getCost(Direction.WEST, 0), Direction.WEST);
-		costForDirection.put(easternCell.getCost(Direction.EAST, 0), Direction.EAST);
-		//TODO Consider returning multiple directions with same cost, Also consider maybe returning the map for using a more detailed cost algorithm	
-		return costForDirection.get(costForDirection.keySet().stream().min(Comparator.comparing(Integer::valueOf)).get());
+	private int calcMin(Map<Integer,Direction> costForDirection) {
+		int ret= costForDirection.keySet().stream().min(Comparator.comparing(Integer::valueOf)).get();
+		Output.logDebug("CURRENT SH is "+ret);
+		return ret;
 	}
 	
-	private int getCost(Direction from, int cost) {
+	public Direction getDirectionWithLowestCost() {
+		Output.logDebug("THE FUCKING STACK SIZE IS "+processing.size());
+		processing.clear();
+		//cache.clear();
+		stopHere=Integer.MAX_VALUE;
+		Map<Integer,Direction> costForDirection=new HashMap<>();
+		costForDirection.put(northernCell.getCost(0), Direction.NORTH);
+		stopHere=calcMin(costForDirection);
+		costForDirection.put(southernCell.getCost(0), Direction.SOUTH);
+		stopHere=calcMin(costForDirection);
+		costForDirection.put(westernCell.getCost(0), Direction.WEST);
+		stopHere=calcMin(costForDirection);
+		costForDirection.put(easternCell.getCost(0), Direction.EAST);
+		costForDirection.forEach((k,v)->{
+			Output.logDebug(v+" - "+k);
+		});
+		//TODO Consider returning multiple directions with same cost, Also consider maybe returning the map for using a more detailed cost algorithm	
+		return costForDirection.get(calcMin(costForDirection));
+	}
+	
+	private int getCost(int cost) {
+		if(cost>(stopHere))return Integer.MAX_VALUE/2;
+		if(processing.contains(this))return Integer.MAX_VALUE/2;
+		//Output.logDebug("Calculation cost for "+x+" "+y);
+		processing.push(this);
 		//FIXME Quadrate Implement caching and lock cells, which are on the current path to avoid infinite recursion
 		int ret=++cost;
+		/*if(cache.containsKey(this)) {
+			processing.pop();
+			return ret+cache.get(this);
+		}*/
 		//TODO Work with FINISH
-		if(this.getStatus().equals(Status.FLOOR)||this.getStatus().equals(Status.FINISH))return ret;
-		if(this.getStatus().equals(Status.WALL))return Integer.MAX_VALUE/2;
+		if(this.getStatus().equals(Status.FLOOR)||this.getStatus().equals(Status.FINISH)) {
+			Output.logDebug(x+" "+y+" is free!"+ret);
+			processing.pop();
+			return ret;
+		}
+		if(this.getStatus().equals(Status.WALL)) {
+			Output.logDebug(x+" "+y+" is wall");
+			processing.pop();
+			return Integer.MAX_VALUE/2;
+		}
 		List<Integer> costForNeighbours=new ArrayList<>();
-		if(from!=Direction.NORTH)costForNeighbours.add(northernCell.getCost(Direction.SOUTH, ret));
-		if(from!=Direction.SOUTH)costForNeighbours.add(southernCell.getCost(Direction.NORTH, ret));
-		if(from!=Direction.WEST)costForNeighbours.add(westernCell.getCost(Direction.EAST, ret));
-		if(from!=Direction.EAST)costForNeighbours.add(easternCell.getCost(Direction.WEST, ret));
+		costForNeighbours.add(northernCell.getCost(ret));
+		costForNeighbours.add(southernCell.getCost(ret));
+		costForNeighbours.add(westernCell.getCost(ret));
+		costForNeighbours.add(easternCell.getCost(ret));
 		//TODO Wrap cells when hitting top
-		int co=ret+costForNeighbours.stream().min(Comparator.comparing(Integer::valueOf)).get();
-		Output.logDebug("Cost for "+x+" "+y+": "+co);
+		int co=costForNeighbours.stream().min(Comparator.comparing(Integer::valueOf)).get();
+		Output.logDebug("Cost for "+x+" "+y+": "+(ret+co));
+		//cache.put(this,co);
+		processing.pop();
 		return co;
 	}
 	
@@ -148,6 +189,13 @@ public class Cell {
 		easternCell.setStatus(turnInfo.getEasternCellStatus());
 		westernCell.setStatus(turnInfo.getWesternCellStatus());
 		southernCell.setStatus(turnInfo.getSouthernCellStatus());
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(!(obj instanceof Cell))return false;
+		Cell cell=(Cell) obj;
+		return cell.getX()==x&&cell.getY()==y;
 	}
 	
 }

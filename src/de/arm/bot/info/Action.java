@@ -2,9 +2,9 @@ package de.arm.bot.info;
 
 public class Action {
 
-	Command command;
+	private Command command;
 	
-	String argument;
+	private String argument;
 
 	public Action(Command command, String argument) {
 		this.command = command;

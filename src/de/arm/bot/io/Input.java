@@ -50,8 +50,8 @@ public class Input {
 	}
 	
 	private Status checkForFinish(String line) {
-		Integer id=Integer.valueOf(line.split(" ")[1]);
-		if(id==playerId)return Status.FINISH;
+		int id=Integer.valueOf(line.split(" ")[1]);
+		if(id==playerId) return Status.valueOf(line.split(" ")[0]);
 		return Status.FLOOR;
 	}
 	

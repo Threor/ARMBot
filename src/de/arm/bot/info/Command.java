@@ -3,6 +3,7 @@ package de.arm.bot.info;
 public enum Command {
 
 	GO,
+	TAKE,
 	POSITION,
 	FINISH;
 	

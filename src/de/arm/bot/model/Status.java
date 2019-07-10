@@ -5,7 +5,8 @@ public enum Status {
 	WALL,
 	FLOOR,
 	FINISH,
+	FORM,
 	NOT_DISCOVERED,
-	VISITED;
+	VISITED
 	
 }

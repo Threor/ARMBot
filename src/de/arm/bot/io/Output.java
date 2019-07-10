@@ -11,5 +11,4 @@ public class Output {
 	public static void logDebug(String message) {
 		System.err.println(message);
 	}
-
 }
