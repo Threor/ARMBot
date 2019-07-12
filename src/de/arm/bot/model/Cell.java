@@ -190,7 +190,7 @@ public class Cell {
 	}
 	
 	public List<Cell> getNotDeadNeighbours() {
-		return neighbours.values().stream().filter(c->!c.getStatus().isDead()).collect(Collectors.toList());
+		return neighbours.values().stream().filter(c->!c.getStatus().isDead()&&!c.getStatus().equals(NOT_DISCOVERED)).collect(Collectors.toList());
 	}
 	@Override
 	public String toString() {

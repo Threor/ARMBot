@@ -90,8 +90,12 @@ public class LevelTwoKI extends LevelOneKI{
 	
 	//TODO Better implementation
 	protected Action navigateToCell(Cell cell) {
-		if(pathToTake.isEmpty())pathToTake=aStar(maze.getCurrentCell(),cell);
-		Cell c=pathToTake.remove(pathToTake.size()-1);
+		if(pathToTake.isEmpty()) {
+			pathToTake=aStar(maze.getCurrentCell(),cell);
+			pathToTake.remove(0);
+		}
+		Output.logDebug("Path to Take. "+pathToTake);
+		Cell c=pathToTake.remove(0);
 		Output.logDebug(c.toString());
 		return new Action(Command.GO,maze.getCurrentCell().getDirection(c).toString());
 		/*List<Cell> path=aStar(maze.getCurrentCell(),cell);
