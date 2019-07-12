@@ -1,81 +1,35 @@
 package de.arm.bot.info;
 
+import java.util.Map;
+
 import de.arm.bot.model.Status;
 
 public class TurnInfo {
 
 	private ActionResult lastActionResult;
 	
-	private Status currentCellStatus;
+	private Map<Direction,Status> cellStatus;
 	
-	private Status northernCellStatus;
-	
-	private Status westernCellStatus;
-	
-	private Status southernCellStatus;
-	
-	private Status easternCellStatus;
-	
-	public TurnInfo(ActionResult lastActionResult, Status currentCellStatus, Status northernCellStatus,
-			Status westernCellStatus, Status southernCellStatus, Status easternCellStatus) {
-		this.lastActionResult = lastActionResult;
-		this.currentCellStatus = currentCellStatus;
-		this.northernCellStatus = northernCellStatus;
-		this.westernCellStatus = westernCellStatus;
-		this.southernCellStatus = southernCellStatus;
-		this.easternCellStatus = easternCellStatus;
+	public TurnInfo(ActionResult lastActionResult, Map<Direction,Status> cellStatus) {
+		this.lastActionResult=lastActionResult;
+		this.cellStatus=cellStatus;
 	}
-
-	/**
-	 * @return lastAction
-	 */
+	
+	public Map<Direction, Status> getCellStatus() {
+		return cellStatus;
+	}
+	
 	public ActionResult getLastActionResult() {
 		return lastActionResult;
 	}
-
-	/**
-	 * @return currentCellStatus
-	 */
-	public Status getCurrentCellStatus() {
-		return currentCellStatus;
-	}
-
-	/**
-	 * @return northernCellStatus
-	 */
-	public Status getNorthernCellStatus() {
-		return northernCellStatus;
-	}
-
-	/**
-	 * @return westernCellStatus
-	 */
-	public Status getWesternCellStatus() {
-		return westernCellStatus;
-	}
-
-	/**
-	 * @return southernCellStatus
-	 */
-	public Status getSouthernCellStatus() {
-		return southernCellStatus;
-	}
-
-	/**
-	 * @return easternCellStatus
-	 */
-	public Status getEasternCellStatus() {
-		return easternCellStatus;
+	
+	public boolean hasCell(Status status) {
+		return cellStatus.containsValue(status);
 	}
 
 	@Override
 	public String toString() {
-		return String.format(
-				"TurnInfo [lastActionResult=%s, currentCellStatus=%s, northernCellStatus=%s, westernCellStatus=%s, southernCellStatus=%s, easternCellStatus=%s]",
-				lastActionResult, currentCellStatus, northernCellStatus, westernCellStatus, southernCellStatus,
-				easternCellStatus);
+		return String.format("TurnInfo [lastActionResult=%s, cellStatus=%s]", lastActionResult, cellStatus);
 	}
-	
-	
 	
 }

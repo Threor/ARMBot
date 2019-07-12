@@ -15,14 +15,16 @@ public class LevelOneKI extends KI{
 	}
 
 	@Override
-	public Action generateNextTurn(TurnInfo turnInfo) {
-		//maze.logCells();
-		super.generateNextTurn(turnInfo);
+	public Action calculateMove(TurnInfo turnInfo) {
+		super.processTurnInfo(turnInfo);
+		//maze.logCellsSimple();
 		if(maze.getCurrentCell().getStatus().equals(Status.FINISH)) {
 			return new Action(Command.FINISH);
 		}
+		return getGOAction();
+	}
+	protected Action getGOAction() {
 		Direction nextStep=maze.getCurrentCell().getDirectionWithLowestCost();
-		Output.logDebug("Going" +nextStep);
 		updatePosition(nextStep);
 		Output.logDebug("Going" +nextStep);
 		return new Action(Command.GO,nextStep.toString());

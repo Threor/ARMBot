@@ -12,12 +12,29 @@ public enum Status {
 	
 	private boolean dead;
 	
+	private Integer additionalInfo;
+	
 	private Status(boolean dead) {
 		this.dead=dead;
+	}
+	
+	private Status(boolean dead, int additionalInfo) {
+		this.dead=dead;
+		this.additionalInfo=additionalInfo;
 	}
 	
 	public boolean isDead() {
 		return dead;
 	}
+	
+	public Integer getAdditionalInfo() {
+		return additionalInfo;
+	}
+	
+	public void setAdditionalInfo(Integer additionalInfo) {
+		this.additionalInfo = additionalInfo;
+	}
+	
+	
 
 }

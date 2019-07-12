@@ -1,15 +1,22 @@
 package de.arm.bot.model;
 
+import static de.arm.bot.model.Status.FINISH;
+import static de.arm.bot.model.Status.FLOOR;
+import static de.arm.bot.model.Status.FORM;
+import static de.arm.bot.model.Status.NOT_DISCOVERED;
+import static de.arm.bot.model.Status.VISITED;
+import static de.arm.bot.model.Status.WALL;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
 import de.arm.bot.dca.DCAStatus;
 import de.arm.bot.info.Direction;
-import de.arm.bot.info.TurnInfo;
 import de.arm.bot.io.Output;
 
 public class Cell {
@@ -19,36 +26,22 @@ public class Cell {
 	
 	private Status status;
 	
-	//TODO Maybe convert into map Direction->Cell
-	private Cell northernCell;
-	private Cell westernCell;
-	private Cell southernCell;
-	private Cell easternCell;
+	private Map<Direction,Cell> neighbours;
 	
 	private static Stack<Cell> processing=new Stack<>();
-	//TODO Maybe this could fuck up but i hope it does not
-	private static HashMap<Cell,Integer> cache=new HashMap<>();
 	
 	private static int stopHere;
 	
-	public static final Cell VOID=new Cell();
+	private static int minCost;
 	
-	private Cell() {
-		this.status=Status.WALL;
-	}
-	
-	public Cell(int x, int y, Status status, Cell northernCell, Cell westernCell, Cell southernCell, Cell easternCell) {
-		this.x = x;
-		this.y = y;
-		this.status = status;
-		this.northernCell = northernCell;
-		if(this.northernCell!=null&&this.northernCell.getSouthernCell()==null) this.northernCell.setSouthernCell(this);
-		this.westernCell = westernCell;
-		if(this.westernCell!=null&&this.westernCell.getEasternCell()==null) this.westernCell.setEasternCell(this);
-		this.southernCell = southernCell;
-		if(this.southernCell!=null&&this.southernCell.getNorthernCell()==null) this.southernCell.setNorthernCell(this);
-		this.easternCell = easternCell;
-		if(this.easternCell!=null&&this.easternCell.getWesternCell()==null) this.easternCell.setWesternCell(this);
+	public Cell(int x, int y, Status status, Map<Direction,Cell> neighbours) {
+		this.x=x;
+		this.y=y;
+		this.status=status;
+		this.neighbours=neighbours;
+		neighbours.entrySet().stream()
+			.filter(e->e.getValue()!=null&&e.getValue().getNeighbour(e.getKey().getOpposite())==null)
+			.forEach(e->e.getValue().setNeighbour(e.getKey().getOpposite(),this));
 	}
 	/**
 	 * @return x
@@ -68,58 +61,10 @@ public class Cell {
 	public Status getStatus() {
 		return status;
 	}
-	/**
-	 * @return northernCell
-	 */
-	public Cell getNorthernCell() {
-		return northernCell;
-	}
-	/**
-	 * @return westernCell
-	 */
-	public Cell getWesternCell() {
-		return westernCell;
-	}
-	/**
-	 * @return southernCell
-	 */
-	public Cell getSouthernCell() {
-		return southernCell;
-	}
-	/**
-	 * @return easternCell
-	 */
-	public Cell getEasternCell() {
-		return easternCell;
-	}
-	/**
-	 * @param northernCell das zu setzende Objekt northernCell
-	 */
-	public void setNorthernCell(Cell northernCell) {
-		this.northernCell = northernCell;
-	}
-	/**
-	 * @param westernCell das zu setzende Objekt westernCell
-	 */
-	public void setWesternCell(Cell westernCell) {
-		this.westernCell = westernCell;
-	}
-	/**
-	 * @param southernCell das zu setzende Objekt southernCell
-	 */
-	public void setSouthernCell(Cell southernCell) {
-		this.southernCell = southernCell;
-	}
-	/**
-	 * @param easternCell das zu setzende Objekt easternCell
-	 */
-	public void setEasternCell(Cell easternCell) {
-		this.easternCell = easternCell;
-	}
-	
+
 	public void setStatus(Status status) {
 		//TODO If, in future levels, cells can change their status, then revisit this method
-		if(this.status.equals(Status.VISITED)) return;
+		if(this.status==VISITED) return;
 		this.status = status;
 	}
 	
@@ -131,16 +76,14 @@ public class Cell {
 	
 	public Direction getDirectionWithLowestCost() {
 		processing.clear();
-		//cache.clear();
 		stopHere=Integer.MAX_VALUE;
 		Map<Integer,Direction> costForDirection=new HashMap<>();
-		costForDirection.put(northernCell.getCost(0), Direction.NORTH);
-		stopHere=calcMin(costForDirection);
-		costForDirection.put(southernCell.getCost(0), Direction.SOUTH);
-		stopHere=calcMin(costForDirection);
-		costForDirection.put(westernCell.getCost(0), Direction.WEST);
-		stopHere=calcMin(costForDirection);
-		costForDirection.put(easternCell.getCost(0), Direction.EAST);
+		processing.push(this);
+		neighbours.forEach((direction,cell)->{
+			costForDirection.put(cell.getCost(), direction);
+			stopHere=calcMin(costForDirection);
+		});
+		processing.pop();
 		costForDirection.forEach((k,v)->{
 			Output.logDebug(v+" - "+k);
 		});
@@ -148,48 +91,74 @@ public class Cell {
 		return costForDirection.get(calcMin(costForDirection));
 	}
 	
-	private int getCost(int cost) {
-		if(processing.size()>20)return Integer.MAX_VALUE/2;
-		if(cost>(stopHere))return Integer.MAX_VALUE/2;
-		if(processing.contains(this))return Integer.MAX_VALUE/2;
-		//Output.logDebug("Calculation cost for "+x+" "+y);
+	public Direction getDirectionWithLowestCost(Cell to) {
+		minCost=Math.abs(x-to.x)+Math.abs(y-to.y);
+		Output.logDebug(minCost+"");
+		if(neighbours.containsValue(to)) return neighbours.entrySet().stream().filter(e->e.getValue()==to).findFirst().get().getKey();
+		processing.clear();
+		stopHere=Integer.MAX_VALUE;
+		Map<Integer,Direction> costForDirection=new HashMap<>();
 		processing.push(this);
-		//FIXME Quadrate Implement caching and lock cells, which are on the current path to avoid infinite recursion
-		int ret=++cost;
-		/*if(cache.containsKey(this)) {
-			processing.pop();
-			return ret+cache.get(this);
-		}*/
-		//TODO Work with FINISH
-		if(this.getStatus().equals(Status.FLOOR)||this.getStatus().equals(Status.FINISH)) {
-			//Output.logDebug(x+" "+y+" is free!"+ret);
-			processing.pop();
-			return ret;
+		neighbours.forEach((direction,cell)->{
+			costForDirection.put(cell.getCost(to), direction);
+			stopHere=calcMin(costForDirection);
+		});
+		processing.pop();
+		costForDirection.forEach((k,v)->{
+			Output.logDebug(v+" - "+k);
+		});
+		//TODO Consider returning multiple directions with same cost, Also consider maybe returning the map for using a more detailed cost algorithm	
+		return costForDirection.get(calcMin(costForDirection));
+	}
+	
+	private int getCost() {
+		if(stopHere==minCost)return Integer.MAX_VALUE;
+		if(processing.size()>=stopHere||processing.contains(this))return Integer.MAX_VALUE/2;
+		//Output.logDebug("Calculation cost for "+x+" "+y);
+		//TODO Work with FINISH and form
+		if(this.getStatus()==FLOOR||this.getStatus()==FINISH||this.getStatus()==FORM) {
+			if(processing.size()<stopHere)stopHere=processing.size();
+			//Output.logDebug("Found new SH "+stopHere);
+			return 1;
 		}
-		if(this.getStatus().equals(Status.WALL)) {
-			//Output.logDebug(x+" "+y+" is wall");
-			processing.pop();
+		if(this.getStatus()==WALL) {
 			return Integer.MAX_VALUE/2;
 		}
-		List<Integer> costForNeighbours=new ArrayList<>();
-		costForNeighbours.add(northernCell.getCost(ret));
-		costForNeighbours.add(southernCell.getCost(ret));
-		costForNeighbours.add(westernCell.getCost(ret));
-		costForNeighbours.add(easternCell.getCost(ret));
+		processing.push(this);
+		List<Integer> costForNeighbours=neighbours.values().stream().filter(c->!c.getStatus().isDead()).map(Cell::getCost).collect(Collectors.toList());
+		processing.pop();
 		//TODO Wrap cells when hitting top
 		int co=costForNeighbours.stream().min(Comparator.comparing(Integer::valueOf)).get();
 		//Output.logDebug("Cost for "+x+" "+y+": "+(ret+co));
-		//cache.put(this,co);
-		processing.pop();
-		return co;
+		return ++co;
 	}
 	
-	public void updateCells(TurnInfo turnInfo) {
-		this.setStatus(turnInfo.getCurrentCellStatus());
-		northernCell.setStatus(turnInfo.getNorthernCellStatus());
-		easternCell.setStatus(turnInfo.getEasternCellStatus());
-		westernCell.setStatus(turnInfo.getWesternCellStatus());
-		southernCell.setStatus(turnInfo.getSouthernCellStatus());
+	private int getCost(Cell to) {
+		if(processing.size()>=stopHere||processing.contains(this))return Integer.MAX_VALUE/2;
+		Output.logDebug("Calculation cost for "+x+" "+y);
+		//TODO Work with FINISH and form
+		if(this.equals(to)) {
+			if(processing.size()<stopHere)stopHere=processing.size();
+			Output.logDebug("Found new SH "+stopHere);
+			return 1;
+		}
+		if(this.getStatus()==WALL||this.getStatus()==NOT_DISCOVERED) {
+			return Integer.MAX_VALUE/2;
+		}
+		processing.push(this);
+		List<Integer> costForNeighbours=neighbours.values().stream().filter(c->!c.getStatus().isDead()).map(c->c.getCost(to)).collect(Collectors.toList());
+		processing.pop();
+		//TODO Wrap cells when hitting top
+		int co=costForNeighbours.stream().min(Comparator.comparing(Integer::valueOf)).get();
+		//Output.logDebug("Cost for "+x+" "+y+": "+(ret+co));
+		return ++co;
+	}
+	
+	public void updateCells(Map<Direction,Status> cellStatus) {
+		this.setStatus(cellStatus.get(null));
+		cellStatus.entrySet().stream()
+			.filter(e->e.getKey()!=null)
+			.forEach(e->neighbours.get(e.getKey()).setStatus(e.getValue()));
 	}
 	
 	public boolean isDead() {
@@ -197,13 +166,16 @@ public class Cell {
 	}
 	
 	public DCAStatus getDCAStatus() {
-		int deadCellsNearby=0;
-		if(northernCell.isDead())deadCellsNearby++;
-		if(southernCell.isDead())deadCellsNearby++;
-		if(westernCell.isDead())deadCellsNearby++;
-		if(easternCell.isDead())deadCellsNearby++;
-		
+		int deadCellsNearby=(int) neighbours.values().stream().filter(Cell::isDead).count();
 		return DCAStatus.get(deadCellsNearby);
+	}
+	
+	public Cell getNeighbour(Direction direction) {
+		return neighbours.get(direction);
+	}
+	
+	public void setNeighbour(Direction direction, Cell cell) {
+		neighbours.put(direction, cell);
 	}
 	
 	@Override
@@ -212,5 +184,23 @@ public class Cell {
 		Cell cell=(Cell) obj;
 		return cell.getX()==x&&cell.getY()==y;
 	}
+	
+	public List<Cell> getNeighbours() {
+		return new ArrayList<>(neighbours.values());
+	}
+	
+	public List<Cell> getNotDeadNeighbours() {
+		return neighbours.values().stream().filter(c->!c.getStatus().isDead()).collect(Collectors.toList());
+	}
+	@Override
+	public String toString() {
+		return String.format("Cell [x=%s, y=%s, status=%s]", x, y, status);
+	}
+	
+	public Direction getDirection(Cell cell) {
+		return neighbours.entrySet().stream()
+				.filter(e->e.getValue().equals(cell))
+				.findFirst().orElse(null).getKey();
+		}
 	
 }

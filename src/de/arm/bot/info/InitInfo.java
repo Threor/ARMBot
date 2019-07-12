@@ -1,7 +1,6 @@
 package de.arm.bot.info;
 
-import de.arm.bot.ki.KI;
-import de.arm.bot.ki.LevelOneKI;
+import de.arm.bot.ki.*;
 import de.arm.bot.model.Maze;
 import de.arm.bot.model.Player;
 
@@ -38,7 +37,8 @@ public class InitInfo {
 	
 	public KI generateKI() {
 		switch(mazeLevel) {
-		case 1:return new LevelOneKI(generateMaze());
+		case 1: return new LevelOneKI(generateMaze());
+		case 2: return new LevelTwoKI(generateMaze());
 		default: return new LevelOneKI(generateMaze());
 		}
 	}

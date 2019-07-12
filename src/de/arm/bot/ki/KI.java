@@ -21,16 +21,18 @@ public abstract class KI {
 		this.newPosition=new Point(maze.getCurrentPosition());
 	}
 	
-	public Action generateNextTurn(TurnInfo turnInfo) {
+	protected abstract Action calculateMove(TurnInfo turnInfo);
+	
+	public final Action generateNextTurn(TurnInfo turnInfo) {
 		processTurnInfo(turnInfo);
-		return null;
+		return calculateMove(turnInfo);
 	}
 	
-	private void processTurnInfo(TurnInfo turnInfo) {
+	protected void processTurnInfo(TurnInfo turnInfo) {
 		if(turnInfo.getLastActionResult().isOk()&&newPosition!=null) {
 			Cell cell=maze.updateLocation(newPosition);
 			cell.setStatus(Status.VISITED);
-			maze.getCurrentCell().updateCells(turnInfo);
+			maze.getCurrentCell().updateCells(turnInfo.getCellStatus());
 		}else {
 			Output.logDebug("The last Action has failed!\nThat wasn't supposed to happen!\n"+turnInfo.getLastActionResult());
 		}
@@ -45,10 +47,10 @@ public abstract class KI {
 			case SOUTH:newPosition=new Point(current.x,current.y+1);break;
 			default:Output.logDebug("Critical error, "+direction+" is unknown");
 		}
-		validatePoint();
+		validatePosition();
 	}
 	
-	private void validatePoint() {
+	private void validatePosition() {
 		if (newPosition.x<0) newPosition.x+=maze.getLength();
 		if (newPosition.y<0) newPosition.y+=maze.getHeight();
 		if (newPosition.x>maze.getLength()-1) newPosition.x-=maze.getLength();

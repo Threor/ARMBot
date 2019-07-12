@@ -1,8 +1,16 @@
 package de.arm.bot.io;
 
+import static de.arm.bot.info.Direction.EAST;
+import static de.arm.bot.info.Direction.NORTH;
+import static de.arm.bot.info.Direction.SOUTH;
+import static de.arm.bot.info.Direction.WEST;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 import de.arm.bot.info.ActionResult;
+import de.arm.bot.info.Direction;
 import de.arm.bot.info.InitInfo;
 import de.arm.bot.info.TurnInfo;
 import de.arm.bot.model.Status;
@@ -28,30 +36,36 @@ public class Input {
 		int playerY = scanner.nextInt();
 		scanner.nextLine();
 		InitInfo i= new InitInfo(mazeLength,mazeHeight,mazeLevel,playerX,playerY,playerId);
-		Output.logDebug(i.toString());
 		return i;
 	}
 
 	public TurnInfo readTurnInfo() {
+		Output.setStart();
 		ActionResult lastResult=ActionResult.of(scanner.nextLine());
-		Status currentCellStatus=parse(scanner.nextLine());
-		Status northernCellStatus=parse(scanner.nextLine());
-		Status easternCellStatus=parse(scanner.nextLine());
-		Status southernCellStatus=parse(scanner.nextLine());
-		Status westernCellStatus=parse(scanner.nextLine());
-		TurnInfo t= new TurnInfo(lastResult,currentCellStatus,northernCellStatus,westernCellStatus,southernCellStatus,easternCellStatus);
-		Output.logDebug(t.toString());
+		Map<Direction,Status> cellStatus=new HashMap<>();
+		cellStatus.put(null, parse(scanner.nextLine()));
+		cellStatus.put(NORTH, parse(scanner.nextLine()));
+		cellStatus.put(EAST, parse(scanner.nextLine()));
+		cellStatus.put(SOUTH, parse(scanner.nextLine()));
+		cellStatus.put(WEST, parse(scanner.nextLine()));
+		TurnInfo t= new TurnInfo(lastResult,cellStatus);
+		Output.logDebug("Read Turn Info");
 		return t;
 	}
 	
 	private Status parse(String line) {
-		if(line.split(" ").length>2)return checkForFinish(line);
+		if(line.split(" ").length>1)return checkForFinish(line);
 		return Status.valueOf(line);
 	}
 	
 	private Status checkForFinish(String line) {
-		int id=Integer.valueOf(line.split(" ")[1]);
-		if(id==playerId) return Status.valueOf(line.split(" ")[0]);
+		String[] args=line.split(" ");
+		int id=Integer.valueOf(args[1]);
+		if(id==playerId) {
+			Status ret=Status.valueOf(args[0]);
+			ret.setAdditionalInfo(Integer.valueOf(args[2]));
+			return ret;
+		}
 		return Status.FLOOR;
 	}
 	
