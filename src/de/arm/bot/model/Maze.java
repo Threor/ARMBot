@@ -99,5 +99,4 @@ public class Maze {
 		return height;
 	}
 	
-		
 }

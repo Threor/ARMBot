@@ -6,9 +6,11 @@ import static de.arm.bot.model.Status.FORM;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import de.arm.bot.info.Action;
 import de.arm.bot.info.Command;
@@ -44,7 +46,6 @@ public class LevelTwoKI extends LevelOneKI{
 		this.pathToTake=new ArrayList<>();
 	}
 	
-	//TODO Seems to fuck up, if the object to search for is right beneath the bot
 	@Override
 	public Action calculateMove(TurnInfo turnInfo) {
 		//Found all forms and on FINISH
@@ -97,60 +98,41 @@ public class LevelTwoKI extends LevelOneKI{
 		Output.logDebug("Path to Take. "+pathToTake);
 		Cell c=pathToTake.remove(0);
 		Output.logDebug(c.toString());
-		return new Action(Command.GO,maze.getCurrentCell().getDirection(c).toString());
-		/*List<Cell> path=aStar(maze.getCurrentCell(),cell);
-		Output.logDebug("nav "+cell);
-		Direction nextStep=maze.getCurrentCell().getDirectionWithLowestCost(cell);
-		updatePosition(nextStep);
-		Output.logDebug("Going" +nextStep);
-		return new Action(Command.GO,nextStep.toString());*/
+		return go(maze.getCurrentCell().getDirection(c));
 	}
 	
-	private List<Cell> reconstructPath(Map<Cell,Cell> cameFrom,Cell current) {
+	private List<Cell> reconstructPath(Map<Cell,Cell> path,Cell current) {
 		List<Cell> totalPath = new ArrayList<>();
 		totalPath.add(current);
-		while(cameFrom.containsKey(current)) {
-    		current=cameFrom.get(current);
+		while(path.containsKey(current)) {
+    		current=path.get(current);
     		totalPath.add(0,current);
     	}
     	return totalPath;
 	}
     
-
-	// A* finds a path from start to goal.
-	// h is the heuristic function. h(n) estimates the cost to reach goal from node n.
-	private List<Cell> aStar(Cell start, Cell goal) {
-		Output.logDebug("Start: "+start+"\nZiel: "+goal);
-		// The set of discovered nodes that need to be (re-)expanded.
-	    // Initially, only the start node is known.
-		List<Cell> openSet=new ArrayList<>();
+	private List<Cell> aStar(Cell start, Cell finish) {
+		Output.logDebug("Start: "+start+"\nZiel: "+finish);
+		Set<Cell> openSet=new HashSet<>();
 	    openSet.add(start);
-	    // For node n, cameFrom[n] is the node immediately preceding it on the cheapest path from start to n currently known.
-		Map<Cell,Cell> cameFrom =new HashMap<>();
-	    // For node n, gScore[n] is the cost of the cheapest path from start to n currently known.
+		Map<Cell,Cell> path =new HashMap<>();
 	    gScore =new HashMap<>();
 	    gScore.put(start, 0);
-	    // For node n, fScore[n] := gScore[n] + h(n).
 	    fScore=new HashMap<>();
-	    fScore.put(start,estimateDistance(start,goal));
+	    fScore.put(start,estimateDistance(start,finish));
 	    while(!openSet.isEmpty()) {
-	    	Output.logDebug(openSet+"");
 	    	Cell current=fScore.entrySet().stream().filter(e->openSet.contains(e.getKey()))
 	    			.min(Comparator.comparingInt(Map.Entry::getValue)).get().getKey();
-	    	if(goal.equals(current)) return reconstructPath(cameFrom, current);
+	    	if(finish.equals(current)) return reconstructPath(path, current);
 	    	openSet.remove(current);
 	    	for(Cell neighbour:current.getNotDeadNeighbours()) {
-	    		// d(current,neighbor) is the weight of the edge from current to neighbor
-	            // tentative_gScore is the distance from start to the neighbor through current
 	            int tentativeGScore=gScore.get(current) + 1;
 	            if(tentativeGScore < gScore.getOrDefault(neighbour, Integer.MAX_VALUE)){
-	            	  // This path to neighbor is better than any previous one. Record it!
-	                cameFrom.put(neighbour, current);
+	                path.put(neighbour, current);
 	                gScore.put(neighbour, tentativeGScore);
-	                fScore.put(neighbour,gScore.get(neighbour)+estimateDistance(neighbour,goal));
+	                fScore.put(neighbour,gScore.get(neighbour)+estimateDistance(neighbour,finish));
 	                if(!openSet.contains(neighbour)) openSet.add(neighbour);
 	            }
-	          
 	    	}	    	            
 	    }	        
 	    return null;

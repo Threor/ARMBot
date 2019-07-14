@@ -4,7 +4,6 @@ import de.arm.bot.info.Action;
 import de.arm.bot.info.Command;
 import de.arm.bot.info.Direction;
 import de.arm.bot.info.TurnInfo;
-import de.arm.bot.io.Output;
 import de.arm.bot.model.Maze;
 import de.arm.bot.model.Status;
 
@@ -25,9 +24,7 @@ public class LevelOneKI extends KI{
 	}
 	protected Action getGOAction() {
 		Direction nextStep=maze.getCurrentCell().getDirectionWithLowestCost();
-		updatePosition(nextStep);
-		Output.logDebug("Going" +nextStep);
-		return new Action(Command.GO,nextStep.toString());
+		return go(nextStep);
 	}
 
 }

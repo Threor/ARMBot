@@ -91,7 +91,7 @@ public class Cell {
 		return costForDirection.get(calcMin(costForDirection));
 	}
 	
-	public Direction getDirectionWithLowestCost(Cell to) {
+	/*public Direction getDirectionWithLowestCost(Cell to) {
 		minCost=Math.abs(x-to.x)+Math.abs(y-to.y);
 		Output.logDebug(minCost+"");
 		if(neighbours.containsValue(to)) return neighbours.entrySet().stream().filter(e->e.getValue()==to).findFirst().get().getKey();
@@ -110,7 +110,7 @@ public class Cell {
 		//TODO Consider returning multiple directions with same cost, Also consider maybe returning the map for using a more detailed cost algorithm	
 		return costForDirection.get(calcMin(costForDirection));
 	}
-	
+	*/
 	private int getCost() {
 		if(stopHere==minCost)return Integer.MAX_VALUE;
 		if(processing.size()>=stopHere||processing.contains(this))return Integer.MAX_VALUE/2;
@@ -133,7 +133,7 @@ public class Cell {
 		return ++co;
 	}
 	
-	private int getCost(Cell to) {
+	/*private int getCost(Cell to) {
 		if(processing.size()>=stopHere||processing.contains(this))return Integer.MAX_VALUE/2;
 		Output.logDebug("Calculation cost for "+x+" "+y);
 		//TODO Work with FINISH and form
@@ -152,7 +152,7 @@ public class Cell {
 		int co=costForNeighbours.stream().min(Comparator.comparing(Integer::valueOf)).get();
 		//Output.logDebug("Cost for "+x+" "+y+": "+(ret+co));
 		return ++co;
-	}
+	}*/
 	
 	public void updateCells(Map<Direction,Status> cellStatus) {
 		this.setStatus(cellStatus.get(null));
@@ -198,9 +198,18 @@ public class Cell {
 	}
 	
 	public Direction getDirection(Cell cell) {
+		Output.logDebug("Cell: "+this);
 		return neighbours.entrySet().stream()
-				.filter(e->e.getValue().equals(cell))
-				.findFirst().orElse(null).getKey();
-		}
+				.filter(e->{
+					Output.logDebug(e.getKey()+" -> "+e.getValue());
+					return e.getValue().equals(cell);
+				}
+				).findFirst().orElse(null).getKey();
+	}
+	
+	//TODO Check if it works for wrap
+	public int getDistance(Cell cell) {
+		return Math.abs(x-cell.x)+Math.abs(y-cell.y);
+	}
 	
 }

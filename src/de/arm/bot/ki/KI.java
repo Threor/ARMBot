@@ -3,6 +3,7 @@ package de.arm.bot.ki;
 import java.awt.Point;
 
 import de.arm.bot.info.Action;
+import de.arm.bot.info.Command;
 import de.arm.bot.info.Direction;
 import de.arm.bot.info.TurnInfo;
 import de.arm.bot.io.Output;
@@ -59,6 +60,12 @@ public abstract class KI {
 	
 	public Maze getMaze() {
 		return maze;
+	}
+	
+	protected Action go(Direction direction) {
+		updatePosition(direction);
+		Output.logDebug("Going" +direction);
+		return new Action(Command.GO,direction.toString());
 	}
 	
 }
