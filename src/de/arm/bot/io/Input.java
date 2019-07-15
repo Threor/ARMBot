@@ -41,13 +41,25 @@ public class Input {
 
 	public TurnInfo readTurnInfo() {
 		Output.setStart();
-		ActionResult lastResult=ActionResult.of(scanner.nextLine());
+		String s=scanner.nextLine();
+		Output.logDebug(s);
+		ActionResult lastResult=ActionResult.of(s);
 		Map<Direction,Status> cellStatus=new HashMap<>();
-		cellStatus.put(null, parse(scanner.nextLine()));
-		cellStatus.put(NORTH, parse(scanner.nextLine()));
-		cellStatus.put(EAST, parse(scanner.nextLine()));
-		cellStatus.put(SOUTH, parse(scanner.nextLine()));
-		cellStatus.put(WEST, parse(scanner.nextLine()));
+		s=scanner.nextLine();
+		Output.logDebug(s);
+		cellStatus.put(null, parse(s));
+		s=scanner.nextLine();
+		Output.logDebug(s);
+		cellStatus.put(NORTH, parse(s));
+		s=scanner.nextLine();
+		Output.logDebug(s);
+		cellStatus.put(EAST, parse(s));
+		s=scanner.nextLine();
+		Output.logDebug(s);
+		cellStatus.put(SOUTH, parse(s));
+		s=scanner.nextLine();
+		Output.logDebug(s);
+		cellStatus.put(WEST, parse(s));
 		TurnInfo t= new TurnInfo(lastResult,cellStatus);
 		Output.logDebug("Read Turn Info");
 		return t;
