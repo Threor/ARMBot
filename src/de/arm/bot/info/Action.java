@@ -30,20 +30,6 @@ public class Action {
 		this.command = command;
 	}
 
-	/**
-	 * @return argument
-	 */
-	public String getArgument() {
-		return argument;
-	}
-
-	/**
-	 * @param argument das zu setzende Objekt argument
-	 */
-	public void setArgument(String argument) {
-		this.argument = argument;
-	}
-	
 	@Override
 	public String toString() {
 		return String.format("%s %s", command,argument);

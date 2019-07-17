@@ -22,8 +22,8 @@ public class DCARunnable implements Runnable{
 	public void run() {
 		List<Cell> discoveredCells=maze.getAllDiscoveredCells();
 		Map<DCAStatus,List<Cell>> cellsToDCAStatus=discoveredCells.stream()
-				.collect(Collectors.toMap(Cell::getDCAStatus, c->new ArrayList<Cell>(), (a,b)->{
-					((ArrayList<Cell>) a).addAll(b);
+				.collect(Collectors.toMap(Cell::getDCAStatus, c-> new ArrayList<>(), (a, b)->{
+					a.addAll(b);
                     return (ArrayList<Cell>) a;
 				},
 				HashMap::new));

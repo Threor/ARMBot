@@ -10,6 +10,7 @@ public class Main {
 		Input input=new Input();
 		KI ki=input.readInitInfo().generateKI();
 		while(true) {
+			Output.logDebug("TURN");
 			Output.sendAction(ki.generateNextTurn(input.readTurnInfo()));
 		}
 	}

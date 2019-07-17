@@ -1,6 +1,7 @@
 package de.arm.bot.ki;
 
 import java.awt.Point;
+import java.util.*;
 
 import de.arm.bot.info.Action;
 import de.arm.bot.info.Command;
@@ -11,15 +12,33 @@ import de.arm.bot.model.Cell;
 import de.arm.bot.model.Maze;
 import de.arm.bot.model.Status;
 
+/**
+ * An abstract class containing the basic fields and methods for implementing the KI for each level.
+ * Every used KI should be a child of this class
+ * @author Team ARM
+ */
 public abstract class KI {
-	
+
+	/**
+	 * The maze containing all gotten information of the current maze
+	 */
 	protected Maze maze;
-	
+
+	/**
+	 * A point containing the position, the player should reach in the next turn if his action was successful
+	 */
 	protected Point newPosition;
-	
+
+	/**
+	 * A 
+	 */
+	protected HashMap<Cell,List<Cell>> pathToTake;
+
+
 	protected KI(Maze maze) {
 		this.maze=maze;
 		this.newPosition=new Point(maze.getCurrentPosition());
+		this.pathToTake=new HashMap<>();
 	}
 	
 	protected abstract Action calculateMove(TurnInfo turnInfo);
@@ -64,8 +83,60 @@ public abstract class KI {
 	
 	protected Action go(Direction direction) {
 		updatePosition(direction);
-		Output.logDebug("Going" +direction);
+		Output.logDebug("Going "+direction);
 		return new Action(Command.GO,direction.toString());
 	}
-	
+
+	protected List<Cell> reconstructPath(Map<Cell,Cell> path, Cell current) {
+		List<Cell> totalPath = new ArrayList<>();
+		totalPath.add(current);
+		while(path.containsKey(current)) {
+			current=path.get(current);
+			totalPath.add(0,current);
+		}
+		return totalPath;
+	}
+
+	protected List<Cell> aStar(Cell start, Cell finish) {
+		Output.logDebug("Start: "+start+"\nZiel: "+finish);
+		Set<Cell> openSet=new HashSet<>();
+		openSet.add(start);
+		Map<Cell,Cell> path =new HashMap<>();
+		Map<Cell,Integer> gScore =new HashMap<>();
+		gScore.put(start, 0);
+		Map<Cell,Integer> fScore=new HashMap<>();
+		fScore.put(start,estimateDistance(start,finish));
+		while(!openSet.isEmpty()) {
+			Cell current=fScore.entrySet().stream().filter(e->openSet.contains(e.getKey()))
+					.min(Comparator.comparingInt(Map.Entry::getValue)).get().getKey();
+			if(finish.equals(current)) return reconstructPath(path, current);
+			openSet.remove(current);
+			for(Cell neighbour:current.getNotDeadNeighbours()) {
+				int tentativeGScore=gScore.get(current) + 1;
+				if(tentativeGScore < gScore.getOrDefault(neighbour, Integer.MAX_VALUE)){
+					path.put(neighbour, current);
+					gScore.put(neighbour, tentativeGScore);
+					fScore.put(neighbour,gScore.get(neighbour)+estimateDistance(neighbour,finish));
+					openSet.add(neighbour);
+				}
+			}
+		}
+		return null;
+	}
+
+	protected int estimateDistance(Cell from,Cell to) {
+		return from.getDistance(to);
+	}
+
+	protected Action navigateToCell(Cell cell) {
+		Output.logDebug(pathToTake.getOrDefault(cell,new ArrayList<>())+""+pathToTake.getOrDefault(cell,new ArrayList<>()).isEmpty());
+		if(pathToTake.getOrDefault(cell,new ArrayList<>()).isEmpty()) {
+			pathToTake.clear();
+			pathToTake.put(cell,aStar(maze.getCurrentCell(),cell));
+			Output.logDebug("Calculated path: "+pathToTake.get(cell));
+			pathToTake.get(cell).remove(0);
+		}
+		Cell c=pathToTake.get(cell).remove(0);
+		return go(maze.getCurrentCell().getDirection(c));
+	}
 }
