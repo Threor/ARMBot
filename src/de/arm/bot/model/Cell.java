@@ -149,6 +149,7 @@ public class Cell {
 				.filter(c->!c.getStatus().isDead()&&!c.getStatus().equals(NOT_DISCOVERED))
 				.collect(Collectors.toList());
 	}
+
 	@Override
 	public String toString() {
 		return String.format("Cell [x=%s, y=%s, status=%s]", x, y, status);
@@ -170,19 +171,22 @@ public class Cell {
 		}
 		return ret.getKey();
 	}
-	
-	//TODO Check if it works for wrap
-	/**
-	 * Calculates the estimated distance between this cell and the given cell
-	 * @param cell The cell to which the distance should be calculated
-	 * @return The calculated distance
-	 */
-	public int getDistance(Cell cell) {
-		return Math.abs(x-cell.x)+Math.abs(y-cell.y);
-	}
 
+	/** Checks whether there is a FINISH cell nearby this cell. Only used by the Level 1 algorithm
+	 * @return True if one of the neighbour cells of this cell is a FINISH cell
+	 */
 	public boolean hasFinishNearby() {
 		return neighbours.values().stream().anyMatch(c->c.getStatus()==FINISH);
 	}
+
+	boolean hasUndiscoveredNearby() {
+	    return neighbours.values().stream().anyMatch(c->c.getStatus()==NOT_DISCOVERED);
+    }
+
+    public int getNotDiscoveredNeighbourCount() {
+	    return (int) neighbours.values().stream().filter(c->c.getStatus()==NOT_DISCOVERED).count();
+    }
+
+
 	
 }

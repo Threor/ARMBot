@@ -34,6 +34,8 @@ public class LevelTwoKI extends LevelOneKI{
 	
 	@Override
 	public Action calculateMove(TurnInfo turnInfo) {
+		Output.logDebug("Found: "+foundForms);
+		Output.logDebug("Count: "+formCount);
 		//Found all forms and on FINISH
 		if(turnInfo.getCellStatus().get(null)==FINISH&&foundForms==formCount) return new Action(Command.FINISH);
 		//Found all previous forms and on FORM
@@ -52,8 +54,8 @@ public class LevelTwoKI extends LevelOneKI{
 	}
 	
 	@Override
-	protected void processTurnInfo(TurnInfo turnInfo) {
-		super.processTurnInfo(turnInfo);
+	protected boolean processTurnInfo(TurnInfo turnInfo) {
+		if(!super.processTurnInfo(turnInfo))return false;
 		if(performedTake) {
 			performedTake=false;
 			if(turnInfo.getLastActionResult().isOk()) {
@@ -73,7 +75,7 @@ public class LevelTwoKI extends LevelOneKI{
 			turnInfo.getCellStatus().entrySet().stream()
 				.filter(e->e.getValue()==FORM)
 				.forEach(e->formCells.put(e.getValue().getAdditionalInfo(), maze.getCurrentCell().getNeighbour(e.getKey())));
-			formCells.forEach((k,v)->Output.logDebug(k+" -> "+v));
 		}
+		return true;
 	}
 }

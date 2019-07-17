@@ -4,12 +4,10 @@ import static de.arm.bot.info.Direction.EAST;
 import static de.arm.bot.info.Direction.NORTH;
 import static de.arm.bot.info.Direction.SOUTH;
 import static de.arm.bot.info.Direction.WEST;
+import static de.arm.bot.model.Status.*;
 
 import java.awt.Point;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import de.arm.bot.info.Direction;
@@ -159,5 +157,46 @@ public class Maze {
 				.flatMap(Arrays::stream)
 				.filter(c->status.contains(c.getStatus()))
 				.collect(Collectors.toList());
+	}
+
+	public List<Cell> getPreferableCells() {
+		return getCellsIn(Collections.singletonList(FLOOR)).stream()
+				.filter(Cell::hasUndiscoveredNearby)
+				.collect(Collectors.toList());
+	}
+
+	/**
+	 * Calculates the estimated distance between this cell and the given cell
+	 * @return The calculated distance
+	 */
+	public int getDistance(Cell from, Cell to) {
+		List<Integer> calculatedCost=new ArrayList<>();
+		int xDifference=Math.abs(from.getX()-to.getX());
+		int yDifference=Math.abs(from.getY()-to.getY());
+		calculatedCost.add(xDifference+yDifference);
+		if(canWrap(NORTH,from.getX())) {
+			calculatedCost.add(xDifference+Math.abs((height+from.getY()-to.getY())));
+		}
+		if(canWrap(SOUTH,from.getX())) {
+			calculatedCost.add(xDifference+Math.abs((height-from.getY())+to.getY()));
+		}
+		if(canWrap(EAST,from.getY())) {
+			calculatedCost.add(Math.abs((length-from.getX()+to.getX()))+yDifference);
+		}
+		if(canWrap(WEST,from.getY())) {
+			calculatedCost.add(Math.abs((length+from.getX()-to.getX()))+yDifference);
+		}
+		return calculatedCost.stream()
+				.min(Comparator.comparingInt(Integer::valueOf)).orElse(Integer.MAX_VALUE);
+	}
+
+	public boolean canWrap(Direction direction, int on) {
+		switch (direction) {
+			case NORTH:return cells[on][0].getStatus()!=NOT_DISCOVERED&&cells[on][0].getStatus()!=WALL;
+			case EAST: return cells[length-1][on].getStatus()!=NOT_DISCOVERED&&cells[length-1][on].getStatus()!=WALL;
+			case SOUTH: return cells[on][height-1].getStatus()!=NOT_DISCOVERED&&cells[on][height-1].getStatus()!=WALL;
+			case WEST: return cells[0][on].getStatus()!=NOT_DISCOVERED&&cells[0][on].getStatus()!=WALL;
+			default:return false;
+		}
 	}
 }

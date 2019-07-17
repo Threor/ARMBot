@@ -39,6 +39,7 @@ public class InitInfo {
 		switch(mazeLevel) {
 		case 1: return new LevelOneKI(generateMaze());
 		case 2: return new LevelTwoKI(generateMaze());
+		case 3:return new LevelTwoKI(generateMaze());
 		default: return new LevelOneKI(generateMaze());
 		}
 	}
