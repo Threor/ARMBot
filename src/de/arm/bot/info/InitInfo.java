@@ -27,11 +27,11 @@ public class InitInfo {
 		this.playerId = playerId;
 	}
 	
-	public Player generatePlayer() {
+	private Player generatePlayer() {
 		return new Player(playerX, playerY, playerId);
 	}
 	
-	public Maze generateMaze() {
+	private Maze generateMaze() {
 		return new Maze(generatePlayer(),mazeLength, mazeHeight);
 	}
 	

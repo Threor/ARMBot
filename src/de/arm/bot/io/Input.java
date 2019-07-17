@@ -15,16 +15,33 @@ import de.arm.bot.info.InitInfo;
 import de.arm.bot.info.TurnInfo;
 import de.arm.bot.model.Status;
 
+/**
+ * A class used for reading input data
+ * @author Team ARM
+ */
 public class Input {
-	
+
+	/**
+	 * A Scanner pointing towards System.in
+	 */
 	private Scanner scanner;
-	
+
+	/**
+	 * The playerId as given by the game, used for identifying form and finish cells
+	 */
 	private int playerId;
-	
+
+	/**
+	 * Defaultly used constructor for this class, initializes the scanner
+	 */
 	public Input() {
 		this.scanner=new Scanner(System.in);
 	}
-	
+
+	/**
+	 * Read the initializing Infos gotten from the game. Used for starting the game
+	 * @return The initializing infos given from the game
+	 */
 	public InitInfo readInitInfo() {
 		int mazeLength = scanner.nextInt();
 		int mazeHeight = scanner.nextInt(); 
@@ -35,43 +52,40 @@ public class Input {
 		int playerX = scanner.nextInt(); 
 		int playerY = scanner.nextInt();
 		scanner.nextLine();
-		InitInfo i= new InitInfo(mazeLength,mazeHeight,mazeLevel,playerX,playerY,playerId);
-		return i;
+		return new InitInfo(mazeLength,mazeHeight,mazeLevel,playerX,playerY,playerId);
 	}
 
+	/**
+	 * Read the turn Infos gotten from the game. Used for calculating
+	 * @return The turn infos given from the game
+	 */
 	public TurnInfo readTurnInfo() {
 		Output.setStart();
-		String s=scanner.nextLine();
-		Output.logDebug(s);
-		ActionResult lastResult=ActionResult.of(s);
+		ActionResult lastResult=ActionResult.of(scanner.nextLine());
 		Map<Direction,Status> cellStatus=new HashMap<>();
-		s=scanner.nextLine();
-		Output.logDebug(s);
-		cellStatus.put(null, parse(s));
-		s=scanner.nextLine();
-		Output.logDebug(s);
-		cellStatus.put(NORTH, parse(s));
-		s=scanner.nextLine();
-		Output.logDebug(s);
-		cellStatus.put(EAST, parse(s));
-		s=scanner.nextLine();
-		Output.logDebug(s);
-		cellStatus.put(SOUTH, parse(s));
-		s=scanner.nextLine();
-		Output.logDebug(s);
-		cellStatus.put(WEST, parse(s));
-		TurnInfo t= new TurnInfo(lastResult,cellStatus);
-		Output.logDebug("Read Turn Info");
-		return t;
+		cellStatus.put(null, parse(scanner.nextLine()));
+		cellStatus.put(NORTH, parse(scanner.nextLine()));
+		cellStatus.put(EAST, parse(scanner.nextLine()));
+		cellStatus.put(SOUTH, parse(scanner.nextLine()));
+		cellStatus.put(WEST, parse(scanner.nextLine()));
+		return new TurnInfo(lastResult,cellStatus);
 	}
-	
+
+	/** Parses a given line to a status, used for parsing the input values given by the game. May be enriched with information calculated in checkForFinish
+	 * @param line The string to parse
+	 * @return The parsed status
+	 */
 	private Status parse(String line) {
-		if(line.split(" ").length>1)return checkForFinish(line);
+		if(line.split("\\W").length>1)return checkForFinish(line);
 		return Status.valueOf(line);
 	}
-	
+
+	/** Used for parsing status with multiple arguments like formId. Used by the parse function
+	 * @param line The string to parse
+	 * @return The parsed status
+	 */
 	private Status checkForFinish(String line) {
-		String[] args=line.split(" ");
+		String[] args=line.split("\\W");
 		int id=Integer.valueOf(args[1]);
 		if(id==playerId) {
 			Status ret=Status.valueOf(args[0]);
@@ -79,10 +93,6 @@ public class Input {
 			return ret;
 		}
 		return Status.FLOOR;
-	}
-	
-	public boolean hasData() {
-		return scanner.hasNext();
 	}
 }
 

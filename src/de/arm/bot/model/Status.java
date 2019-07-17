@@ -2,7 +2,7 @@ package de.arm.bot.model;
 
 /**
  * An enumeration of all status a cell in the maze can have
- * @see de.arm.bot.model.cell
+ * @see de.arm.bot.model.Cell
  * @author Team ARM
  *
  */
@@ -50,7 +50,7 @@ public enum Status {
 	 * The defaultly used constructor for the enumeration
 	 * @param dead Indicates wether the cell is dead or not
 	 */
-	private Status(boolean dead) {
+	Status(boolean dead) {
 		this.dead=dead;
 	}
 	

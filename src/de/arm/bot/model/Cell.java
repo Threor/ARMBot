@@ -1,23 +1,14 @@
 package de.arm.bot.model;
 
-import static de.arm.bot.model.Status.FINISH;
-import static de.arm.bot.model.Status.FLOOR;
-import static de.arm.bot.model.Status.FORM;
-import static de.arm.bot.model.Status.NOT_DISCOVERED;
-import static de.arm.bot.model.Status.VISITED;
-import static de.arm.bot.model.Status.WALL;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
-import java.util.stream.Collectors;
-
 import de.arm.bot.dca.DCAStatus;
 import de.arm.bot.info.Direction;
 import de.arm.bot.io.Output;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static de.arm.bot.model.Status.*;
 
 /**
  * A class representing a cell of the maze
@@ -43,21 +34,11 @@ public class Cell {
 	
 	/**
 	 * A map of all neighbours of the cell, mapped as
-	 * Direction -> Cell
+	 * Direction to Cell
 	 * @see de.arm.bot.info.Direction
 	 */
 	private Map<Direction,Cell> neighbours;
-	
-	/**
-	 * A static Stack used for the getDirectionWithLowestCost algorithm to keep track of the currently traversed path
-	 */
-	private static Stack<Cell> processing=new Stack<>();
-	
-	/**
-	 * A static integer representing the currently lowest calculated cost for the getDirectionWithLowestCost algorithm
-	 */
-	private static int stopHere;
-	
+
 	/**
 	 * The defaultly used constructor for the class cell
 	 * Additionally to setting all attributes it links all neighbour cells
@@ -67,7 +48,7 @@ public class Cell {
 	 * @see de.arm.bot.model.Status
 	 * @param neighbours A map of all neighbour cells of the current cell
 	 */
-	public Cell(int x, int y, Status status, Map<Direction,Cell> neighbours) {
+	Cell(int x, int y, Status status, Map<Direction, Cell> neighbours) {
 		this.x=x;
 		this.y=y;
 		this.status=status;
@@ -79,13 +60,13 @@ public class Cell {
 	/** Getter for the attribute x
 	 * @return The current x-coordinate of the cell
 	 */
-	public int getX() {
+	int getX() {
 		return x;
 	}
 	/** Getter for the attribute y
 	 * @return The current y-coordinate of the cell
 	 */
-	public int getY() {
+	int getY() {
 		return y;
 	}
 	/** Getter for the attribute status
@@ -104,64 +85,7 @@ public class Cell {
 		if(this.status==VISITED) return;
 		this.status = status;
 	}
-	
-	/**
-	 * Calculates the minimal key value of the map, used by the getDirectionWithLowestCost algorithm 
-	 * @param costForDirection The map with the keys to be compared
-	 * @return The lowest key value
-	 */
-	private int calcMin(Map<Integer,Direction> costForDirection) {
-		int ret= costForDirection.keySet().stream().min(Comparator.comparing(Integer::valueOf)).get();
-		Output.logDebug("CURRENT SH is "+ret);
-		return ret;
-	}
-	
-	/**
-	 * The algorithm used for calculating the best direction for the bot to walk to
-	 * @return The direction the bot should walk to
-	 */
-	public Direction getDirectionWithLowestCost() {
-		processing.clear();
-		stopHere=Integer.MAX_VALUE;
-		Map<Integer,Direction> costForDirection=new HashMap<>();
-		processing.push(this);
-		neighbours.forEach((direction,cell)->{
-			costForDirection.put(cell.getCost(), direction);
-			stopHere=calcMin(costForDirection);
-		});
-		processing.pop();
-		costForDirection.forEach((k,v)->{
-			Output.logDebug(v+" - "+k);
-		});
-		//TODO Consider returning multiple directions with same cost, Also consider maybe returning the map for using a more detailed cost algorithm	
-		return costForDirection.get(calcMin(costForDirection));
-	}
-	
-	/**
-	 * A recursive method calculation the lowest cost for the getDirectionWithLowestCost algorithm 
-	 * @return The lowest path cost from the current cell to a searched for cell
-	 */
-	private int getCost() {
-		if(processing.size()>=stopHere||processing.contains(this))return Integer.MAX_VALUE/2;
-		//Output.logDebug("Calculation cost for "+x+" "+y);
-		//TODO Work with FINISH and form
-		if(this.getStatus()==FLOOR||this.getStatus()==FINISH||this.getStatus()==FORM) {
-			if(processing.size()<stopHere)stopHere=processing.size();
-			//Output.logDebug("Found new SH "+stopHere);
-			return 1;
-		}
-		if(this.getStatus()==WALL) {
-			return Integer.MAX_VALUE/2;
-		}
-		processing.push(this);
-		List<Integer> costForNeighbours=neighbours.values().stream().filter(c->!c.getStatus().isDead()).map(Cell::getCost).collect(Collectors.toList());
-		processing.pop();
-		//TODO Wrap cells when hitting top
-		int co=costForNeighbours.stream().min(Comparator.comparing(Integer::valueOf)).get();
-		//Output.logDebug("Cost for "+x+" "+y+": "+(ret+co));
-		return ++co;
-	}
-	
+
 	/**
 	 * Updates the status for the current cell and for all neighbours
 	 * @param cellStatus The map of the new status of all neighbour cells and the current cell (null as direction indicates the current cell)
@@ -177,7 +101,7 @@ public class Cell {
 	 * Getter for the attribute dead of the current status
 	 * @return Whether the cell is dead or not
 	 */
-	public boolean isDead() {
+	private boolean isDead() {
 		return status.isDead();
 	}
 	
@@ -204,7 +128,7 @@ public class Cell {
 	 * @param direction The direction on which the new cell should be set
 	 * @param cell The cell to be set
 	 */
-	public void setNeighbour(Direction direction, Cell cell) {
+	private void setNeighbour(Direction direction, Cell cell) {
 		neighbours.put(direction, cell);
 	}
 	
@@ -216,16 +140,8 @@ public class Cell {
 	}
 	
 	/**
-	 * Gets and return all neighbours of the current cell (the values of the neghbours map)
-	 * @return A list of all neghbour cells
-	 */
-	public List<Cell> getNeighbours() {
-		return new ArrayList<>(neighbours.values());
-	}
-	
-	/**
 	 * Gets and returns all neighbours of the cell that are not dead
-	 * @see de.arm.bot.Status
+	 * @see de.arm.bot.model.Status
 	 * @return A list of all not dead neighbours
 	 */
 	public List<Cell> getNotDeadNeighbours() {
@@ -240,17 +156,19 @@ public class Cell {
 	
 	/**
 	 * Gets the direction the given cell is currently on, if the cell is a neighbour cell
-	 * @param cell
+	 * @param cell The to get the direction from
 	 * @return The calculated direction
 	 */
 	public Direction getDirection(Cell cell) {
 		Output.logDebug("Cell: "+this);
 		if(!neighbours.containsValue(cell)) return null;
-		return neighbours.entrySet().stream()
-				.filter(e->{
-					Output.logDebug(e.getKey()+" -> "+e.getValue());
-					return e.getValue().equals(cell);
-				}).findFirst().orElse(null).getKey();
+		Map.Entry<Direction,Cell> ret= neighbours.entrySet().stream()
+				.filter(e-> e.getValue().equals(cell)).findFirst().orElse(null);
+		if(ret==null){
+			Output.logDebug("ERR Couldn't get Direction from "+cell+" to "+this+"!");
+			return null;
+		}
+		return ret.getKey();
 	}
 	
 	//TODO Check if it works for wrap
@@ -261,6 +179,10 @@ public class Cell {
 	 */
 	public int getDistance(Cell cell) {
 		return Math.abs(x-cell.x)+Math.abs(y-cell.y);
+	}
+
+	public boolean hasFinishNearby() {
+		return neighbours.values().stream().anyMatch(c->c.getStatus()==FINISH);
 	}
 	
 }

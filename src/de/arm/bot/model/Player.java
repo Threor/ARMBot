@@ -36,28 +36,28 @@ public class Player {
 	/** Getter for the attribute x
 	 * @return The current x-coordinate of the bot
 	 */
-	public int getX() {
+	int getX() {
 		return x;
 	}
 
 	/** Setter for the attribute x
 	 * @param x The new x-coordinate of the bot
 	 */
-	public void setX(int x) {
+	void setX(int x) {
 		this.x = x;
 	}
 
 	/** Getter for the attribute y
 	 * @return The current y-position of the bot
 	 */
-	public int getY() {
+	int getY() {
 		return y;
 	}
 
 	/** Setter for the attribute y
 	 * @param y The new y-coordinate of the bot
 	 */
-	public void setY(int y) {
+	void setY(int y) {
 		this.y = y;
 	}
 
