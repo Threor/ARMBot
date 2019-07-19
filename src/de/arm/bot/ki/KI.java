@@ -77,7 +77,10 @@ public abstract class KI {
 			return false;
 		}
 	}
-	
+
+	/** Updates the position the player should reach, if the action is successful. Also validates the new position
+	 * @param direction The direction the player is heading to
+	 */
 	protected void updatePosition(Direction direction) {
 		Point current=maze.getCurrentPosition();
 		switch(direction) {
@@ -89,18 +92,29 @@ public abstract class KI {
 		}
 		validatePosition();
 	}
-	
+
+	/**
+	 * Validates the new position the player should reach.
+	 * This is used so that the player can wrap around the maze, meaning exiting on one side and appearing on the opposite one.
+	 */
 	private void validatePosition() {
 		if (newPosition.x<0) newPosition.x+=maze.getLength();
 		if (newPosition.y<0) newPosition.y+=maze.getHeight();
 		if (newPosition.x>maze.getLength()-1) newPosition.x-=maze.getLength();
 		if (newPosition.y>maze.getHeight()-1) newPosition.y-=maze.getHeight();
 	}
-	
+
+	/** Getter for the attribute Maze
+	 * @return The current Maze
+	 */
 	public Maze getMaze() {
 		return maze;
 	}
-	
+
+	/** Lets the player go towards a given direction. Updates the new position of the player and returns a GO Action for the given direction
+	 * @param direction The direction the player is heading towards
+	 * @return The generated Action
+	 */
 	protected final Action go(Direction direction) {
 		updatePosition(direction);
 		Output.logDebug("Going "+direction);

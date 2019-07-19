@@ -2,6 +2,7 @@ package de.arm.bot.ki;
 
 import de.arm.bot.info.Action;
 import de.arm.bot.info.TurnInfo;
+import de.arm.bot.io.Output;
 import de.arm.bot.model.Cell;
 import de.arm.bot.model.Maze;
 
@@ -37,7 +38,7 @@ public class LevelFourKI extends LevelThreeKI {
                     //Stream
                     formCells.entrySet().stream()
                         //Filter to find the current value
-                        .filter(e -> e.getValue().equals(maze.getCurrentCell().getNeighbour(key)))
+                        .filter(e -> e.getValue()!=null&& e.getValue().equals(maze.getCurrentCell().getNeighbour(key)))
                         //If Present (it should be present)
                         .findFirst().ifPresent(entry -> {
                             //Remove from found formCells
