@@ -16,15 +16,15 @@ import de.arm.bot.model.Status;
 
 public class LevelTwoKI extends LevelOneKI{
 	
-	private int formCount;
+	protected int formCount;
 	
-	private int foundForms;
+	protected int foundForms;
 	
-	private Cell finish;
-	
-	private Map<Integer,Cell> formCells;
-	
-	private boolean performedTake;
+	protected Cell finish;
+
+	protected Map<Integer,Cell> formCells;
+
+	protected boolean performedTake;
 
 	public LevelTwoKI(Maze maze) {
 		super(maze);

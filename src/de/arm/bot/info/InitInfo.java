@@ -1,5 +1,6 @@
 package de.arm.bot.info;
 
+import de.arm.bot.io.Output;
 import de.arm.bot.ki.*;
 import de.arm.bot.model.Maze;
 import de.arm.bot.model.Player;
@@ -37,10 +38,13 @@ public class InitInfo {
 	
 	public KI generateKI() {
 		switch(mazeLevel) {
-		case 1: return new LevelOneKI(generateMaze());
-		case 2: return new LevelTwoKI(generateMaze());
-		case 3:return new LevelTwoKI(generateMaze());
-		default: return new LevelOneKI(generateMaze());
+			case 1: return new LevelOneKI(generateMaze());
+			case 2: return new LevelTwoKI(generateMaze());
+			case 3: return new LevelThreeKI(generateMaze());
+			case 4: return new LevelFourKI(generateMaze());
+			default:
+				Output.logDebug("Running on unsupported Level!\n Using basic KI for Level 1!\n This is highly unstable and not recommended!\n Self Destruction imminent!");
+				return new LevelOneKI(generateMaze());
 		}
 	}
 

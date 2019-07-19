@@ -1,9 +1,6 @@
 package de.arm.bot.model;
 
-import static de.arm.bot.info.Direction.EAST;
-import static de.arm.bot.info.Direction.NORTH;
-import static de.arm.bot.info.Direction.SOUTH;
-import static de.arm.bot.info.Direction.WEST;
+import static de.arm.bot.info.Direction.*;
 import static de.arm.bot.model.Status.*;
 
 import java.awt.Point;
@@ -166,31 +163,26 @@ public class Maze {
 	}
 
 	/**
-	 * Calculates the estimated distance between this cell and the given cell
-	 * @return The calculated distance
+	 * Calculates the estimated distance between the two given cells.
+	 * Also calculates the distance using the wrap functionality if it is possible to wrap.
+	 * If it is possible to wrap on all for directions, five different distances will be calculated
+	 * Returned will be the lowest calculated distance
+	 * @return The calculated lowest distance
 	 */
 	public int getDistance(Cell from, Cell to) {
 		List<Integer> calculatedCost=new ArrayList<>();
 		int xDifference=Math.abs(from.getX()-to.getX());
 		int yDifference=Math.abs(from.getY()-to.getY());
 		calculatedCost.add(xDifference+yDifference);
-		if(canWrap(NORTH,from.getX())) {
-			calculatedCost.add(xDifference+Math.abs((height+from.getY()-to.getY())));
-		}
-		if(canWrap(SOUTH,from.getX())) {
-			calculatedCost.add(xDifference+Math.abs((height-from.getY())+to.getY()));
-		}
-		if(canWrap(EAST,from.getY())) {
-			calculatedCost.add(Math.abs((length-from.getX()+to.getX()))+yDifference);
-		}
-		if(canWrap(WEST,from.getY())) {
-			calculatedCost.add(Math.abs((length+from.getX()-to.getX()))+yDifference);
-		}
+		if(canWrap(NORTH,from.getX())) calculatedCost.add(xDifference+Math.abs((height+from.getY()-to.getY())));
+		if(canWrap(SOUTH,from.getX())) calculatedCost.add(xDifference+Math.abs((height-from.getY())+to.getY()));
+		if(canWrap(EAST,from.getY())) calculatedCost.add(Math.abs((length-from.getX()+to.getX()))+yDifference);
+		if(canWrap(WEST,from.getY())) calculatedCost.add(Math.abs((length+from.getX()-to.getX()))+yDifference);
 		return calculatedCost.stream()
 				.min(Comparator.comparingInt(Integer::valueOf)).orElse(Integer.MAX_VALUE);
 	}
 
-	public boolean canWrap(Direction direction, int on) {
+	private boolean canWrap(Direction direction, int on) {
 		switch (direction) {
 			case NORTH:return cells[on][0].getStatus()!=NOT_DISCOVERED&&cells[on][0].getStatus()!=WALL;
 			case EAST: return cells[length-1][on].getStatus()!=NOT_DISCOVERED&&cells[length-1][on].getStatus()!=WALL;

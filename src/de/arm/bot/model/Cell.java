@@ -173,16 +173,28 @@ public class Cell {
 	}
 
 	/** Checks whether there is a FINISH cell nearby this cell. Only used by the Level 1 algorithm
+     * @see de.arm.bot.model.Status
 	 * @return True if one of the neighbour cells of this cell is a FINISH cell
 	 */
 	public boolean hasFinishNearby() {
-		return neighbours.values().stream().anyMatch(c->c.getStatus()==FINISH);
+		return hasNearby(FINISH);
 	}
 
+    /** Checks whether there is a NOT_DISCOVERED cell nearby this cell.
+     *  Used to find goal cells for the bot to move towards
+     * @return True if one of the neighbour cells of this cell is a NOT_DISOVERED cell
+     */
 	boolean hasUndiscoveredNearby() {
-	    return neighbours.values().stream().anyMatch(c->c.getStatus()==NOT_DISCOVERED);
+	    return hasNearby(NOT_DISCOVERED);
     }
 
+    private boolean hasNearby(Status status){
+	    return neighbours.values().stream().anyMatch(c->c.getStatus()==status);
+    }
+
+    /**
+     * @return
+     */
     public int getNotDiscoveredNeighbourCount() {
 	    return (int) neighbours.values().stream().filter(c->c.getStatus()==NOT_DISCOVERED).count();
     }

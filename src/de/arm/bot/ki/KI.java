@@ -1,8 +1,5 @@
 package de.arm.bot.ki;
 
-import java.awt.Point;
-import java.util.*;
-
 import de.arm.bot.info.Action;
 import de.arm.bot.info.Command;
 import de.arm.bot.info.Direction;
@@ -10,7 +7,10 @@ import de.arm.bot.info.TurnInfo;
 import de.arm.bot.io.Output;
 import de.arm.bot.model.Cell;
 import de.arm.bot.model.Maze;
-import de.arm.bot.model.Status;
+
+import java.awt.*;
+import java.util.List;
+import java.util.*;
 
 import static de.arm.bot.model.Status.VISITED;
 
@@ -36,9 +36,6 @@ public abstract class KI {
 	 */
 	protected HashMap<Cell,List<Cell>> pathToTake;
 
-	private Action lastAction;
-
-
 	/** Default constructor for the KI, initializes all fields and sets the current maze
 	 * @param maze The maze the KI should work on
 	 */
@@ -60,16 +57,14 @@ public abstract class KI {
 	 * @param turnInfo The information of the current Turn as given by the game
 	 * @return The generated Next action
 	 */
-	public final Action generateNextTurn(TurnInfo turnInfo) {
-		if(!processTurnInfo(turnInfo)) {
-			if(turnInfo.getLastActionResult().getMessage().equalsIgnoreCase("talking")) return lastAction;
-		}
-		lastAction= calculateMove(turnInfo);
-		return lastAction;
+	public Action generateNextTurn(TurnInfo turnInfo) {
+		processTurnInfo(turnInfo);
+		return calculateMove(turnInfo);
 	}
 
-	/**
-	 * @param turnInfo
+	/** Processes the given TurnInfo and updates the information
+	 *  May be overwritten in later implementations to consider future features and mechanics
+	 * @param turnInfo The information of the current Turn as given by the game
 	 */
 	protected boolean processTurnInfo(TurnInfo turnInfo) {
 		if(turnInfo.getLastActionResult().isOk()&&newPosition!=null) {
