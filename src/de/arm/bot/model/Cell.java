@@ -178,7 +178,7 @@ public class Cell {
 
     @Override
     public String toString() {
-        return String.format("Cell [x=%s, y=%s, status=%s]", x, y, status);
+        return String.format("Cell [x=%s, y=%s, status=%s, visited=%s]", x, y, status,visited);
     }
 
     /**

@@ -23,8 +23,7 @@ public class LevelOneKI extends KI {
 
     @Override
     public Action calculateMove(TurnInfo turnInfo) {
-        super.processTurnInfo(turnInfo);
-        //maze.logCellsSimple();
+        //super.processTurnInfo(turnInfo);
         if (turnInfo.getCellStatus().get(null) == FINISH) {
             return new Action(Command.FINISH);
         }
@@ -40,12 +39,12 @@ public class LevelOneKI extends KI {
             if (pathToTake.get(cell).size() > 1) return navigateToCell(cell);
         }
         Output.logDebug("Current paths: " + pathToTake.size());
-        List<Cell> toSearchFor = maze.getPreferableCells();
+        List<Cell> toSearchFor = getBestCells();
         int minCost = toSearchFor.stream()
                 .map(c -> estimateDistance(maze.getCurrentCell(), c))
                 .min(Comparator.comparingInt(i -> i == 0 ? Integer.MAX_VALUE : i)).orElse(-1);
         List<Cell> bestCells = toSearchFor.stream()
-                .filter(c -> estimateDistance(maze.getCurrentCell(), c) == minCost).collect(Collectors.toList());
+                .filter(c -> estimateDistance(maze.getCurrentCell(), c) == minCost&&!maze.getCurrentCell().equals(c)).collect(Collectors.toList());
         if (bestCells.size() > 1) {
             int min = bestCells.stream().map(Cell::getNotDiscoveredNeighbourCount).min(Comparator.comparingInt(Integer::valueOf)).orElse(-1);
             bestCells = bestCells.stream().filter(c -> c.getNotDiscoveredNeighbourCount() == min).collect(Collectors.toList());
@@ -58,6 +57,10 @@ public class LevelOneKI extends KI {
             Output.logDebug("If this happens in level 4+ a big flood should happen");
         }
         return navigateToCell(bestCells.get(ThreadLocalRandom.current().nextInt(0, bestCells.size())));
+    }
+
+    protected List<Cell> getBestCells() {
+        return maze.getPreferableCells();
     }
 
 }
