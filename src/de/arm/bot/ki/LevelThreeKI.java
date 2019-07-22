@@ -19,10 +19,10 @@ public class LevelThreeKI extends LevelTwoKI {
 
     @Override
     public Action generateNextTurn(TurnInfo turnInfo) {
-        if(!processTurnInfo(turnInfo)) {
-            if(turnInfo.getLastActionResult().getMessage().equalsIgnoreCase("talking")) return lastAction;
+        if (!processTurnInfo(turnInfo)) {
+            if (turnInfo.getLastActionResult().getMessage().equalsIgnoreCase("talking")) return lastAction;
         }
-        lastAction= calculateMove(turnInfo);
+        lastAction = calculateMove(turnInfo);
         return lastAction;
     }
 }
