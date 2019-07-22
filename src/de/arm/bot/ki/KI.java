@@ -12,8 +12,6 @@ import java.awt.*;
 import java.util.List;
 import java.util.*;
 
-import static de.arm.bot.model.Status.VISITED;
-
 /**
  * An abstract class containing the basic fields and methods for implementing the KI for each level.
  * Every used KI should be a child of this class
@@ -76,9 +74,13 @@ public abstract class KI {
      * @param turnInfo The information of the current Turn as given by the game
      */
     protected boolean processTurnInfo(TurnInfo turnInfo) {
+        return standardProcess(turnInfo);
+    }
+
+    protected final boolean standardProcess(TurnInfo turnInfo) {
         if (turnInfo.getLastActionResult().isOk() && newPosition != null) {
             Cell cell = maze.updateLocation(newPosition);
-            cell.setStatus(VISITED);
+            cell.setVisited(true);
             maze.getCurrentCell().updateCells(turnInfo.getCellStatus());
             return true;
         } else {

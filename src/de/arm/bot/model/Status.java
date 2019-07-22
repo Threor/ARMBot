@@ -31,11 +31,7 @@ public enum Status {
     /**
      * A value representing a cell that has not been discovered yet
      */
-    NOT_DISCOVERED(false),
-    /**
-     * A value representing an already visited cell
-     */
-    VISITED(false);
+    NOT_DISCOVERED(false);
 
     /**
      * Indicates, whether a cell is dead (should not be walked on) or not
