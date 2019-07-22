@@ -52,7 +52,11 @@ public class LevelOneKI extends KI {
         }
         //TODO MZA
         //FIXME Error handling
-        if (bestCells.size() == 0) Output.logDebug("ERROR! Couldn't find goal cell!");
+        if (bestCells.size() == 0){
+            Output.logDebug("ERROR! Couldn't find goal cell!");
+            Output.logDebug("This is probably caused by all cells being already visited");
+            Output.logDebug("If this happens in level 4+ a big flood should happen");
+        }
         return navigateToCell(bestCells.get(ThreadLocalRandom.current().nextInt(0, bestCells.size())));
     }
 

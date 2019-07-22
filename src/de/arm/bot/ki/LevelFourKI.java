@@ -16,10 +16,13 @@ public class LevelFourKI extends LevelThreeKI {
 
     private List<Cell> currentFlood;
 
+    private List<Cell> floodedCells;
+
     public LevelFourKI(Maze maze) {
         super(maze);
         this.formsToLookFor = new HashMap<>();
         this.currentFlood = new ArrayList<>();
+        this.floodedCells=new ArrayList<>();
     }
 
     @Override
@@ -71,6 +74,11 @@ public class LevelFourKI extends LevelThreeKI {
             if (value == FORM) {
                 //If FORM is in IPSA Map remove it
                 formsToLookFor.remove(value.getAdditionalInfo());
+                floodedCells.forEach(c->{
+                    if(c.getStatus()==FLOOR)c.setStatus(VISITED);
+                });
+                floodedCells.clear();
+                currentFlood.clear();
             }
         });
         return super.processTurnInfo(turnInfo);
@@ -87,16 +95,32 @@ public class LevelFourKI extends LevelThreeKI {
     }
 
     /**
-     *
+     * Flood all neighbour cells of the current flood cells.
+     * Afterwards sets these cells as the current flood cells
      */
     private void floodAllNeighbours() {
+        //Streams over the current flood
         this.currentFlood = currentFlood.stream()
+                //Maps to work on the neighbour cells
                 .map(cell -> {
+                    //FIXME Floods all but should only flood outer neighbours
+                    //Fixed, probably
+                    //For all accessible neighbours
                     cell.getNotDeadNeighbours().forEach(c -> {
-                        if (c.getStatus() == VISITED) c.setStatus(FLOOR);
+                        //If the cell is not in the current flood and it is visited, then set the status to FLOOR and remember it
+                        if (!currentFlood.contains(c)&&c.getStatus() == VISITED){
+                            floodedCells.add(c);
+                            c.setStatus(FLOOR);
+                        }
                     });
+                    //Maps to the neighbours
                     return cell.getNotDeadNeighbours();
                 })
-                .flatMap(Collection::stream).collect(Collectors.toList());
+                //Flat maps a stream of lists to a stream of cells
+                .flatMap(Collection::stream)
+                //Removes all currentFlood cells
+                .filter(c->!currentFlood.contains(c))
+                //Collects only distinct cells
+                .distinct().collect(Collectors.toList());
     }
 }
