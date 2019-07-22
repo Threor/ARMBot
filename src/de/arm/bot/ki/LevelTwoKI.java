@@ -57,7 +57,11 @@ public class LevelTwoKI extends LevelOneKI {
 
     @Override
     protected boolean processTurnInfo(TurnInfo turnInfo) {
-        if (!super.processTurnInfo(turnInfo)) return false;
+        if (!super.standardProcess(turnInfo)) return false;
+        return processLevelTwo(turnInfo);
+    }
+
+    protected boolean processLevelTwo(TurnInfo turnInfo) {
         if (performedTake) {
             performedTake = false;
             if (turnInfo.getLastActionResult().isOk()) {

@@ -29,9 +29,10 @@ public class Cell {
     /**
      * The current status of the cell
      *
-     * @see de.arm.bot.model.Status
      */
     private Status status;
+
+    private boolean visited;
 
     /**
      * A map of all neighbours of the cell, mapped as
@@ -94,9 +95,15 @@ public class Cell {
      * @param status The new status of the cell
      */
     public void setStatus(Status status) {
-        //TODO If, in future levels, cells can change their status, then revisit this method
-        if (this.status == VISITED) return;
         this.status = status;
+    }
+
+    public boolean isVisited() {
+        return visited;
+    }
+
+    public void setVisited(boolean visited) {
+        this.visited = visited;
     }
 
     /**

@@ -126,10 +126,9 @@ public class Maze {
                         temp.append("1");
                         break;
                     case FLOOR:
-                        temp.append("2");
-                        break;
-                    case VISITED:
-                        temp.append("3");
+                        if(cells[j][i].isVisited()){
+                            temp.append("3");
+                        }else temp.append("2");
                         break;
                     case FINISH:
                         temp.append("4");
@@ -181,7 +180,8 @@ public class Maze {
     }
 
     public List<Cell> getPreferableCells() {
-        return getCellsIn(Collections.singletonList(FLOOR)).stream()
+        return getCellsIn(Arrays.asList(FLOOR,FINISH,FORM)).stream()
+                .filter(c->!c.isVisited())
                 .filter(Cell::hasUndiscoveredNearby)
                 .collect(Collectors.toList());
     }
