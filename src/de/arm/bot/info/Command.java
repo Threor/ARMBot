@@ -4,6 +4,7 @@ public enum Command {
 
 	GO,
 	TAKE,
+	KICK,
 	POSITION,
 	FINISH;
 	

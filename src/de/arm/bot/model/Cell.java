@@ -149,6 +149,7 @@ public class Cell {
 				.filter(c->!c.getStatus().isDead()&&!c.getStatus().equals(NOT_DISCOVERED))
 				.collect(Collectors.toList());
 	}
+
 	@Override
 	public String toString() {
 		return String.format("Cell [x=%s, y=%s, status=%s]", x, y, status);
@@ -170,19 +171,34 @@ public class Cell {
 		}
 		return ret.getKey();
 	}
-	
-	//TODO Check if it works for wrap
-	/**
-	 * Calculates the estimated distance between this cell and the given cell
-	 * @param cell The cell to which the distance should be calculated
-	 * @return The calculated distance
+
+	/** Checks whether there is a FINISH cell nearby this cell. Only used by the Level 1 algorithm
+     * @see de.arm.bot.model.Status
+	 * @return True if one of the neighbour cells of this cell is a FINISH cell
 	 */
-	public int getDistance(Cell cell) {
-		return Math.abs(x-cell.x)+Math.abs(y-cell.y);
+	public boolean hasFinishNearby() {
+		return hasNearby(FINISH);
 	}
 
-	public boolean hasFinishNearby() {
-		return neighbours.values().stream().anyMatch(c->c.getStatus()==FINISH);
-	}
+    /** Checks whether there is a NOT_DISCOVERED cell nearby this cell.
+     *  Used to find goal cells for the bot to move towards
+     * @return True if one of the neighbour cells of this cell is a NOT_DISOVERED cell
+     */
+	boolean hasUndiscoveredNearby() {
+	    return hasNearby(NOT_DISCOVERED);
+    }
+
+    private boolean hasNearby(Status status){
+	    return neighbours.values().stream().anyMatch(c->c.getStatus()==status);
+    }
+
+    /**
+     * @return
+     */
+    public int getNotDiscoveredNeighbourCount() {
+	    return (int) neighbours.values().stream().filter(c->c.getStatus()==NOT_DISCOVERED).count();
+    }
+
+
 	
 }

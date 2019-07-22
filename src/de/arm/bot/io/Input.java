@@ -5,6 +5,7 @@ import static de.arm.bot.info.Direction.NORTH;
 import static de.arm.bot.info.Direction.SOUTH;
 import static de.arm.bot.info.Direction.WEST;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -76,8 +77,8 @@ public class Input {
 	 * @return The parsed status
 	 */
 	private Status parse(String line) {
-		if(line.split("\\W").length>1)return checkForFinish(line);
-		return Status.valueOf(line);
+		if(line.split("\\s").length>2)return checkForFinish(line);
+		return Status.valueOf(line.split("\\s")[0]);
 	}
 
 	/** Used for parsing status with multiple arguments like formId. Used by the parse function
@@ -85,7 +86,8 @@ public class Input {
 	 * @return The parsed status
 	 */
 	private Status checkForFinish(String line) {
-		String[] args=line.split("\\W");
+		Output.logDebug(Arrays.toString(line.split("\\s")));
+		String[] args=line.split("\\s");
 		int id=Integer.valueOf(args[1]);
 		if(id==playerId) {
 			Status ret=Status.valueOf(args[0]);

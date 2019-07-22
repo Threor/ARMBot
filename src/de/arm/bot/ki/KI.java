@@ -1,8 +1,5 @@
 package de.arm.bot.ki;
 
-import java.awt.Point;
-import java.util.*;
-
 import de.arm.bot.info.Action;
 import de.arm.bot.info.Command;
 import de.arm.bot.info.Direction;
@@ -10,7 +7,12 @@ import de.arm.bot.info.TurnInfo;
 import de.arm.bot.io.Output;
 import de.arm.bot.model.Cell;
 import de.arm.bot.model.Maze;
-import de.arm.bot.model.Status;
+
+import java.awt.*;
+import java.util.List;
+import java.util.*;
+
+import static de.arm.bot.model.Status.VISITED;
 
 /**
  * An abstract class containing the basic fields and methods for implementing the KI for each level.
@@ -30,34 +32,55 @@ public abstract class KI {
 	protected Point newPosition;
 
 	/**
-	 * A 
+	 * A map containing paths calculated by the A* algorithm for chosen goal cells
 	 */
 	protected HashMap<Cell,List<Cell>> pathToTake;
 
-
+	/** Default constructor for the KI, initializes all fields and sets the current maze
+	 * @param maze The maze the KI should work on
+	 */
 	protected KI(Maze maze) {
 		this.maze=maze;
 		this.newPosition=new Point(maze.getCurrentPosition());
 		this.pathToTake=new HashMap<>();
 	}
-	
+
+	/** Calculates the next move based on the current status and the given TurnInfo the bot should take.
+	 * 	This is basically the brain that decides, which action the bot should take next.
+	 * @param turnInfo The information of the current Turn as given by the game
+	 * @return The calculated Action
+	 */
 	protected abstract Action calculateMove(TurnInfo turnInfo);
-	
-	public final Action generateNextTurn(TurnInfo turnInfo) {
+
+	/** Processes the given TurnInfo and splices the information into the maze.
+	 * 	Afterwards calculates the next action and returns it
+	 * @param turnInfo The information of the current Turn as given by the game
+	 * @return The generated Next action
+	 */
+	public Action generateNextTurn(TurnInfo turnInfo) {
 		processTurnInfo(turnInfo);
 		return calculateMove(turnInfo);
 	}
-	
-	protected void processTurnInfo(TurnInfo turnInfo) {
+
+	/** Processes the given TurnInfo and updates the information
+	 *  May be overwritten in later implementations to consider future features and mechanics
+	 * @param turnInfo The information of the current Turn as given by the game
+	 */
+	protected boolean processTurnInfo(TurnInfo turnInfo) {
 		if(turnInfo.getLastActionResult().isOk()&&newPosition!=null) {
 			Cell cell=maze.updateLocation(newPosition);
-			cell.setStatus(Status.VISITED);
+			cell.setStatus(VISITED);
 			maze.getCurrentCell().updateCells(turnInfo.getCellStatus());
+			return true;
 		}else {
 			Output.logDebug("The last Action has failed!\nThat wasn't supposed to happen!\n"+turnInfo.getLastActionResult());
+			return false;
 		}
 	}
-	
+
+	/** Updates the position the player should reach, if the action is successful. Also validates the new position
+	 * @param direction The direction the player is heading to
+	 */
 	protected void updatePosition(Direction direction) {
 		Point current=maze.getCurrentPosition();
 		switch(direction) {
@@ -69,19 +92,30 @@ public abstract class KI {
 		}
 		validatePosition();
 	}
-	
+
+	/**
+	 * Validates the new position the player should reach.
+	 * This is used so that the player can wrap around the maze, meaning exiting on one side and appearing on the opposite one.
+	 */
 	private void validatePosition() {
 		if (newPosition.x<0) newPosition.x+=maze.getLength();
 		if (newPosition.y<0) newPosition.y+=maze.getHeight();
 		if (newPosition.x>maze.getLength()-1) newPosition.x-=maze.getLength();
 		if (newPosition.y>maze.getHeight()-1) newPosition.y-=maze.getHeight();
 	}
-	
+
+	/** Getter for the attribute Maze
+	 * @return The current Maze
+	 */
 	public Maze getMaze() {
 		return maze;
 	}
-	
-	protected Action go(Direction direction) {
+
+	/** Lets the player go towards a given direction. Updates the new position of the player and returns a GO Action for the given direction
+	 * @param direction The direction the player is heading towards
+	 * @return The generated Action
+	 */
+	protected final Action go(Direction direction) {
 		updatePosition(direction);
 		Output.logDebug("Going "+direction);
 		return new Action(Command.GO,direction.toString());
@@ -125,11 +159,10 @@ public abstract class KI {
 	}
 
 	protected int estimateDistance(Cell from,Cell to) {
-		return from.getDistance(to);
+		return maze.getDistance(from,to);
 	}
 
 	protected Action navigateToCell(Cell cell) {
-		Output.logDebug(pathToTake.getOrDefault(cell,new ArrayList<>())+""+pathToTake.getOrDefault(cell,new ArrayList<>()).isEmpty());
 		if(pathToTake.getOrDefault(cell,new ArrayList<>()).isEmpty()) {
 			pathToTake.clear();
 			pathToTake.put(cell,aStar(maze.getCurrentCell(),cell));

@@ -14,7 +14,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 import static de.arm.bot.model.Status.FINISH;
-import static de.arm.bot.model.Status.FLOOR;
 
 public class LevelOneKI extends KI{
 
@@ -36,20 +35,23 @@ public class LevelOneKI extends KI{
 	}
 
 	protected Action getGOAction() {
-		List<Cell> toSearchFor=maze.getCellsIn(Collections.singletonList(FLOOR));
-		int minCost=toSearchFor.stream().map(c->estimateDistance(maze.getCurrentCell(),c)).min(Comparator.comparingInt(i->i==0?Integer.MAX_VALUE:i)).orElse(-1);
-		List<Cell> bestCells=toSearchFor.stream().filter(c->estimateDistance(maze.getCurrentCell(),c)==minCost).collect(Collectors.toList());
-		for(Cell c:bestCells) {
-			if(pathToTake.containsKey(c))return navigateToCell(c);
+		if(pathToTake.size()>0){
+			Cell cell=(pathToTake.keySet().iterator().next());
+			if(pathToTake.get(cell).size()>1)return navigateToCell(cell);
+		}
+		Output.logDebug("Current paths: "+pathToTake.size());
+		List<Cell> toSearchFor=maze.getPreferableCells();
+		int minCost=toSearchFor.stream()
+				.map(c->estimateDistance(maze.getCurrentCell(),c))
+				.min(Comparator.comparingInt(i->i==0?Integer.MAX_VALUE:i)).orElse(-1);
+		List<Cell> bestCells=toSearchFor.stream()
+				.filter(c-> estimateDistance(maze.getCurrentCell(),c)==minCost).collect(Collectors.toList());
+		if(bestCells.size()>1) {
+			int min=bestCells.stream().map(Cell::getNotDiscoveredNeighbourCount).min(Comparator.comparingInt(Integer::valueOf)).orElse(-1);
+			bestCells=bestCells.stream().filter(c->c.getNotDiscoveredNeighbourCount()==min).collect(Collectors.toList());
 		}
 		//TODO MZA
-		/*Cell goal=toSearchFor.stream().min(Comparator.comparingInt(c->{
-			int cost=estimateDistance(maze.getCurrentCell(),c);
-			Output.logDebug(c+" -> "+cost);
-			return cost==0?Integer.MAX_VALUE:cost;
-		})).orElse(null);*/
 		//FIXME Error handling
-		Output.logDebug(String.format("Found %s cells with similar cost!",bestCells.size()));
 		if(bestCells.size()==0) Output.logDebug("ERROR! Couldn't find goal cell!");
 		return navigateToCell(bestCells.get(ThreadLocalRandom.current().nextInt(0,bestCells.size())));
 	}
