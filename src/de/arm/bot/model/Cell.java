@@ -8,7 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static de.arm.bot.model.Status.*;
+import static de.arm.bot.model.Status.FINISH;
+import static de.arm.bot.model.Status.NOT_DISCOVERED;
 
 /**
  * A class representing a cell of the maze
@@ -28,7 +29,6 @@ public class Cell {
 
     /**
      * The current status of the cell
-     *
      */
     private Status status;
 
@@ -178,7 +178,7 @@ public class Cell {
 
     @Override
     public String toString() {
-        return String.format("Cell [x=%s, y=%s, status=%s]", x, y, status);
+        return String.format("Cell [x=%s, y=%s, status=%s, visited=%s]", x, y, status,visited);
     }
 
     /**

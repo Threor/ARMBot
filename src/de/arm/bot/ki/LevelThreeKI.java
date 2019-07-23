@@ -19,6 +19,7 @@ public class LevelThreeKI extends LevelTwoKI {
 
     @Override
     public Action generateNextTurn(TurnInfo turnInfo) {
+        //maze.logCellsSimple();
         if (!processTurnInfo(turnInfo)) {
             if (turnInfo.getLastActionResult().getMessage().equalsIgnoreCase("talking")) return lastAction;
         }

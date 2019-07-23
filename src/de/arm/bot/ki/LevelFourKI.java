@@ -9,7 +9,8 @@ import de.arm.bot.model.Maze;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static de.arm.bot.model.Status.*;
+import static de.arm.bot.model.Status.FLOOR;
+import static de.arm.bot.model.Status.FORM;
 
 public class LevelFourKI extends LevelThreeKI {
 
@@ -23,7 +24,7 @@ public class LevelFourKI extends LevelThreeKI {
         super(maze);
         this.formsToLookFor = new HashMap<>();
         this.currentFlood = new ArrayList<>();
-        this.floodedCells=new ArrayList<>();
+        this.floodedCells = new ArrayList<>();
     }
 
     @Override
@@ -31,20 +32,25 @@ public class LevelFourKI extends LevelThreeKI {
         //If FORMS are in IPSA map
         Output.logDebug(formsToLookFor.toString());
         if (!formsToLookFor.isEmpty()) {
+            Output.logDebug(currentFlood.toString());
             //Start of IPSA (nothing in currentFlood)
             if (currentFlood.isEmpty()) {
                 //Add old position of the form to currentFlood
                 currentFlood.add(formsToLookFor.values().toArray(new Cell[0])[0]);
+                Output.logDebug(currentFlood.toString());
                 //Set its status to FLOOR
                 currentFlood.get(0).setStatus(FLOOR);
+                Output.logDebug(currentFlood.toString());
                 //Flood all neighbours
                 floodAllNeighbours();
+                Output.logDebug(currentFlood.toString());
             }
             //All cells of the currentFlood have been visited
             if (allVisited()) {
                 //Flood all neighbours
                 floodAllNeighbours();
             }
+            Output.logDebug(currentFlood.toString());
             //Calculate a normal move action that should prioritize the IPSA cells
             return getGOAction();
         }
@@ -55,14 +61,14 @@ public class LevelFourKI extends LevelThreeKI {
     @Override
     protected boolean processTurnInfo(TurnInfo turnInfo) {
         //FIXME This shit is fucking ugly! FIX!
-        if(!super.standardProcess(turnInfo)) return false;
+        if (!super.standardProcess(turnInfo)) return false;
         turnInfo.getCellStatus().forEach((key, value) -> {
             //Nearby is a FORM cell
             if (formCells.containsValue(maze.getCurrentCell().getNeighbour(key))) {
-                Output.logDebug(key+" > "+value);
+                Output.logDebug(key + " > " + value);
                 //The FORM cell is no longer a FORM cell
                 if (value != FORM) {
-                    Output.logDebug(key+" > "+value);
+                    Output.logDebug(key + " > " + value);
                     //Stream
                     formCells.entrySet().stream()
                             //Filter to find the current value
@@ -80,8 +86,8 @@ public class LevelFourKI extends LevelThreeKI {
             if (value == FORM) {
                 //If FORM is in IPSA Map remove it
                 formsToLookFor.remove(value.getAdditionalInfo());
-                floodedCells.forEach(c->{
-                    if(c.isVisited())c.setVisited(false);
+                floodedCells.forEach(c -> {
+                    if (c.isVisited()) c.setVisited(false);
                 });
                 floodedCells.clear();
                 currentFlood.clear();
@@ -97,7 +103,8 @@ public class LevelFourKI extends LevelThreeKI {
      */
     private boolean allVisited() {
         return currentFlood.stream()
-                .noneMatch(c ->!c.isVisited());
+                .filter(c->!c.equals(maze.getCurrentCell()))
+                .allMatch(Cell::isVisited);
     }
 
     /**
@@ -114,9 +121,9 @@ public class LevelFourKI extends LevelThreeKI {
                     //For all accessible neighbours
                     cell.getNotDeadNeighbours().forEach(c -> {
                         //If the cell is not in the current flood and it is visited, then set the status to FLOOR and remember it
-                        if (!currentFlood.contains(c)&&c.isVisited()){
+                        if (!currentFlood.contains(c) && c.isVisited() &&!maze.getCurrentCell().equals(c)) {
                             floodedCells.add(c);
-                            c.setStatus(FLOOR);
+                            c.setVisited(false);
                         }
                     });
                     //Maps to the neighbours
@@ -125,8 +132,16 @@ public class LevelFourKI extends LevelThreeKI {
                 //Flat maps a stream of lists to a stream of cells
                 .flatMap(Collection::stream)
                 //Removes all currentFlood cells
-                .filter(c->!currentFlood.contains(c))
+                .filter(c -> !currentFlood.contains(c)&&!maze.getCurrentCell().equals(c))
                 //Collects only distinct cells
                 .distinct().collect(Collectors.toList());
+    }
+
+    @Override
+    protected List<Cell> getBestCells() {
+        if(!formsToLookFor.isEmpty()){
+            return currentFlood.stream().filter(c->!c.isVisited()).collect(Collectors.toList());
+        }
+        return super.getBestCells();
     }
 }
