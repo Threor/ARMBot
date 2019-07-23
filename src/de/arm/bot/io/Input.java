@@ -6,7 +6,6 @@ import de.arm.bot.info.InitInfo;
 import de.arm.bot.info.TurnInfo;
 import de.arm.bot.model.Status;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -68,25 +67,13 @@ public class Input {
      */
     public TurnInfo readTurnInfo() {
         Output.setStart();
-        String s = scanner.nextLine();
-        Output.logDebug(s);
-        ActionResult lastResult = ActionResult.of(s);
+        ActionResult lastResult = ActionResult.of(scanner.nextLine());
         Map<Direction, Status> cellStatus = new HashMap<>();
-        s = scanner.nextLine();
-        Output.logDebug(s);
-        cellStatus.put(null, parse(s));
-        s = scanner.nextLine();
-        Output.logDebug(s);
-        cellStatus.put(NORTH, parse(s));
-        s = scanner.nextLine();
-        Output.logDebug(s);
-        cellStatus.put(EAST, parse(s));
-        s = scanner.nextLine();
-        Output.logDebug(s);
-        cellStatus.put(SOUTH, parse(s));
-        s = scanner.nextLine();
-        Output.logDebug(s);
-        cellStatus.put(WEST, parse(s));
+        cellStatus.put(null, parse(scanner.nextLine()));
+        cellStatus.put(NORTH, parse(scanner.nextLine()));
+        cellStatus.put(EAST, parse(scanner.nextLine()));
+        cellStatus.put(SOUTH, parse(scanner.nextLine()));
+        cellStatus.put(WEST, parse(scanner.nextLine()));
         return new TurnInfo(lastResult, cellStatus);
     }
 
@@ -108,7 +95,6 @@ public class Input {
      * @return The parsed status
      */
     private Status checkForFinish(String line) {
-        Output.logDebug(Arrays.toString(line.split("\\s")));
         String[] args = line.split("\\s");
         int id = Integer.valueOf(args[1]);
         Status ret = Status.valueOf(args[0]);

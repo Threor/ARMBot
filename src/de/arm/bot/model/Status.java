@@ -28,7 +28,6 @@ public enum Status {
      * A value for one of the player's form cells
      */
     FORM(true),
-
     /**
      * A value for one of the enemies form cells
      */

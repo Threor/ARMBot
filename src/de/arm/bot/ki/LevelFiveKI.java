@@ -9,6 +9,8 @@ import de.arm.bot.model.Maze;
 import java.util.ArrayList;
 import java.util.List;
 
+import static de.arm.bot.info.Command.PUT;
+import static de.arm.bot.info.Command.TAKE;
 import static de.arm.bot.model.Status.ENEMY_FORM;
 import static de.arm.bot.model.Status.SHEET;
 
@@ -28,16 +30,18 @@ public class LevelFiveKI extends LevelFourKI {
     @Override
     public Action calculateMove(TurnInfo turnInfo) {
         //TODO Possible bugs: form got kicked to alreadyPut, but it's unlikely that it will happen
+        //TODO Wegen NOK TAKING fragen
         if (alreadyPut.contains(maze.getCurrentCell())) return super.calculateMove(turnInfo);
+        //TODO Could use maze.getCurrentCell().getStatus() for consistency
         if (turnInfo.getCellStatus().get(null) == ENEMY_FORM) {
             if (maze.getPlayer().getSheetCount() > 0) {
                 put = true;
-                return new Action(Command.PUT);
+                return new Action(PUT);
             }
         }
         if (turnInfo.getCellStatus().get(null) == SHEET) {
             took = true;
-            return new Action(Command.TAKE);
+            return new Action(TAKE);
         }
         return super.calculateMove(turnInfo);
     }
@@ -54,7 +58,6 @@ public class LevelFiveKI extends LevelFourKI {
                 alreadyPut.add(maze.getCurrentCell());
                 maze.getPlayer().removeSheet();
             }
-
         }
         return super.processTurnInfo(turnInfo);
     }

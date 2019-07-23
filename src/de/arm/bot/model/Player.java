@@ -106,7 +106,6 @@ public class Player {
         return sheetCount;
     }
 
-
     public void addSheet() {
         sheetCount++;
     }
