@@ -30,20 +30,15 @@ public class LevelFourKI extends LevelThreeKI {
     @Override
     public Action calculateMove(TurnInfo turnInfo) {
         //If FORMS are in IPSA map
-        Output.logDebug(formsToLookFor.toString());
         if (!formsToLookFor.isEmpty()) {
-            Output.logDebug(currentFlood.toString());
             //Start of IPSA (nothing in currentFlood)
             if (currentFlood.isEmpty()) {
                 //Add old position of the form to currentFlood
                 currentFlood.add(formsToLookFor.values().toArray(new Cell[0])[0]);
-                Output.logDebug(currentFlood.toString());
                 //Set its status to FLOOR
                 currentFlood.get(0).setStatus(FLOOR);
-                Output.logDebug(currentFlood.toString());
                 //Flood all neighbours
                 floodAllNeighbours();
-                Output.logDebug(currentFlood.toString());
             }
             //All cells of the currentFlood have been visited
             if (allVisited()) {
@@ -93,7 +88,8 @@ public class LevelFourKI extends LevelThreeKI {
                 currentFlood.clear();
             }
         });
-        return super.processLevelTwo(turnInfo);
+        super.processLevelTwo(turnInfo);
+        return true;
     }
 
     /**
@@ -116,8 +112,6 @@ public class LevelFourKI extends LevelThreeKI {
         this.currentFlood = currentFlood.stream()
                 //Maps to work on the neighbour cells
                 .map(cell -> {
-                    //FIXME Floods all but should only flood outer neighbours
-                    //Fixed, probably
                     //For all accessible neighbours
                     cell.getNotDeadNeighbours().forEach(c -> {
                         //If the cell is not in the current flood and it is visited, then set the status to FLOOR and remember it

@@ -48,14 +48,13 @@ public class Cell {
      *
      * @param x          The current x-coordinate of the cell
      * @param y          The current y-coordinate of the cell
-     * @param status     The current status of the cell
      * @param neighbours A map of all neighbour cells of the current cell
      * @see de.arm.bot.model.Status
      */
-    Cell(int x, int y, Status status, Map<Direction, Cell> neighbours) {
+    Cell(int x, int y, Map<Direction, Cell> neighbours) {
         this.x = x;
         this.y = y;
-        this.status = status;
+        this.status = Status.NOT_DISCOVERED;
         this.neighbours = neighbours;
         neighbours.entrySet().stream()
                 .filter(e -> e.getValue() != null && e.getValue().getNeighbour(e.getKey().getOpposite()) == null)

@@ -60,7 +60,7 @@ public class Maze {
                 neighbours.put(SOUTH, cells[i][j >= height - 1 ? 0 : j + 1]);
                 neighbours.put(WEST, cells[i == 0 ? length - 1 : i - 1][j]);
                 neighbours.put(EAST, cells[i >= length - 1 ? 0 : i + 1][j]);
-                Cell cell = new Cell(i, j, Status.NOT_DISCOVERED, neighbours);
+                Cell cell = new Cell(i, j, neighbours);
                 cells[i][j] = cell;
             }
         }

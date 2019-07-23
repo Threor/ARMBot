@@ -28,7 +28,7 @@ public abstract class KI {
     /**
      * A point containing the position, the player should reach in the next turn if his action was successful
      */
-    protected Point newPosition;
+    private Point newPosition;
 
     /**
      * A map containing paths calculated by the A* algorithm for chosen goal cells
@@ -95,7 +95,7 @@ public abstract class KI {
      *
      * @param direction The direction the player is heading to
      */
-    protected void updatePosition(Direction direction) {
+    private void updatePosition(Direction direction) {
         Point current = maze.getCurrentPosition();
         switch (direction) {
             case NORTH:
@@ -142,13 +142,13 @@ public abstract class KI {
      * @param direction The direction the player is heading towards
      * @return The generated Action
      */
-    protected final Action go(Direction direction) {
+    private Action go(Direction direction) {
         updatePosition(direction);
         Output.logDebug("Going " + direction);
         return new Action(Command.GO, direction.toString());
     }
 
-    protected List<Cell> reconstructPath(Map<Cell, Cell> path, Cell current) {
+    private List<Cell> reconstructPath(Map<Cell, Cell> path, Cell current) {
         List<Cell> totalPath = new ArrayList<>();
         totalPath.add(current);
         while (path.containsKey(current)) {
@@ -158,7 +158,7 @@ public abstract class KI {
         return totalPath;
     }
 
-    protected List<Cell> aStar(Cell start, Cell finish) {
+    private List<Cell> aStar(Cell start, Cell finish) {
         Output.logDebug("Start: " + start + "\nZiel: " + finish);
         Set<Cell> openSet = new HashSet<>();
         openSet.add(start);

@@ -18,15 +18,15 @@ import static de.arm.bot.model.Status.FORM;
 
 public class LevelTwoKI extends LevelOneKI {
 
-    protected int formCount;
+    private int formCount;
 
-    protected int foundForms;
+    private int foundForms;
 
-    protected Cell finish;
+    private Cell finish;
 
     protected Map<Integer, Cell> formCells;
 
-    protected boolean performedTake;
+    private boolean performedTake;
 
     public LevelTwoKI(Maze maze) {
         super(maze);
@@ -58,10 +58,11 @@ public class LevelTwoKI extends LevelOneKI {
     @Override
     protected boolean processTurnInfo(TurnInfo turnInfo) {
         if (!super.standardProcess(turnInfo)) return false;
-        return processLevelTwo(turnInfo);
+        processLevelTwo(turnInfo);
+        return true;
     }
 
-    protected boolean processLevelTwo(TurnInfo turnInfo) {
+    protected void processLevelTwo(TurnInfo turnInfo) {
         if (performedTake) {
             performedTake = false;
             if (turnInfo.getLastActionResult().isOk()) {
@@ -82,6 +83,5 @@ public class LevelTwoKI extends LevelOneKI {
                     .filter(e -> e.getValue() == FORM)
                     .forEach(e -> formCells.put(e.getValue().getAdditionalInfo(), maze.getCurrentCell().getNeighbour(e.getKey())));
         }
-        return true;
     }
 }

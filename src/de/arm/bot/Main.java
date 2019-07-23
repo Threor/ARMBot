@@ -6,7 +6,7 @@ import de.arm.bot.ki.KI;
 
 public class Main {
 
-    public Main() {
+    private Main() {
         Input input = new Input();
         KI ki = input.readInitInfo().generateKI();
         while (true) {
