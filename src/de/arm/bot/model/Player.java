@@ -28,7 +28,7 @@ public class Player {
      * Introduced in level 5.
      * Set to -1 so it will be ignored in the levels before.
      */
-    private int sheetCount=-1;
+    private int sheetCount = -1;
 
 
     /**
@@ -44,15 +44,17 @@ public class Player {
         this.id = id;
     }
 
-    /** The constructor used for level 5 for this player
-     * @param x  The starting x-coordinate of the bot
-     * @param y  The starting y-coordinate of the bot
-     * @param id The given id of the bot
+    /**
+     * The constructor used for level 5 for this player
+     *
+     * @param x          The starting x-coordinate of the bot
+     * @param y          The starting y-coordinate of the bot
+     * @param id         The given id of the bot
      * @param sheetCount The count of sheets the bot can hold
      */
     public Player(int x, int y, int id, int sheetCount) {
-        this(x,y,id);
-        this.sheetCount=sheetCount;
+        this(x, y, id);
+        this.sheetCount = sheetCount;
     }
 
     /**
@@ -110,7 +112,7 @@ public class Player {
     }
 
     public void removeSheet() {
-        if(sheetCount<=0) {
+        if (sheetCount <= 0) {
             Output.logDebug("ERR Trying to remove a sheet while having none!");
             return;
         }

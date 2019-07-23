@@ -52,8 +52,8 @@ public class Input {
         this.playerId = playerId;
         int playerX = scanner.nextInt();
         int playerY = scanner.nextInt();
-        if(mazeLevel==5){
-            int sheetCount=scanner.nextInt();
+        if (mazeLevel == 5) {
+            int sheetCount = scanner.nextInt();
             scanner.nextLine();
             return new InitInfo(mazeLength, mazeHeight, mazeLevel, playerX, playerY, playerId, sheetCount);
         }
@@ -68,23 +68,23 @@ public class Input {
      */
     public TurnInfo readTurnInfo() {
         Output.setStart();
-        String s=scanner.nextLine();
+        String s = scanner.nextLine();
         Output.logDebug(s);
         ActionResult lastResult = ActionResult.of(s);
         Map<Direction, Status> cellStatus = new HashMap<>();
-        s=scanner.nextLine();
+        s = scanner.nextLine();
         Output.logDebug(s);
         cellStatus.put(null, parse(s));
-        s=scanner.nextLine();
+        s = scanner.nextLine();
         Output.logDebug(s);
         cellStatus.put(NORTH, parse(s));
-        s=scanner.nextLine();
+        s = scanner.nextLine();
         Output.logDebug(s);
         cellStatus.put(EAST, parse(s));
-        s=scanner.nextLine();
+        s = scanner.nextLine();
         Output.logDebug(s);
         cellStatus.put(SOUTH, parse(s));
-        s=scanner.nextLine();
+        s = scanner.nextLine();
         Output.logDebug(s);
         cellStatus.put(WEST, parse(s));
         return new TurnInfo(lastResult, cellStatus);
@@ -113,11 +113,11 @@ public class Input {
         int id = Integer.valueOf(args[1]);
         Status ret = Status.valueOf(args[0]);
         ret.setAdditionalInfo(Integer.valueOf(args[2]));
-        if(ret==FORM){
-            if(id==playerId)return ret;
+        if (ret == FORM) {
+            if (id == playerId) return ret;
             return ENEMY_FORM;
-        }else {
-            if(id==playerId)return ret;
+        } else {
+            if (id == playerId) return ret;
             return FLOOR;
         }
     }

@@ -44,7 +44,7 @@ public class LevelOneKI extends KI {
                 .map(c -> estimateDistance(maze.getCurrentCell(), c))
                 .min(Comparator.comparingInt(i -> i == 0 ? Integer.MAX_VALUE : i)).orElse(-1);
         List<Cell> bestCells = toSearchFor.stream()
-                .filter(c -> estimateDistance(maze.getCurrentCell(), c) == minCost&&!maze.getCurrentCell().equals(c)).collect(Collectors.toList());
+                .filter(c -> estimateDistance(maze.getCurrentCell(), c) == minCost && !maze.getCurrentCell().equals(c)).collect(Collectors.toList());
         if (bestCells.size() > 1) {
             int min = bestCells.stream().map(Cell::getNotDiscoveredNeighbourCount).min(Comparator.comparingInt(Integer::valueOf)).orElse(-1);
             bestCells = bestCells.stream().filter(c -> c.getNotDiscoveredNeighbourCount() == min).collect(Collectors.toList());

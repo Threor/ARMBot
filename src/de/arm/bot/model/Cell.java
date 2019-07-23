@@ -121,7 +121,7 @@ public class Cell {
      * @return Whether the cell is dead or not
      */
     private boolean isDead() {
-        return status==WALL;
+        return status == WALL;
     }
 
     /**
@@ -159,13 +159,13 @@ public class Cell {
      */
     public List<Cell> getNotDeadNeighbours() {
         return neighbours.values().stream()
-                .filter(c -> c.getStatus()!=WALL && !c.getStatus().equals(NOT_DISCOVERED))
+                .filter(c -> c.getStatus() != WALL && !c.getStatus().equals(NOT_DISCOVERED))
                 .collect(Collectors.toList());
     }
 
     @Override
     public String toString() {
-        return String.format("Cell [x=%s, y=%s, status=%s, visited=%s]", x, y, status,visited);
+        return String.format("Cell [x=%s, y=%s, status=%s, visited=%s]", x, y, status, visited);
     }
 
     /**

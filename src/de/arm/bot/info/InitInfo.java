@@ -19,7 +19,7 @@ public class InitInfo {
 
     private int playerId;
 
-    private int sheetCount=-1;
+    private int sheetCount = -1;
 
     public InitInfo(int mazeLength, int mazeHeight, int mazeLevel, int playerX, int playerY, int playerId) {
         this.mazeLength = mazeLength;
@@ -31,12 +31,12 @@ public class InitInfo {
     }
 
     public InitInfo(int mazeLength, int mazeHeight, int mazeLevel, int playerX, int playerY, int playerId, int sheetCount) {
-        this(mazeLength,mazeHeight,mazeLevel,playerX,playerY,playerId);
-        this.sheetCount=sheetCount;
+        this(mazeLength, mazeHeight, mazeLevel, playerX, playerY, playerId);
+        this.sheetCount = sheetCount;
     }
 
     private Player generatePlayer() {
-        return sheetCount>-1?new Player(playerX,playerY,playerId,sheetCount):new Player(playerX, playerY, playerId);
+        return sheetCount > -1 ? new Player(playerX, playerY, playerId, sheetCount) : new Player(playerX, playerY, playerId);
     }
 
     private Maze generateMaze() {
@@ -66,7 +66,7 @@ public class InitInfo {
     public String toString() {
         return String.format(
                 "InitInfo [mazeLength=%s, mazeHeight=%s, mazeLevel=%s, playerX=%s, playerY=%s, playerId=%s, sheetCount=%s]",
-                mazeLength, mazeHeight, mazeLevel, playerX, playerY, playerId,sheetCount);
+                mazeLength, mazeHeight, mazeLevel, playerX, playerY, playerId, sheetCount);
     }
 
 

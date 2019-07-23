@@ -9,7 +9,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static de.arm.bot.info.Direction.*;
-import static de.arm.bot.model.Status.*;
 
 /**
  * A class representing the Maze with its cells and its player

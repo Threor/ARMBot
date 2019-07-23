@@ -99,7 +99,7 @@ public class LevelFourKI extends LevelThreeKI {
      */
     private boolean allVisited() {
         return currentFlood.stream()
-                .filter(c->!c.equals(maze.getCurrentCell()))
+                .filter(c -> !c.equals(maze.getCurrentCell()))
                 .allMatch(Cell::isVisited);
     }
 
@@ -115,7 +115,7 @@ public class LevelFourKI extends LevelThreeKI {
                     //For all accessible neighbours
                     cell.getNotDeadNeighbours().forEach(c -> {
                         //If the cell is not in the current flood and it is visited, then set the status to FLOOR and remember it
-                        if (!currentFlood.contains(c) && c.isVisited() &&!maze.getCurrentCell().equals(c)) {
+                        if (!currentFlood.contains(c) && c.isVisited() && !maze.getCurrentCell().equals(c)) {
                             floodedCells.add(c);
                             c.setVisited(false);
                         }
@@ -126,15 +126,15 @@ public class LevelFourKI extends LevelThreeKI {
                 //Flat maps a stream of lists to a stream of cells
                 .flatMap(Collection::stream)
                 //Removes all currentFlood cells
-                .filter(c -> !currentFlood.contains(c)&&!maze.getCurrentCell().equals(c))
+                .filter(c -> !currentFlood.contains(c) && !maze.getCurrentCell().equals(c))
                 //Collects only distinct cells
                 .distinct().collect(Collectors.toList());
     }
 
     @Override
     protected List<Cell> getBestCells() {
-        if(!formsToLookFor.isEmpty()){
-            return currentFlood.stream().filter(c->!c.isVisited()).collect(Collectors.toList());
+        if (!formsToLookFor.isEmpty()) {
+            return currentFlood.stream().filter(c -> !c.isVisited()).collect(Collectors.toList());
         }
         return super.getBestCells();
     }
