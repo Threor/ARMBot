@@ -1,5 +1,9 @@
 package de.arm.bot.model;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * An enumeration of all status a cell in the maze can have
  *
@@ -11,32 +15,32 @@ public enum Status {
     /**
      * A value representing a wall in the maze
      */
-    WALL(true),
-    /**
-     * A value representing a dead cell (used by the DCA)
-     */
-    DEAD(true),
+    WALL(false),
     /**
      * A value representing a floor cell in the maze
      */
-    FLOOR(false),
+    FLOOR(true),
     /**
      * A value for the player's finish cell in the maze
      */
-    FINISH(false),
+    FINISH(true),
     /**
      * A value for one of the player's form cells
      */
-    FORM(false),
+    FORM(true),
+    /**
+     * A value representing a cell that has been blocked by a sheet
+     */
+    SHEET(true),
     /**
      * A value representing a cell that has not been discovered yet
      */
     NOT_DISCOVERED(false);
 
     /**
-     * Indicates, whether a cell is dead (should not be walked on) or not
+     * Indicates, whether a cell is navigable (should be walked on) or not
      */
-    private boolean dead;
+    private boolean navigable;
     /**
      * Used for adding additional info (like the form id) to a cell status
      */
@@ -45,19 +49,10 @@ public enum Status {
     /**
      * The defaultly used constructor for the enumeration
      *
-     * @param dead Indicates wether the cell is dead or not
+     * @param navigable Indicates whether the bot can navigate over a cell or not
      */
-    Status(boolean dead) {
-        this.dead = dead;
-    }
-
-    /**
-     * Getter for the attribute dead of the status
-     *
-     * @return True if the cell is dead and False if it is not
-     */
-    public boolean isDead() {
-        return dead;
+    Status(boolean navigable) {
+        this.navigable = navigable;
     }
 
     /**
@@ -78,5 +73,13 @@ public enum Status {
         this.additionalInfo = additionalInfo;
     }
 
+    public boolean isNavigable() {
+        return navigable;
+    }
 
+    public static List<Status> getNavigableStatus() {
+        return Arrays.stream(values())
+                .filter(Status::isNavigable)
+                .collect(Collectors.toList());
+    }
 }

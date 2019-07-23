@@ -6,6 +6,7 @@ public enum Command {
     TAKE,
     KICK,
     POSITION,
+    PUT,
     FINISH;
 
     @Override

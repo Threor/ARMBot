@@ -51,6 +51,11 @@ public class Input {
         this.playerId = playerId;
         int playerX = scanner.nextInt();
         int playerY = scanner.nextInt();
+        if(mazeLevel==5){
+            int sheetCount=scanner.nextInt();
+            scanner.nextLine();
+            return new InitInfo(mazeLength, mazeHeight, mazeLevel, playerX, playerY, playerId, sheetCount);
+        }
         scanner.nextLine();
         return new InitInfo(mazeLength, mazeHeight, mazeLevel, playerX, playerY, playerId);
     }
@@ -62,13 +67,25 @@ public class Input {
      */
     public TurnInfo readTurnInfo() {
         Output.setStart();
-        ActionResult lastResult = ActionResult.of(scanner.nextLine());
+        String s=scanner.nextLine();
+        Output.logDebug(s);
+        ActionResult lastResult = ActionResult.of(s);
         Map<Direction, Status> cellStatus = new HashMap<>();
-        cellStatus.put(null, parse(scanner.nextLine()));
-        cellStatus.put(NORTH, parse(scanner.nextLine()));
-        cellStatus.put(EAST, parse(scanner.nextLine()));
-        cellStatus.put(SOUTH, parse(scanner.nextLine()));
-        cellStatus.put(WEST, parse(scanner.nextLine()));
+        s=scanner.nextLine();
+        Output.logDebug(s);
+        cellStatus.put(null, parse(s));
+        s=scanner.nextLine();
+        Output.logDebug(s);
+        cellStatus.put(NORTH, parse(s));
+        s=scanner.nextLine();
+        Output.logDebug(s);
+        cellStatus.put(EAST, parse(s));
+        s=scanner.nextLine();
+        Output.logDebug(s);
+        cellStatus.put(SOUTH, parse(s));
+        s=scanner.nextLine();
+        Output.logDebug(s);
+        cellStatus.put(WEST, parse(s));
         return new TurnInfo(lastResult, cellStatus);
     }
 

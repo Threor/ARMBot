@@ -19,6 +19,8 @@ public class InitInfo {
 
     private int playerId;
 
+    private int sheetCount=-1;
+
     public InitInfo(int mazeLength, int mazeHeight, int mazeLevel, int playerX, int playerY, int playerId) {
         this.mazeLength = mazeLength;
         this.mazeHeight = mazeHeight;
@@ -28,8 +30,13 @@ public class InitInfo {
         this.playerId = playerId;
     }
 
+    public InitInfo(int mazeLength, int mazeHeight, int mazeLevel, int playerX, int playerY, int playerId, int sheetCount) {
+        this(mazeLength,mazeHeight,mazeLevel,playerX,playerY,playerId);
+        this.sheetCount=sheetCount;
+    }
+
     private Player generatePlayer() {
-        return new Player(playerX, playerY, playerId);
+        return sheetCount>-1?new Player(playerX,playerY,playerId,sheetCount):new Player(playerX, playerY, playerId);
     }
 
     private Maze generateMaze() {
@@ -37,6 +44,7 @@ public class InitInfo {
     }
 
     public KI generateKI() {
+        Output.logDebug(this.toString());
         switch (mazeLevel) {
             case 1:
                 return new LevelOneKI(generateMaze());
@@ -46,6 +54,8 @@ public class InitInfo {
                 return new LevelThreeKI(generateMaze());
             case 4:
                 return new LevelFourKI(generateMaze());
+            case 5:
+                return new LevelFiveKI((generateMaze()));
             default:
                 Output.logDebug("Running on unsupported Level!\n Using basic KI for Level 1!\n This is highly unstable and not recommended!\n Self Destruction imminent!");
                 return new LevelOneKI(generateMaze());
@@ -55,8 +65,8 @@ public class InitInfo {
     @Override
     public String toString() {
         return String.format(
-                "InitInfo [mazeLength=%s, mazeHeight=%s, mazeLevel=%s, playerX=%s, playerY=%s, playerId=%s]",
-                mazeLength, mazeHeight, mazeLevel, playerX, playerY, playerId);
+                "InitInfo [mazeLength=%s, mazeHeight=%s, mazeLevel=%s, playerX=%s, playerY=%s, playerId=%s, sheetCount=%s]",
+                mazeLength, mazeHeight, mazeLevel, playerX, playerY, playerId,sheetCount);
     }
 
 

@@ -180,7 +180,7 @@ public class Maze {
     }
 
     public List<Cell> getPreferableCells() {
-        return getCellsIn(Arrays.asList(FLOOR, FINISH, FORM)).stream()
+        return getCellsIn(Status.getNavigableStatus()).stream()
                 .filter(c -> !c.isVisited())
                 .filter(Cell::hasUndiscoveredNearby)
                 .collect(Collectors.toList());
@@ -210,13 +210,13 @@ public class Maze {
     private boolean canWrap(Direction direction, int on) {
         switch (direction) {
             case NORTH:
-                return cells[on][0].getStatus() != NOT_DISCOVERED && cells[on][0].getStatus() != WALL;
+                return cells[on][0].getStatus().isNavigable();
             case EAST:
-                return cells[length - 1][on].getStatus() != NOT_DISCOVERED && cells[length - 1][on].getStatus() != WALL;
+                return cells[length - 1][on].getStatus().isNavigable();
             case SOUTH:
-                return cells[on][height - 1].getStatus() != NOT_DISCOVERED && cells[on][height - 1].getStatus() != WALL;
+                return cells[on][height - 1].getStatus().isNavigable();
             case WEST:
-                return cells[0][on].getStatus() != NOT_DISCOVERED && cells[0][on].getStatus() != WALL;
+                return cells[0][on].getStatus().isNavigable();
             default:
                 return false;
         }

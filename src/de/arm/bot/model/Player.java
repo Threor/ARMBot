@@ -1,5 +1,7 @@
 package de.arm.bot.model;
 
+import de.arm.bot.io.Output;
+
 /**
  * A class representing the player or the bot walking through the maze
  *
@@ -22,7 +24,21 @@ public class Player {
     private int id;
 
     /**
-     * The defaultly used constructor for the class Player
+     * The count of sheets the player can hold.
+     * Introduced in level 5.
+     * Set to -1 so it will be ignored in the levels before.
+     */
+    private int sheetCount=-1;
+
+    /**
+     * The count of sheets the player is holding at the moment.
+     * Introduced in level 5.
+     * Set to -1 so it will be ignored in the levels before.
+     */
+    private int currentSheetCount=-1;
+
+    /**
+     * The default used constructor for the class Player
      *
      * @param x  The starting x-coordinate of the bot
      * @param y  The starting y-coordinate of the bot
@@ -32,6 +48,17 @@ public class Player {
         this.x = x;
         this.y = y;
         this.id = id;
+    }
+
+    /** The constructor used for level 5 for this player
+     * @param x  The starting x-coordinate of the bot
+     * @param y  The starting y-coordinate of the bot
+     * @param id The given id of the bot
+     * @param sheetCount The count of sheets the bot can hold
+     */
+    public Player(int x, int y, int id, int sheetCount) {
+        this(x,y,id);
+        this.sheetCount=sheetCount;
     }
 
     /**
@@ -77,5 +104,31 @@ public class Player {
      */
     public int getId() {
         return id;
+    }
+
+    public int getSheetCount() {
+        return sheetCount;
+    }
+
+    public int getCurrentSheetCount() {
+        return currentSheetCount;
+    }
+
+    public boolean addSheet() {
+        if(currentSheetCount>=sheetCount){
+            Output.logDebug("ERR Trying to take another sheet while the max count has been reached!");
+            return false;
+        }
+        currentSheetCount++;
+        return true;
+    }
+
+    public boolean removeSheet() {
+        if(currentSheetCount<=0) {
+            Output.logDebug("ERR Trying to remove a sheet while having none!");
+            return false;
+        }
+        currentSheetCount--;
+        return true;
     }
 }

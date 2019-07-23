@@ -1,6 +1,5 @@
 package de.arm.bot.model;
 
-import de.arm.bot.dca.DCAStatus;
 import de.arm.bot.info.Direction;
 import de.arm.bot.io.Output;
 
@@ -8,8 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static de.arm.bot.model.Status.FINISH;
-import static de.arm.bot.model.Status.NOT_DISCOVERED;
+import static de.arm.bot.model.Status.*;
 
 /**
  * A class representing a cell of the maze
@@ -123,17 +121,7 @@ public class Cell {
      * @return Whether the cell is dead or not
      */
     private boolean isDead() {
-        return status.isDead();
-    }
-
-    /**
-     * Calculates and return the current DCAStatus of the cell, used by the DCA
-     *
-     * @return The current DCAStatus of the cell
-     */
-    public DCAStatus getDCAStatus() {
-        int deadCellsNearby = (int) neighbours.values().stream().filter(Cell::isDead).count();
-        return DCAStatus.get(deadCellsNearby);
+        return status==WALL;
     }
 
     /**
@@ -171,7 +159,7 @@ public class Cell {
      */
     public List<Cell> getNotDeadNeighbours() {
         return neighbours.values().stream()
-                .filter(c -> !c.getStatus().isDead() && !c.getStatus().equals(NOT_DISCOVERED))
+                .filter(c -> c.getStatus()!=WALL && !c.getStatus().equals(NOT_DISCOVERED))
                 .collect(Collectors.toList());
     }
 
