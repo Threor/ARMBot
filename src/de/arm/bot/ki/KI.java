@@ -64,7 +64,6 @@ public abstract class KI {
      */
     public Action generateNextTurn(TurnInfo turnInfo) {
         processTurnInfo(turnInfo);
-        maze.logCellsSimple();
         return calculateMove(turnInfo);
     }
 

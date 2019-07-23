@@ -24,18 +24,12 @@ public class Player {
     private int id;
 
     /**
-     * The count of sheets the player can hold.
+     * The count of sheets the player holds at the moment
      * Introduced in level 5.
      * Set to -1 so it will be ignored in the levels before.
      */
     private int sheetCount=-1;
 
-    /**
-     * The count of sheets the player is holding at the moment.
-     * Introduced in level 5.
-     * Set to -1 so it will be ignored in the levels before.
-     */
-    private int currentSheetCount=-1;
 
     /**
      * The default used constructor for the class Player
@@ -110,25 +104,16 @@ public class Player {
         return sheetCount;
     }
 
-    public int getCurrentSheetCount() {
-        return currentSheetCount;
+
+    public void addSheet() {
+        sheetCount++;
     }
 
-    public boolean addSheet() {
-        if(currentSheetCount>=sheetCount){
-            Output.logDebug("ERR Trying to take another sheet while the max count has been reached!");
-            return false;
-        }
-        currentSheetCount++;
-        return true;
-    }
-
-    public boolean removeSheet() {
-        if(currentSheetCount<=0) {
+    public void removeSheet() {
+        if(sheetCount<=0) {
             Output.logDebug("ERR Trying to remove a sheet while having none!");
-            return false;
+            return;
         }
-        currentSheetCount--;
-        return true;
+        sheetCount--;
     }
 }

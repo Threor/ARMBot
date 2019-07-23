@@ -221,4 +221,8 @@ public class Maze {
                 return false;
         }
     }
+
+    public Player getPlayer() {
+        return player;
+    }
 }

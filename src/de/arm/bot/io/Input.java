@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 import static de.arm.bot.info.Direction.*;
+import static de.arm.bot.model.Status.*;
 
 /**
  * A class used for reading input data
@@ -110,12 +111,15 @@ public class Input {
         Output.logDebug(Arrays.toString(line.split("\\s")));
         String[] args = line.split("\\s");
         int id = Integer.valueOf(args[1]);
-        if (id == playerId) {
-            Status ret = Status.valueOf(args[0]);
-            ret.setAdditionalInfo(Integer.valueOf(args[2]));
-            return ret;
+        Status ret = Status.valueOf(args[0]);
+        ret.setAdditionalInfo(Integer.valueOf(args[2]));
+        if(ret==FORM){
+            if(id==playerId)return ret;
+            return ENEMY_FORM;
+        }else {
+            if(id==playerId)return ret;
+            return FLOOR;
         }
-        return Status.FLOOR;
     }
 }
 
