@@ -1,14 +1,18 @@
 package de.arm.bot.model;
 
+import com.sun.javafx.geom.Vec2d;
 import de.arm.bot.info.Direction;
 import de.arm.bot.io.Output;
 
 import java.awt.*;
 import java.util.List;
 import java.util.*;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static de.arm.bot.info.Direction.*;
+import static de.arm.bot.model.Status.WALL;
 
 /**
  * A class representing the Maze with its cells and its player
@@ -147,8 +151,7 @@ public class Maze {
      * @return A List of all discovered cells
      */
     public List<Cell> getAllDiscoveredCells() {
-        return Arrays.stream(cells)
-                .flatMap(Arrays::stream)
+        return cellStream()
                 .filter(c -> !c.getStatus().equals(Status.NOT_DISCOVERED))
                 .collect(Collectors.toList());
     }
@@ -172,8 +175,7 @@ public class Maze {
     }
 
     public List<Cell> getCellsIn(List<Status> status) {
-        return Arrays.stream(cells)
-                .flatMap(Arrays::stream)
+        return cellStream()
                 .filter(c -> status.contains(c.getStatus()))
                 .collect(Collectors.toList());
     }
@@ -225,10 +227,41 @@ public class Maze {
         return player;
     }
 
+    private Stream<Cell> cellStream() {
+        return Arrays.stream(cells)
+                .flatMap(Arrays::stream);
+    }
+
     public void performBigFlood() {
-        Arrays.stream(cells)
-                .flatMap(Arrays::stream)
-                .filter(Cell::isVisited)
-                .forEach(c->c.setVisited(false));
+        cellStream()
+            .filter(c->!c.equals(getCurrentCell())&&c.isVisited())
+            .forEach(c->c.setVisited(false));
+    }
+
+    public Vec2d calculateMZVector() {
+        List<Vec2d> vectors= cellStream()
+                .filter(cell->cell.isVisited()|| cell.getStatus()==WALL)
+                .map(this::calculateCellVector)
+                .collect(Collectors.toList());
+        double x=0;
+        double y=0;
+        for(Vec2d vec:vectors) {
+            x+=vec.x;
+            y+=vec.y;
+        }
+        return new Vec2d(x/vectors.size(),y/vectors.size());
+    }
+
+    public Vec2d calculateCellVector(Cell cell) {
+        return getCurrentCell().calculateDirection(cell);
+    }
+
+    public double calculateMZScore(Vec2d mzVector, Vec2d targetCellVector) {
+        double scalarProduct=mzVector.x*targetCellVector.x+mzVector.y+targetCellVector.y;
+        return Math.acos(scalarProduct/(calculateLengthOfVector(mzVector)*calculateLengthOfVector(targetCellVector)));
+    }
+
+    private double calculateLengthOfVector(Vec2d vec2d) {
+        return Math.sqrt(Math.pow(vec2d.x,2)+Math.pow(vec2d.y,2));
     }
 }

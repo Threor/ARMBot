@@ -48,11 +48,15 @@ public class LevelTwoKI extends LevelOneKI {
             return new Action(Command.TAKE);
         }
         //Found all forms
-        if (foundForms == formCount && finish != null) return navigateToCell(finish);
+        if (onFinishWay()) return navigateToCell(finish);
         //Found all previous forms
         if (formCells.containsKey(foundForms + 1)) return navigateToCell(formCells.get(foundForms + 1));
         //When new forms were found, then go to them first
         return getGOAction();
+    }
+
+    protected boolean onFinishWay() {
+        return foundForms == formCount && finish != null;
     }
 
     @Override

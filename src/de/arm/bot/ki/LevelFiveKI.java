@@ -1,7 +1,6 @@
 package de.arm.bot.ki;
 
 import de.arm.bot.info.Action;
-import de.arm.bot.info.Command;
 import de.arm.bot.info.TurnInfo;
 import de.arm.bot.model.Cell;
 import de.arm.bot.model.Maze;
@@ -30,8 +29,7 @@ public class LevelFiveKI extends LevelFourKI {
     @Override
     public Action calculateMove(TurnInfo turnInfo) {
         //TODO Possible bugs: form got kicked to alreadyPut, but it's unlikely that it will happen
-        //TODO Wegen NOK TAKING fragen
-        if (alreadyPut.contains(maze.getCurrentCell())) return super.calculateMove(turnInfo);
+        if (alreadyPut.contains(maze.getCurrentCell())||onFinishWay()) return super.calculateMove(turnInfo);
         //TODO Could use maze.getCurrentCell().getStatus() for consistency
         if (turnInfo.getCellStatus().get(null) == ENEMY_FORM) {
             if (maze.getPlayer().getSheetCount() > 0) {
