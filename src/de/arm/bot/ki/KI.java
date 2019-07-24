@@ -144,7 +144,7 @@ public abstract class KI {
     private Action go(Direction direction) {
         updatePosition(direction);
         Output.logDebug("Going " + direction);
-        return new Action(Command.GO, direction.toString());
+        return new Action(Command.GO, direction);
     }
 
     private List<Cell> reconstructPath(Map<Cell, Cell> path, Cell current) {

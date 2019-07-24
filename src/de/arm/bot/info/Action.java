@@ -2,32 +2,21 @@ package de.arm.bot.info;
 
 public class Action {
 
-    private Command command;
+    private final Command command;
 
-    private String argument;
+    private final String argument;
 
-    public Action(Command command, String argument) {
+    private Action(Command command, String argument) {
         this.command = command;
         this.argument = argument;
     }
 
+    public Action(Command command, Direction direction) {
+        this(command,direction.toString());
+    }
+
     public Action(Command command) {
-        this.command = command;
-        this.argument = "";
-    }
-
-    /**
-     * @return command
-     */
-    public Command getCommand() {
-        return command;
-    }
-
-    /**
-     * @param command das zu setzende Objekt command
-     */
-    public void setCommand(Command command) {
-        this.command = command;
+        this(command,"");
     }
 
     @Override

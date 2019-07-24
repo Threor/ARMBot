@@ -1,6 +1,8 @@
 package de.arm.bot.ki;
 
 import de.arm.bot.info.Action;
+import de.arm.bot.info.Command;
+import de.arm.bot.info.Direction;
 import de.arm.bot.info.TurnInfo;
 import de.arm.bot.io.Output;
 import de.arm.bot.model.Cell;
@@ -9,8 +11,7 @@ import de.arm.bot.model.Maze;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static de.arm.bot.model.Status.FLOOR;
-import static de.arm.bot.model.Status.FORM;
+import static de.arm.bot.model.Status.*;
 
 public class LevelFourKI extends LevelThreeKI {
 
@@ -48,6 +49,18 @@ public class LevelFourKI extends LevelThreeKI {
             Output.logDebug(currentFlood.toString());
             //Calculate a normal move action that should prioritize the IPSA cells
             return getGOAction();
+        }
+
+        if(turnInfo.getCellStatus().get(null)==ENEMY_FORM) {
+            if(Math.random()< 0.25){
+                Direction d= turnInfo.getCellStatus()
+                        .entrySet().stream()
+                        .filter(entry->entry.getValue()==FLOOR)
+                        .map(Map.Entry::getKey)
+                        .findAny()
+                        .orElse(null);
+                if(d!=null) return new Action(Command.KICK,d);
+            }
         }
         //If there is no IPSA necessary then just act normal
         return super.calculateMove(turnInfo);

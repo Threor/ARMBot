@@ -26,4 +26,12 @@ public class ActionResult {
     public boolean isOk() {
         return ok;
     }
+
+    @Override
+    public String toString() {
+        return "ActionResult{" +
+                "ok=" + ok +
+                ", message='" + message + '\'' +
+                '}';
+    }
 }
