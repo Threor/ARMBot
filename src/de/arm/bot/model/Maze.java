@@ -224,4 +224,11 @@ public class Maze {
     public Player getPlayer() {
         return player;
     }
+
+    public void performBigFlood() {
+        Arrays.stream(cells)
+                .flatMap(Arrays::stream)
+                .filter(Cell::isVisited)
+                .forEach(c->c.setVisited(false));
+    }
 }

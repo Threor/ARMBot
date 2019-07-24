@@ -54,9 +54,17 @@ public class LevelOneKI extends KI {
         if (bestCells.size() == 0) {
             Output.logDebug("ERROR! Couldn't find goal cell!");
             Output.logDebug("This is probably caused by all cells being already visited");
-            Output.logDebug("If this happens in level 4+ a big flood should happen");
+            Output.logDebug("Performing big flood");
+            bigFlood();
+            Output.logDebug("Performed big flood");
+            Output.logDebug("New calculation engaged!");
+            return getGOAction();
         }
         return navigateToCell(bestCells.get(ThreadLocalRandom.current().nextInt(0, bestCells.size())));
+    }
+
+    private void bigFlood() {
+        maze.performBigFlood();
     }
 
     protected List<Cell> getBestCells() {
