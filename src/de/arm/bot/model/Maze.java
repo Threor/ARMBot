@@ -257,8 +257,8 @@ public class Maze {
     }
 
     public double calculateMZScore(Vec2d mzVector, Vec2d targetCellVector) {
-        double scalarProduct=mzVector.x*targetCellVector.x+mzVector.y+targetCellVector.y;
-        return Math.acos(scalarProduct/(calculateLengthOfVector(mzVector)*calculateLengthOfVector(targetCellVector)));
+        double scalarProduct=mzVector.x*targetCellVector.x+mzVector.y*targetCellVector.y;
+        return Math.acos(scalarProduct/((calculateLengthOfVector(mzVector)*calculateLengthOfVector(targetCellVector))));
     }
 
     private double calculateLengthOfVector(Vec2d vec2d) {
