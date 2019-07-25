@@ -9,7 +9,9 @@ import de.arm.bot.model.Cell;
 import de.arm.bot.model.Maze;
 import de.arm.bot.model.Status;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -87,5 +89,16 @@ public class LevelTwoKI extends LevelOneKI {
                     .filter(e -> e.getValue() == FORM)
                     .forEach(e -> formCells.put(e.getValue().getAdditionalInfo(), maze.getCurrentCell().getNeighbour(e.getKey())));
         }
+    }
+
+    @Override
+    protected void bigFlood() {
+        List<Cell> toExclude=new ArrayList<>();
+        for(Cell c:formCells.values()) {
+            if(c==null) continue;
+            toExclude.addAll(aStar(maze.getCurrentCell(),c));
+        }
+        if(finish!=null) toExclude.addAll(aStar(maze.getCurrentCell(),finish));
+        maze.performBigFlood(toExclude);
     }
 }

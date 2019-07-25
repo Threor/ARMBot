@@ -38,12 +38,13 @@ public class LevelOneKI extends KI {
     }
 
     protected Action getGOAction() {
-        this.mzVector=maze.calculateMZVector();
-        Output.logDebug("MZ Vector: "+mzVector);
         if (pathToTake.size() > 0) {
             Cell cell = (pathToTake.keySet().iterator().next());
-            if (pathToTake.get(cell).size() > 1) return navigateToCell(cell);
+            Output.logDebug("path: "+pathToTake.get(cell).toString());
+            if (pathToTake.get(cell).size() > 0) return navigateToCell(cell);
         }
+        this.mzVector=maze.calculateMZVector();
+        Output.logDebug("MZ Vector: "+mzVector);
         Output.logDebug("Current paths: " + pathToTake.size());
         List<Cell> toSearchFor = getBestCells();
         if (toSearchFor.size() == 0) {
@@ -51,6 +52,7 @@ public class LevelOneKI extends KI {
             Output.logDebug("This is probably caused by all cells being already visited");
             Output.logDebug("Performing big flood");
             bigFlood();
+            maze.logCellsSimple();
             Output.logDebug("Performed big flood");
             Output.logDebug("New calculation engaged!");
             return getGOAction();
@@ -68,14 +70,20 @@ public class LevelOneKI extends KI {
     }
 
     private double calculateHeuristicCost(Cell cell) {
-        return (estimateDistance(maze.getCurrentCell(),cell)+0.5*cell.getNotDiscoveredNeighbourCount())*(calculateMZScore(cell)/180+0.5);
+        //TODO Fine tuning
+        //double temp=calculateMZScore(cell);
+        //Output.logDebug(temp+"MZ"+((temp/Math.PI+1)*2));
+        //double ret= (estimateDistance(maze.getCurrentCell(),cell)+0.5*cell.getNotDiscoveredNeighbourCount())*((calculateMZScore(cell)/Math.PI+0.01)/50);
+        //Output.logDebug(((temp/Math.PI+1)*2)+"="+ret);
+        //return ret;
+        return estimateDistance(maze.getCurrentCell(),cell)+(calculateMZScore(cell)*1.5-0.75)+(cell.getNotDiscoveredNeighbourCount()*0.2);
     }
 
     private double calculateMZScore(Cell cell) {
         return maze.calculateMZScore(mzVector,maze.calculateCellVector(cell));
     }
 
-    private void bigFlood() {
+    protected void bigFlood() {
         maze.performBigFlood();
     }
 

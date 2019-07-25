@@ -6,7 +6,7 @@ import de.arm.bot.model.Maze;
 
 public class LevelThreeKI extends LevelTwoKI {
 
-    private Action lastAction;
+    protected Action lastAction;
 
     /**
      * Default constructor for the KI, initializes all fields and sets the current maze

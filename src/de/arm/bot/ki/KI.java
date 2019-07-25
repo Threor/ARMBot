@@ -157,7 +157,7 @@ public abstract class KI {
         return totalPath;
     }
 
-    private List<Cell> aStar(Cell start, Cell finish) {
+    protected List<Cell> aStar(Cell start, Cell finish) {
         Output.logDebug("Start: " + start + "\nZiel: " + finish);
         Set<Cell> openSet = new HashSet<>();
         openSet.add(start);

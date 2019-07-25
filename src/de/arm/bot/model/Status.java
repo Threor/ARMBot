@@ -15,36 +15,38 @@ public enum Status {
     /**
      * A value representing a wall in the maze
      */
-    WALL(false),
+    WALL(false,4),
     /**
      * A value representing a floor cell in the maze
      */
-    FLOOR(true),
+    FLOOR(true,1),
     /**
      * A value for the player's finish cell in the maze
      */
-    FINISH(true),
+    FINISH(true,1),
     /**
      * A value for one of the player's form cells
      */
-    FORM(true),
+    FORM(true,1),
     /**
      * A value for one of the enemies form cells
      */
-    ENEMY_FORM(true),
+    ENEMY_FORM(true,1),
     /**
      * A value representing a cell that has been blocked by a sheet
      */
-    SHEET(true),
+    SHEET(true,1),
     /**
      * A value representing a cell that has not been discovered yet
      */
-    NOT_DISCOVERED(false);
+    NOT_DISCOVERED(false,10);
 
     /**
      * Indicates, whether a cell is navigable (should be walked on) or not
      */
     private boolean navigable;
+
+    private int cost;
     /**
      * Used for adding additional info (like the form id) to a cell status
      */
@@ -55,8 +57,9 @@ public enum Status {
      *
      * @param navigable Indicates whether the bot can navigate over a cell or not
      */
-    Status(boolean navigable) {
+    Status(boolean navigable, int cost) {
         this.navigable = navigable;
+        this.cost=cost;
     }
 
     /**
@@ -85,5 +88,9 @@ public enum Status {
         return Arrays.stream(values())
                 .filter(Status::isNavigable)
                 .collect(Collectors.toList());
+    }
+
+    public int getCost() {
+        return cost;
     }
 }

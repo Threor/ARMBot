@@ -2,6 +2,7 @@ package de.arm.bot.ki;
 
 import de.arm.bot.info.Action;
 import de.arm.bot.info.TurnInfo;
+import de.arm.bot.io.Output;
 import de.arm.bot.model.Cell;
 import de.arm.bot.model.Maze;
 
@@ -58,5 +59,17 @@ public class LevelFiveKI extends LevelFourKI {
             }
         }
         return super.processTurnInfo(turnInfo);
+    }
+
+    @Override
+    public Action generateNextTurn(TurnInfo turnInfo) {
+        if(!turnInfo.getLastActionResult().isOk()&&turnInfo.getLastActionResult().getMessage().equalsIgnoreCase("taking"))return lastAction;
+        return super.generateNextTurn(turnInfo);
+    }
+
+    @Override
+    protected void bigFlood() {
+        alreadyPut.clear();
+        super.bigFlood();
     }
 }
