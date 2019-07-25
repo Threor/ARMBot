@@ -1,15 +1,16 @@
 package de.arm.bot.info;
 
 import de.arm.bot.io.Output;
+import de.arm.bot.model.PrimitiveStatus;
 import de.arm.bot.model.Status;
 
 import java.util.Map;
 
 public class TurnInfo {
 
-    private ActionResult lastActionResult;
+    private final ActionResult lastActionResult;
 
-    private Map<Direction, Status> cellStatus;
+    private final Map<Direction, Status> cellStatus;
 
     public TurnInfo(ActionResult lastActionResult, Map<Direction, Status> cellStatus) {
         this.lastActionResult = lastActionResult;
@@ -25,8 +26,12 @@ public class TurnInfo {
         return lastActionResult;
     }
 
-    public boolean hasCell(Status status) {
-        return cellStatus.containsValue(status);
+    public boolean hasCell(Status primitiveStatus) {
+        return cellStatus.containsValue(primitiveStatus);
+    }
+
+    public boolean hasCell(PrimitiveStatus status) {
+        return cellStatus.containsValue(new Status(status));
     }
 
     @Override

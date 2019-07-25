@@ -2,7 +2,6 @@ package de.arm.bot.ki;
 
 import de.arm.bot.info.Action;
 import de.arm.bot.info.TurnInfo;
-import de.arm.bot.io.Output;
 import de.arm.bot.model.Cell;
 import de.arm.bot.model.Maze;
 
@@ -11,8 +10,8 @@ import java.util.List;
 
 import static de.arm.bot.info.Command.PUT;
 import static de.arm.bot.info.Command.TAKE;
-import static de.arm.bot.model.Status.ENEMY_FORM;
-import static de.arm.bot.model.Status.SHEET;
+import static de.arm.bot.model.PrimitiveStatus.ENEMY_FORM;
+import static de.arm.bot.model.PrimitiveStatus.SHEET;
 
 public class LevelFiveKI extends LevelFourKI {
 
@@ -20,7 +19,7 @@ public class LevelFiveKI extends LevelFourKI {
 
     private boolean put;
 
-    private List<Cell> alreadyPut;
+    private final List<Cell> alreadyPut;
 
     public LevelFiveKI(Maze maze) {
         super(maze);
@@ -30,15 +29,15 @@ public class LevelFiveKI extends LevelFourKI {
     @Override
     public Action calculateMove(TurnInfo turnInfo) {
         //TODO Possible bugs: form got kicked to alreadyPut, but it's unlikely that it will happen
-        if (alreadyPut.contains(maze.getCurrentCell())||onFinishWay()) return super.calculateMove(turnInfo);
+        if (alreadyPut.contains(maze.getCurrentCell()) || onFinishWay()) return super.calculateMove(turnInfo);
         //TODO Could use maze.getCurrentCell().getStatus() for consistency
-        if (turnInfo.getCellStatus().get(null) == ENEMY_FORM) {
+        if (turnInfo.getCellStatus().get(null).getStatus() == ENEMY_FORM) {
             if (maze.getPlayer().getSheetCount() > 0) {
                 put = true;
                 return new Action(PUT);
             }
         }
-        if (turnInfo.getCellStatus().get(null) == SHEET) {
+        if (turnInfo.getCellStatus().get(null).getStatus() == SHEET) {
             took = true;
             return new Action(TAKE);
         }
@@ -63,7 +62,8 @@ public class LevelFiveKI extends LevelFourKI {
 
     @Override
     public Action generateNextTurn(TurnInfo turnInfo) {
-        if(!turnInfo.getLastActionResult().isOk()&&turnInfo.getLastActionResult().getMessage().equalsIgnoreCase("taking"))return lastAction;
+        if (!turnInfo.getLastActionResult().isOk() && turnInfo.getLastActionResult().getMessage().equalsIgnoreCase("taking"))
+            return lastAction;
         return super.generateNextTurn(turnInfo);
     }
 

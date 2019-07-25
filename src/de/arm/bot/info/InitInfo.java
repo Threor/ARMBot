@@ -1,24 +1,31 @@
 package de.arm.bot.info;
 
-import com.sun.org.apache.xml.internal.serializer.OutputPropertiesFactory;
 import de.arm.bot.io.Output;
 import de.arm.bot.ki.*;
 import de.arm.bot.model.Maze;
+import de.arm.bot.model.Mazes;
 import de.arm.bot.model.Player;
 
+/**
+ * A wrapper class that holds all information given on the start of the game.
+ * These information will be used to generate the maze, the player and to initialize the KI.
+ */
 public class InitInfo {
 
-    private int mazeLength;
+    /**
+     * The length of the maze
+     */
+    private final int mazeLength;
 
-    private int mazeHeight;
+    private final int mazeHeight;
 
-    private int mazeLevel;
+    private final int mazeLevel;
 
-    private int playerX;
+    private final int playerX;
 
-    private int playerY;
+    private final int playerY;
 
-    private int playerId;
+    private final int playerId;
 
     private int sheetCount = -1;
 
@@ -29,8 +36,7 @@ public class InitInfo {
         this.playerX = playerX;
         this.playerY = playerY;
         this.playerId = playerId;
-        Output.logDebug("Init infos: length="+mazeLength+" height="+mazeHeight);
-        Output.logDebug("X="+playerX+" Y="+playerY);
+        Output.logDebug("Init infos: length=" + mazeLength + " height=" + mazeHeight);
     }
 
     public InitInfo(int mazeLength, int mazeHeight, int mazeLevel, int playerX, int playerY, int playerId, int sheetCount) {
@@ -52,6 +58,20 @@ public class InitInfo {
             case 1:
                 return new LevelOneKI(generateMaze());
             case 2:
+                String mazeString=null;
+                switch (mazeLength) {
+                    case 10: case 11:return new LevelTwoExtraKI(mazeLength,generatePlayer());
+                    case 13:mazeString=Mazes.MAZE6;break;
+                    case 20:mazeString=Mazes.MAZE7;break;
+                    case 25:mazeString=Mazes.MAZE8;break;
+                }
+                if(mazeString!=null) {
+                    Maze maze=new Maze(mazeString,generatePlayer());
+                    return new LevelTwoExtraKI(maze);
+                }
+                Player player=generatePlayer();
+                Maze test=new Maze(Mazes.MAZE7,player);
+                test.logCellsSimple();
                 return new LevelTwoKI(generateMaze());
             case 3:
                 return new LevelThreeKI(generateMaze());

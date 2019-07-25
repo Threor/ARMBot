@@ -21,7 +21,7 @@ public class Player {
     /**
      * The id of the Player as given by the engine
      */
-    private int id;
+    private final int id;
 
     /**
      * The count of sheets the player holds at the moment

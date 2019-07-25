@@ -4,6 +4,7 @@ import de.arm.bot.info.ActionResult;
 import de.arm.bot.info.Direction;
 import de.arm.bot.info.InitInfo;
 import de.arm.bot.info.TurnInfo;
+import de.arm.bot.model.PrimitiveStatus;
 import de.arm.bot.model.Status;
 
 import java.util.HashMap;
@@ -11,7 +12,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 import static de.arm.bot.info.Direction.*;
-import static de.arm.bot.model.Status.*;
+import static de.arm.bot.model.PrimitiveStatus.*;
 
 /**
  * A class used for reading input data
@@ -23,7 +24,7 @@ public class Input {
     /**
      * A Scanner pointing towards System.in
      */
-    private Scanner scanner;
+    private final Scanner scanner;
 
     /**
      * The playerId as given by the game, used for identifying form and finish cells
@@ -85,7 +86,7 @@ public class Input {
      */
     private Status parse(String line) {
         if (line.split("\\s").length > 2) return checkForFinish(line);
-        return Status.valueOf(line.split("\\s")[0]);
+        return new Status(PrimitiveStatus.valueOf(line.split("\\s")[0]));
     }
 
     /**
@@ -97,14 +98,13 @@ public class Input {
     private Status checkForFinish(String line) {
         String[] args = line.split("\\s");
         int id = Integer.valueOf(args[1]);
-        Status ret = Status.valueOf(args[0]);
-        ret.setAdditionalInfo(Integer.valueOf(args[2]));
+        PrimitiveStatus ret = PrimitiveStatus.valueOf(args[0]);
         if (ret == FORM) {
-            if (id == playerId) return ret;
-            return ENEMY_FORM;
+            if (id == playerId) return new Status(ret,Integer.valueOf(args[2]));
+            return new Status(ENEMY_FORM);
         } else {
-            if (id == playerId) return ret;
-            return FLOOR;
+            if (id == playerId) return new Status(ret,Integer.valueOf(args[2]));
+            return new Status(ENEMY_FINISH);
         }
     }
 }

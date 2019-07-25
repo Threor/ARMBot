@@ -7,19 +7,20 @@ import de.arm.bot.info.TurnInfo;
 import de.arm.bot.io.Output;
 import de.arm.bot.model.Cell;
 import de.arm.bot.model.Maze;
+import de.arm.bot.model.Status;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static de.arm.bot.model.Status.*;
+import static de.arm.bot.model.PrimitiveStatus.*;
 
 public class LevelFourKI extends LevelThreeKI {
 
-    private Map<Integer, Cell> formsToLookFor;
+    private final Map<Integer, Cell> formsToLookFor;
 
     private List<Cell> currentFlood;
 
-    private List<Cell> floodedCells;
+    private final List<Cell> floodedCells;
 
     public LevelFourKI(Maze maze) {
         super(maze);
@@ -37,7 +38,7 @@ public class LevelFourKI extends LevelThreeKI {
                 //Add old position of the form to currentFlood
                 currentFlood.add(formsToLookFor.values().toArray(new Cell[0])[0]);
                 //Set its status to FLOOR
-                currentFlood.get(0).setStatus(FLOOR);
+                currentFlood.get(0).setStatus(new Status(FLOOR));
                 //Flood all neighbours
                 floodAllNeighbours();
             }
@@ -51,15 +52,15 @@ public class LevelFourKI extends LevelThreeKI {
             return getGOAction();
         }
 
-        if(turnInfo.getCellStatus().get(null)==ENEMY_FORM) {
-            if(Math.random()< 0.25){
-                Direction d= turnInfo.getCellStatus()
+        if (turnInfo.getCellStatus().get(null).getStatus() == ENEMY_FORM) {
+            if (Math.random() < 0.25) {
+                Direction d = turnInfo.getCellStatus()
                         .entrySet().stream()
-                        .filter(entry->entry.getValue()==FLOOR)
+                        .filter(entry -> entry.getValue().getStatus() == FLOOR)
                         .map(Map.Entry::getKey)
                         .findAny()
                         .orElse(null);
-                if(d!=null) return new Action(Command.KICK,d);
+                if (d != null) return new Action(Command.KICK, d);
             }
         }
         //If there is no IPSA necessary then just act normal
@@ -75,7 +76,7 @@ public class LevelFourKI extends LevelThreeKI {
             if (formCells.containsValue(maze.getCurrentCell().getNeighbour(key))) {
                 Output.logDebug(key + " > " + value);
                 //The FORM cell is no longer a FORM cell
-                if (value != FORM) {
+                if (value.getStatus() != FORM) {
                     Output.logDebug(key + " > " + value);
                     //Stream
                     formCells.entrySet().stream()
@@ -91,7 +92,7 @@ public class LevelFourKI extends LevelThreeKI {
                 }
             }
             //Found a FORM
-            if (value == FORM) {
+            if (value.getStatus() == FORM) {
                 //If FORM is in IPSA Map remove it
                 formsToLookFor.remove(value.getAdditionalInfo());
                 floodedCells.forEach(c -> {

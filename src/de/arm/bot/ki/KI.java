@@ -28,12 +28,12 @@ public abstract class KI {
     /**
      * A point containing the position, the player should reach in the next turn if his action was successful
      */
-    private Point newPosition;
+    protected Point newPosition;
 
     /**
      * A map containing paths calculated by the A* algorithm for chosen goal cells
      */
-    protected HashMap<Cell, List<Cell>> pathToTake;
+    protected final HashMap<Cell, List<Cell>> pathToTake;
 
     /**
      * Default constructor for the KI, initializes all fields and sets the current maze
@@ -42,7 +42,7 @@ public abstract class KI {
      */
     protected KI(Maze maze) {
         this.maze = maze;
-        this.newPosition = new Point(maze.getCurrentPosition());
+        this.newPosition = maze==null?null:new Point(maze.getCurrentPosition());
         this.pathToTake = new HashMap<>();
     }
 
@@ -124,15 +124,6 @@ public abstract class KI {
         if (newPosition.y < 0) newPosition.y += maze.getHeight();
         if (newPosition.x > maze.getLength() - 1) newPosition.x -= maze.getLength();
         if (newPosition.y > maze.getHeight() - 1) newPosition.y -= maze.getHeight();
-    }
-
-    /**
-     * Getter for the attribute Maze
-     *
-     * @return The current Maze
-     */
-    public Maze getMaze() {
-        return maze;
     }
 
     /**

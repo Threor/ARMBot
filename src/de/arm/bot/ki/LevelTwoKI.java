@@ -7,6 +7,7 @@ import de.arm.bot.info.TurnInfo;
 import de.arm.bot.io.Output;
 import de.arm.bot.model.Cell;
 import de.arm.bot.model.Maze;
+import de.arm.bot.model.PrimitiveStatus;
 import de.arm.bot.model.Status;
 
 import java.util.ArrayList;
@@ -15,18 +16,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import static de.arm.bot.model.Status.FINISH;
-import static de.arm.bot.model.Status.FORM;
+import static de.arm.bot.model.PrimitiveStatus.FINISH;
+import static de.arm.bot.model.PrimitiveStatus.FORM;
 
 public class LevelTwoKI extends LevelOneKI {
 
-    private int formCount;
+    protected int formCount;
 
     private int foundForms;
 
-    private Cell finish;
+    protected Cell finish;
 
-    protected Map<Integer, Cell> formCells;
+    protected final Map<Integer, Cell> formCells;
 
     private boolean performedTake;
 
@@ -41,10 +42,9 @@ public class LevelTwoKI extends LevelOneKI {
         Output.logDebug("Found: " + foundForms);
         Output.logDebug("Count: " + formCount);
         //Found all forms and on FINISH
-        if (turnInfo.getCellStatus().get(null) == FINISH && foundForms == formCount) return new Action(Command.FINISH);
+        if (turnInfo.getCellStatus().get(null).getStatus() == FINISH && foundForms == formCount) return new Action(Command.FINISH);
         //Found all previous forms and on FORM
-        //TODO Maybe bug in engine? formId should start with 0 but it starts with 1
-        if (turnInfo.getCellStatus().get(null) == FORM && turnInfo.getCellStatus().get(null).getAdditionalInfo() == (foundForms) + 1) {
+        if (turnInfo.getCellStatus().get(null).getStatus() == FORM && turnInfo.getCellStatus().get(null).getAdditionalInfo() == (foundForms) + 1) {
             performedTake = true;
             pathToTake.clear();
             return new Action(Command.TAKE);
@@ -76,7 +76,7 @@ public class LevelTwoKI extends LevelOneKI {
             }
         }
         if (turnInfo.hasCell(FINISH)) {
-            Entry<Direction, Status> entry = turnInfo.getCellStatus().entrySet().stream().filter(e -> e.getValue() == Status.FINISH).findAny().orElse(null);
+            Entry<Direction, Status> entry = turnInfo.getCellStatus().entrySet().stream().filter(e -> e.getValue().getStatus() == PrimitiveStatus.FINISH).findAny().orElse(null);
             if (entry == null) {
                 Output.logDebug("After finding FINISH in TurnInfo, unable to get FINISH from TurnInfo!\n This should not happen!\n If it does, then you are cursed");
             } else {
@@ -86,19 +86,19 @@ public class LevelTwoKI extends LevelOneKI {
         }
         if (turnInfo.hasCell(FORM)) {
             turnInfo.getCellStatus().entrySet().stream()
-                    .filter(e -> e.getValue() == FORM)
+                    .filter(e -> e.getValue().getStatus() == FORM)
                     .forEach(e -> formCells.put(e.getValue().getAdditionalInfo(), maze.getCurrentCell().getNeighbour(e.getKey())));
         }
     }
 
     @Override
     protected void bigFlood() {
-        List<Cell> toExclude=new ArrayList<>();
-        for(Cell c:formCells.values()) {
-            if(c==null) continue;
-            toExclude.addAll(aStar(maze.getCurrentCell(),c));
+        List<Cell> toExclude = new ArrayList<>();
+        for (Cell c : formCells.values()) {
+            if (c == null) continue;
+            toExclude.addAll(aStar(maze.getCurrentCell(), c));
         }
-        if(finish!=null) toExclude.addAll(aStar(maze.getCurrentCell(),finish));
+        if (finish != null) toExclude.addAll(aStar(maze.getCurrentCell(), finish));
         maze.performBigFlood(toExclude);
     }
 }

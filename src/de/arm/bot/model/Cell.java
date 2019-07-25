@@ -7,11 +7,9 @@ import de.arm.bot.io.Output;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Vector;
 import java.util.stream.Collectors;
 
-
-import static de.arm.bot.model.Status.*;
+import static de.arm.bot.model.PrimitiveStatus.*;
 
 /**
  * A class representing a cell of the maze
@@ -23,14 +21,14 @@ public class Cell {
     /**
      * The x-coordinate of the maze
      */
-    private int x;
+    private final int x;
     /**
      * The y-coordinate of the maze
      */
-    private int y;
+    private final int y;
 
     /**
-     * The current status of the cell
+     * The current primitiveStatus of the cell
      */
     private Status status;
 
@@ -42,7 +40,7 @@ public class Cell {
      *
      * @see de.arm.bot.info.Direction
      */
-    private Map<Direction, Cell> neighbours;
+    private final Map<Direction, Cell> neighbours;
 
     /**
      * The defaultly used constructor for the class cell
@@ -51,12 +49,16 @@ public class Cell {
      * @param x          The current x-coordinate of the cell
      * @param y          The current y-coordinate of the cell
      * @param neighbours A map of all neighbour cells of the current cell
-     * @see de.arm.bot.model.Status
+     * @see PrimitiveStatus
      */
     Cell(int x, int y, Map<Direction, Cell> neighbours) {
+       this(x,y,neighbours,new Status(NOT_DISCOVERED));
+    }
+
+    Cell(int x, int y, Map<Direction, Cell> neighbours, Status status) {
         this.x = x;
         this.y = y;
-        this.status = Status.NOT_DISCOVERED;
+        this.status = status;
         this.neighbours = neighbours;
         neighbours.entrySet().stream()
                 .filter(e -> e.getValue() != null && e.getValue().getNeighbour(e.getKey().getOpposite()) == null)
@@ -84,16 +86,16 @@ public class Cell {
     /**
      * Getter for the attribute status
      *
-     * @return status The current status of the cell
+     * @return status The current primitiveStatus of the cell
      */
     public Status getStatus() {
         return status;
     }
 
     /**
-     * Setter for the attribute status, does not set if the cell is already visited
+     * Setter for the attribute Status, does not set if the cell is already visited
      *
-     * @param status The new status of the cell
+     * @param status The new Status of the cell
      */
     public void setStatus(Status status) {
         this.status = status;
@@ -108,24 +110,15 @@ public class Cell {
     }
 
     /**
-     * Updates the status for the current cell and for all neighbours
+     * Updates the primitiveStatus for the current cell and for all neighbours
      *
-     * @param cellStatus The map of the new status of all neighbour cells and the current cell (null as direction indicates the current cell)
+     * @param cellStatus The map of the new primitiveStatus of all neighbour cells and the current cell (null as direction indicates the current cell)
      */
     public void updateCells(Map<Direction, Status> cellStatus) {
         this.setStatus(cellStatus.get(null));
         cellStatus.entrySet().stream()
                 .filter(e -> e.getKey() != null)
                 .forEach(e -> neighbours.get(e.getKey()).setStatus(e.getValue()));
-    }
-
-    /**
-     * Getter for the attribute dead of the current status
-     *
-     * @return Whether the cell is dead or not
-     */
-    private boolean isDead() {
-        return status == WALL;
     }
 
     /**
@@ -159,17 +152,17 @@ public class Cell {
      * Gets and returns all neighbours of the cell that are not dead
      *
      * @return A list of all not dead neighbours
-     * @see de.arm.bot.model.Status
+     * @see PrimitiveStatus
      */
     public List<Cell> getNotDeadNeighbours() {
         return neighbours.values().stream()
-                .filter(c -> c.getStatus() != WALL && !c.getStatus().equals(NOT_DISCOVERED))
+                .filter(c -> c.getStatus().getStatus() != WALL && !c.getStatus().equals(NOT_DISCOVERED))
                 .collect(Collectors.toList());
     }
 
     @Override
     public String toString() {
-        return String.format("Cell [x=%s, y=%s, status=%s, visited=%s]", x, y, status, visited);
+        return String.format("Cell [x=%s, y=%s, primitiveStatus=%s, visited=%s]", x, y, status, visited);
     }
 
     /**
@@ -194,7 +187,7 @@ public class Cell {
      * Checks whether there is a FINISH cell nearby this cell. Only used by the Level 1 algorithm
      *
      * @return True if one of the neighbour cells of this cell is a FINISH cell
-     * @see de.arm.bot.model.Status
+     * @see PrimitiveStatus
      */
     public boolean hasFinishNearby() {
         return hasNearby(FINISH);
@@ -210,19 +203,19 @@ public class Cell {
         return hasNearby(NOT_DISCOVERED);
     }
 
-    private boolean hasNearby(Status status) {
-        return neighbours.values().stream().anyMatch(c -> c.getStatus() == status);
+    private boolean hasNearby(PrimitiveStatus primitiveStatus) {
+        return neighbours.values().stream().anyMatch(c -> c.getStatus().getStatus() == primitiveStatus);
     }
 
     /**
      * @return
      */
     public int getNotDiscoveredNeighbourCount() {
-        return (int) neighbours.values().stream().filter(c -> c.getStatus() == NOT_DISCOVERED).count();
+        return (int) neighbours.values().stream().filter(c -> c.getStatus().getStatus() == NOT_DISCOVERED).count();
     }
 
     public Vec2d calculateDirection(Cell towards) {
-        return new Vec2d(towards.x-x,towards.y-y);
+        return new Vec2d(towards.x - x, towards.y - y);
     }
 
     @Override
