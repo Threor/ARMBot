@@ -192,7 +192,7 @@ public abstract class KI {
         if (pathToTake.getOrDefault(cell, new ArrayList<>()).isEmpty()) {
             pathToTake.clear();
             pathToTake.put(cell, aStar(maze.getCurrentCell(), cell));
-            Output.logDebug("Calculated path: " + pathToTake.get(cell));
+            // Output.logDebug("Calculated path: " + pathToTake.get(cell));
             pathToTake.get(cell).remove(0);
         }
         Cell c = pathToTake.get(cell).remove(0);

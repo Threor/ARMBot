@@ -1,5 +1,6 @@
 package de.arm.bot.info;
 
+import de.arm.bot.io.Output;
 import de.arm.bot.model.Status;
 
 import java.util.Map;
@@ -13,6 +14,7 @@ public class TurnInfo {
     public TurnInfo(ActionResult lastActionResult, Map<Direction, Status> cellStatus) {
         this.lastActionResult = lastActionResult;
         this.cellStatus = cellStatus;
+        Output.logDebug(cellStatus.toString());
     }
 
     public Map<Direction, Status> getCellStatus() {

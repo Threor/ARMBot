@@ -7,6 +7,7 @@ import de.arm.bot.io.Output;
 import java.awt.*;
 import java.util.List;
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -143,6 +144,22 @@ public class Maze {
             }
             Output.logDebug(temp.toString());
         }
+        //Output.logDebug(cells[2][10]+"-"+cells[2][10].hashCode());
+        //Output.logDebug(cells[2][11]+"-"+cells[2][11].hashCode());
+    }
+
+    public void logCellsVerySimple() {
+        for (int i = 0; i < cells[0].length; i++) {
+            StringBuilder temp = new StringBuilder();
+            for (int j = 0; j < cells.length; j++) {
+                if (player.getX() == j && player.getY() == i) {
+                    temp.append("x");
+                    continue;
+                }
+                temp.append(cells[j][i].getStatus()==NOT_DISCOVERED?0:1);
+            }
+            Output.logDebug(temp.toString());
+        }
     }
 
     /**
@@ -272,17 +289,24 @@ public class Maze {
     }
 
     public Vec2d calculateMZVector() {
-        List<Vec2d> vectors= cellStream()
+        return norm(cellStream()
                 .filter(cell->!(cell.isVisited()|| cell.getStatus()==WALL))
                 .map(this::calculateCellVector)
-                .collect(Collectors.toList());
-        double x=0;
+                .collect(Collector.of(Vec2d::new,((vec1, vec2) ->{
+                    vec1.x+= vec2.x;
+                    vec1.y+= vec2.y;
+                }), (vec1, vec2) ->{
+                    vec1.x+=vec2.x;
+                    vec1.y+=vec2.y;
+                    return vec1;
+                } )));
+       /*+ double x=0;
         double y=0;
         for(Vec2d vec:vectors) {
             x+=vec.x;
             y+=vec.y;
         }
-        return norm(new Vec2d(x,y));
+        return norm(new Vec2d(x,y));*/
     }
 
     public Vec2d calculateCellVector(Cell cell) {

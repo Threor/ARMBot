@@ -6,6 +6,7 @@ import de.arm.bot.io.Output;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Vector;
 import java.util.stream.Collectors;
 
@@ -224,4 +225,8 @@ public class Cell {
         return new Vec2d(towards.x-x,towards.y-y);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
+    }
 }

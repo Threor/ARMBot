@@ -8,10 +8,7 @@ import de.arm.bot.io.Output;
 import de.arm.bot.model.Cell;
 import de.arm.bot.model.Maze;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -40,12 +37,12 @@ public class LevelOneKI extends KI {
     protected Action getGOAction() {
         if (pathToTake.size() > 0) {
             Cell cell = (pathToTake.keySet().iterator().next());
-            Output.logDebug("path: "+pathToTake.get(cell).toString());
+            //Output.logDebug("path: "+pathToTake.get(cell).toString());
             if (pathToTake.get(cell).size() > 0) return navigateToCell(cell);
         }
         this.mzVector=maze.calculateMZVector();
         Output.logDebug("MZ Vector: "+mzVector);
-        Output.logDebug("Current paths: " + pathToTake.size());
+       // Output.logDebug("Current paths: " + pathToTake.size());
         List<Cell> toSearchFor = getBestCells();
         if (toSearchFor.size() == 0) {
             Output.logDebug("ERROR! Couldn't find goal cell!");
@@ -59,6 +56,9 @@ public class LevelOneKI extends KI {
         }
         Map<Cell,Double> heuristicCostToCell=toSearchFor.stream()
                 .collect(Collectors.toMap(cell->cell,this::calculateHeuristicCost));
+       // Output.logDebug(heuristicCostToCell.toString());
+        maze.logCellsSimple();
+        //Output.logDebug("Heuristic cost: "+heuristicCostToCell);
         double minCost = heuristicCostToCell.values().stream().min(Comparator.comparingDouble(Double::valueOf)).orElse(0d);
         List<Cell> possibleCells=heuristicCostToCell.entrySet()
                 .stream()
@@ -76,7 +76,7 @@ public class LevelOneKI extends KI {
         //double ret= (estimateDistance(maze.getCurrentCell(),cell)+0.5*cell.getNotDiscoveredNeighbourCount())*((calculateMZScore(cell)/Math.PI+0.01)/50);
         //Output.logDebug(((temp/Math.PI+1)*2)+"="+ret);
         //return ret;
-        return estimateDistance(maze.getCurrentCell(),cell)+(calculateMZScore(cell)*1.5-0.75)+(cell.getNotDiscoveredNeighbourCount()*0.2);
+        return estimateDistance(maze.getCurrentCell(),cell)-(calculateMZScore(cell)*1.25)-(cell.getNotDiscoveredNeighbourCount()*0.5);
     }
 
     private double calculateMZScore(Cell cell) {

@@ -1,5 +1,6 @@
 package de.arm.bot.info;
 
+import com.sun.org.apache.xml.internal.serializer.OutputPropertiesFactory;
 import de.arm.bot.io.Output;
 import de.arm.bot.ki.*;
 import de.arm.bot.model.Maze;
@@ -28,6 +29,8 @@ public class InitInfo {
         this.playerX = playerX;
         this.playerY = playerY;
         this.playerId = playerId;
+        Output.logDebug("Init infos: length="+mazeLength+" height="+mazeHeight);
+        Output.logDebug("X="+playerX+" Y="+playerY);
     }
 
     public InitInfo(int mazeLength, int mazeHeight, int mazeLevel, int playerX, int playerY, int playerId, int sheetCount) {
