@@ -4,6 +4,8 @@ package de.arm.bot.info;
  * A class representing an Action that can be sent to the game.
  * An action consists of a command that is defined by the given protocols and an (optional) additional argument.
  * @see de.arm.bot.info.Command
+ *
+ * @author Team ARM
  */
 public class Action {
 

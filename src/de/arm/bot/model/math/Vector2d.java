@@ -41,7 +41,7 @@ public class Vector2d {
         return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
     }
 
-    public double scalarProduct(Vector2d vector2d) {
+    public double dotProduct(Vector2d vector2d) {
         return x * vector2d.x + y * vector2d.y;
     }
 

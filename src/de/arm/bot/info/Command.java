@@ -3,6 +3,8 @@ package de.arm.bot.info;
 /**
  * An enumeration of commands that can be send towards the game.
  * All available commands are defined in the game protocol.
+ *
+ * @author Team ARM
  */
 public enum Command {
 

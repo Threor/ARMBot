@@ -329,7 +329,7 @@ public class Maze {
     }
 
     public double calculateMZScore(Vector2d mzVector, Vector2d targetCellVector) {
-        return Math.acos(mzVector.scalarProduct(targetCellVector) / (mzVector.getLength() * targetCellVector.getLength()));
+        return Math.acos(mzVector.dotProduct(targetCellVector) / (mzVector.getLength() * targetCellVector.getLength()));
     }
 
     public int adjustForLevel3or9(Status westStatus) {

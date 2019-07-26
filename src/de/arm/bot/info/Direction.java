@@ -2,7 +2,9 @@ package de.arm.bot.info;
 
 /**
  * An enumeration containing each of the available directions, used for navigating to the maze and modelling neighbour cells
- */
+ *
+ * @author Team ARM
+ **/
 public enum Direction {
 
     /**

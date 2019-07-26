@@ -3,6 +3,8 @@ package de.arm.bot.info;
 /**
  * A class representing the result the game will send after an action was performed.
  * This is used to interpret the result of the last action and to act accordingly
+ *
+ * @author Team ARM
  */
 public class ActionResult {
 
@@ -19,8 +21,8 @@ public class ActionResult {
     private final String message;
 
     /** The constructor of this class used internally to initialize all fields
-     * @param ok
-     * @param message
+     * @param ok Indicates if the last action was successful
+     * @param message The message additionally given by the game
      */
     private ActionResult(boolean ok, String message) {
         this.ok = ok;
