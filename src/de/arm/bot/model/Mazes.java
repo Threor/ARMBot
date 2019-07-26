@@ -1,5 +1,11 @@
 package de.arm.bot.model;
 
+/**
+ * A class representing the known mazes (level two)
+ * 
+ * @author Team ARM
+ *
+ */
 public class Mazes{
 
     public static final String MAZE3AND9=
