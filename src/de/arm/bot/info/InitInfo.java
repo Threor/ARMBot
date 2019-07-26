@@ -69,9 +69,6 @@ public class InitInfo {
                     Maze maze=new Maze(mazeString,generatePlayer());
                     return new LevelTwoExtraKI(maze);
                 }
-                Player player=generatePlayer();
-                Maze test=new Maze(Mazes.MAZE7,player);
-                test.logCellsSimple();
                 return new LevelTwoKI(generateMaze());
             case 3:
                 return new LevelThreeKI(generateMaze());

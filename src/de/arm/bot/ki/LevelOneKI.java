@@ -1,12 +1,13 @@
 package de.arm.bot.ki;
 
-import com.sun.javafx.geom.Vec2d;
+//import com.sun.javafx.geom.Vec2d;
 import de.arm.bot.info.Action;
 import de.arm.bot.info.Command;
 import de.arm.bot.info.TurnInfo;
 import de.arm.bot.io.Output;
 import de.arm.bot.model.Cell;
 import de.arm.bot.model.Maze;
+import de.arm.bot.model.math.Vector2d;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -19,7 +20,7 @@ import static de.arm.bot.model.PrimitiveStatus.FINISH;
 
 public class LevelOneKI extends KI {
 
-    private Vec2d mzVector;
+    private Vector2d mzVector;
 
     public LevelOneKI(Maze maze) {
         super(maze);
@@ -44,7 +45,7 @@ public class LevelOneKI extends KI {
             if (pathToTake.get(cell).size() > 0) return navigateToCell(cell);
         }
         this.mzVector = maze.calculateMZVector();
-        Output.logDebug("MZ Vector: " + mzVector);
+        //Output.logDebug("MZ Vector: " + mzVector);
         // Output.logDebug("Current paths: " + pathToTake.size());
         List<Cell> toSearchFor = getBestCells();
         if (toSearchFor.size() == 0) {
@@ -60,8 +61,7 @@ public class LevelOneKI extends KI {
         Map<Cell, Double> heuristicCostToCell = toSearchFor.stream()
                 .collect(Collectors.toMap(cell -> cell, this::calculateHeuristicCost));
         // Output.logDebug(heuristicCostToCell.toString());
-        maze.logCellsSimple();
-        //Output.logDebug("Heuristic cost: "+heuristicCostToCell);
+        //maze.logCellsSimple();
         double minCost = heuristicCostToCell.values().stream().min(Comparator.comparingDouble(Double::valueOf)).orElse(0d);
         List<Cell> possibleCells = heuristicCostToCell.entrySet()
                 .stream()
@@ -69,17 +69,18 @@ public class LevelOneKI extends KI {
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
         //Output.logDebug(possibleCells.size()+" cost: "+minCost);
+        //Output.logDebug(possibleCells.toString());
         return navigateToCell(possibleCells.get(ThreadLocalRandom.current().nextInt(0, possibleCells.size())));
     }
 
     private double calculateHeuristicCost(Cell cell) {
         //TODO Fine tuning
-        //double temp=calculateMZScore(cell);
-        //Output.logDebug(temp+"MZ"+((temp/Math.PI+1)*2));
-        //double ret= (estimateDistance(maze.getCurrentCell(),cell)+0.5*cell.getNotDiscoveredNeighbourCount())*((calculateMZScore(cell)/Math.PI+0.01)/50);
-        //Output.logDebug(((temp/Math.PI+1)*2)+"="+ret);
-        //return ret;
-        return estimateDistance(maze.getCurrentCell(), cell) - (calculateMZScore(cell) * 1.25) - (cell.getNotDiscoveredNeighbourCount() * 0.5);
+        double temp=calculateMZScore(cell);
+        Output.logDebug(temp+"MZ"+((temp/Math.PI+1)*2));
+        double ret= (estimateDistance(maze.getCurrentCell(),cell)+0.5*cell.getNotDiscoveredNeighbourCount())*((calculateMZScore(cell)/Math.PI+0.01)/50);
+        Output.logDebug(((temp/Math.PI+1)*2)+"="+ret);
+        return ret;
+       // return estimateDistance(maze.getCurrentCell(), cell) - (calculateMZScore(cell) * 1.25) - (cell.getNotDiscoveredNeighbourCount() * 0.5);
     }
 
     private double calculateMZScore(Cell cell) {

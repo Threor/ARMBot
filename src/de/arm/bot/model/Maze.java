@@ -1,8 +1,9 @@
 package de.arm.bot.model;
 
-import com.sun.javafx.geom.Vec2d;
+//import com.sun.javafx.geom.Vec2d;
 import de.arm.bot.info.Direction;
 import de.arm.bot.io.Output;
+import de.arm.bot.model.math.Vector2d;
 
 import java.awt.*;
 import java.util.List;
@@ -316,45 +317,19 @@ public class Maze {
                 });
     }
 
-    public Vec2d calculateMZVector() {
-        return norm(cellStream()
+    public Vector2d calculateMZVector() {
+        return cellStream()
                 .filter(cell -> !(cell.isVisited() || cell.getStatus().getStatus() == WALL))
                 .map(this::calculateCellVector)
-                .collect(Collector.of(Vec2d::new, ((vec1, vec2) -> {
-                    vec1.x += vec2.x;
-                    vec1.y += vec2.y;
-                }), (vec1, vec2) -> {
-                    vec1.x += vec2.x;
-                    vec1.y += vec2.y;
-                    return vec1;
-                })));
-       /*+ double x=0;
-        double y=0;
-        for(Vec2d vec:vectors) {
-            x+=vec.x;
-            y+=vec.y;
-        }
-        return norm(new Vec2d(x,y));*/
+                .collect(Collector.of(Vector2d::new, (Vector2d::add), Vector2d::add));
     }
 
-    public Vec2d calculateCellVector(Cell cell) {
-        return norm(getCurrentCell().calculateDirection(cell));
+    public Vector2d calculateCellVector(Cell cell) {
+        return getCurrentCell().calculateDirection(cell).norm();
     }
 
-    public double calculateMZScore(Vec2d mzVector, Vec2d targetCellVector) {
-        double scalarProduct = mzVector.x * targetCellVector.x + mzVector.y * targetCellVector.y;
-        //TODO Read the docs MF!
-        return Math.acos(scalarProduct / ((calculateLengthOfVector(mzVector) * calculateLengthOfVector(targetCellVector))));
-    }
-
-    private double calculateLengthOfVector(Vec2d vec2d) {
-        return Math.sqrt(Math.pow(vec2d.x, 2) + Math.pow(vec2d.y, 2));
-    }
-
-    private Vec2d norm(Vec2d vec2d) {
-        if (vec2d.x == 0 && vec2d.y == 0) return vec2d;
-        double max = Math.max(Math.abs(vec2d.x), Math.abs(vec2d.y));
-        return new Vec2d(vec2d.x / max, vec2d.y / max);
+    public double calculateMZScore(Vector2d mzVector, Vector2d targetCellVector) {
+        return Math.acos(mzVector.scalarProduct(targetCellVector) / (mzVector.getLength() * targetCellVector.getLength()));
     }
 
     public int adjustForLevel3or9(Status westStatus) {

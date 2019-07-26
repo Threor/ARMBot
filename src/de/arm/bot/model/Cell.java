@@ -1,8 +1,9 @@
 package de.arm.bot.model;
 
-import com.sun.javafx.geom.Vec2d;
+//import com.sun.javafx.geom.Vec2d;
 import de.arm.bot.info.Direction;
 import de.arm.bot.io.Output;
+import de.arm.bot.model.math.Vector2d;
 
 import java.util.List;
 import java.util.Map;
@@ -214,8 +215,8 @@ public class Cell {
         return (int) neighbours.values().stream().filter(c -> c.getStatus().getStatus() == NOT_DISCOVERED).count();
     }
 
-    public Vec2d calculateDirection(Cell towards) {
-        return new Vec2d(towards.x - x, towards.y - y);
+    public Vector2d calculateDirection(Cell towards) {
+        return new Vector2d(towards.x - x, towards.y - y);
     }
 
     @Override
