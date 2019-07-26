@@ -75,12 +75,7 @@ public class LevelOneKI extends KI {
 
     private double calculateHeuristicCost(Cell cell) {
         //TODO Fine tuning
-        double temp=calculateMZScore(cell);
-        Output.logDebug(temp+"MZ"+((temp/Math.PI+1)*2));
-        double ret= (estimateDistance(maze.getCurrentCell(),cell)+0.5*cell.getNotDiscoveredNeighbourCount())*((calculateMZScore(cell)/Math.PI+0.01)/50);
-        Output.logDebug(((temp/Math.PI+1)*2)+"="+ret);
-        return ret;
-       // return estimateDistance(maze.getCurrentCell(), cell) - (calculateMZScore(cell) * 1.25) - (cell.getNotDiscoveredNeighbourCount() * 0.5);
+        return estimateDistance(maze.getCurrentCell(), cell) - (calculateMZScore(cell) * 1.25) - (cell.getNotDiscoveredNeighbourCount() * 0.5);
     }
 
     private double calculateMZScore(Cell cell) {
