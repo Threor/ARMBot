@@ -150,14 +150,14 @@ public class Cell {
     }
 
     /**
-     * Gets and returns all neighbours of the cell that are not dead
+     * Gets and returns all neighbours of the cell that the bot can wolk on
      *
-     * @return A list of all not dead neighbours
+     * @return A list of all neighbour cells the bot can walk on
      * @see PrimitiveStatus
      */
-    public List<Cell> getNotDeadNeighbours() {
+    public List<Cell> getNavigableNeighbours() {
         return neighbours.values().stream()
-                .filter(c -> c.getStatus().getStatus() != WALL && !c.getStatus().equals(NOT_DISCOVERED))
+                .filter(c -> c.getStatus().isNavigable())
                 .collect(Collectors.toList());
     }
 
@@ -169,7 +169,7 @@ public class Cell {
     /**
      * Gets the direction the given cell is currently on, if the cell is a neighbour cell
      *
-     * @param cell The to get the direction from
+     * @param cell The cell to get the direction from
      * @return The calculated direction
      */
     public Direction getDirection(Cell cell) {

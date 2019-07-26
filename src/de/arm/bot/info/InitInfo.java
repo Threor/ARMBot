@@ -71,40 +71,53 @@ public class InitInfo {
 
     /** Constructor used by level 5
      * Initializes all fields
-     * @param mazeLength
-     * @param mazeHeight
-     * @param mazeLevel
-     * @param playerX
-     * @param playerY
-     * @param playerId
-     * @param sheetCount
+     * @param mazeLength The length of the maze
+     * @param mazeHeight The height of the maze
+     * @param mazeLevel The level of the maze
+     * @param playerX The starting X-coordinate of the player
+     * @param playerY The starting Y-coordinate of the player
+     * @param playerId The given id of the player
+     * @param sheetCount The count of sheets the player holds at the beginning
      */
     public InitInfo(int mazeLength, int mazeHeight, int mazeLevel, int playerX, int playerY, int playerId, int sheetCount) {
         this(mazeLength, mazeHeight, mazeLevel, playerX, playerY, playerId);
         this.sheetCount = sheetCount;
     }
 
+    /** Generates a new Player object based on the given player infos
+     * @return the generated Player
+     */
     private Player generatePlayer() {
         return sheetCount > -1 ? new Player(playerX, playerY, playerId, sheetCount) : new Player(playerX, playerY, playerId);
     }
 
+    /** Generates a new Maze object based on the given Maze infos and a generated Player
+     * @return The generated Maze
+     */
     private Maze generateMaze() {
         return new Maze(generatePlayer(), mazeLength, mazeHeight);
     }
 
+    /** Generates a new KI based on the maze Level and the generated Maze and Player.
+     * Only supports level 1-5. For unsupported level a LevelOneKI will be generated
+     * For level two the LevelTwoExtraKI will be loaded for known mazes. This is accomplished by analyzing the infos given about the maze.
+     * If the maze is unknown, then a normal LevelTwoKI will be generated
+     * @return The generated KI
+     */
     public KI generateKI() {
-        Output.logDebug(this.toString());
         switch (mazeLevel) {
             case 1:
                 return new LevelOneKI(generateMaze());
             case 2:
                 String mazeString=null;
                 switch (mazeLength) {
+                    //Mazes on level 2 with a length or 10 or 11 are not unique. Therefore the KI will decide on turn one which one it has to load
                     case 10: case 11:return new LevelTwoExtraKI(mazeLength,generatePlayer());
                     case 13:mazeString=Mazes.MAZE6;break;
                     case 20:mazeString=Mazes.MAZE7;break;
                     case 25:mazeString=Mazes.MAZE8;break;
                 }
+                //Not running on a known maze
                 if(mazeString!=null) {
                     Maze maze=new Maze(mazeString,generatePlayer());
                     return new LevelTwoExtraKI(maze);

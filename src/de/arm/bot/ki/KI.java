@@ -77,6 +77,12 @@ public abstract class KI {
         return standardProcess(turnInfo);
     }
 
+    /** The standard procedure executed every turn.
+     * Updates the position if the last action was successful.
+     * Also updates the status of all nearby cells
+     * @param turnInfo The TurnInfo of the last turn
+     * @return True if the position could be updated
+     */
     protected final boolean standardProcess(TurnInfo turnInfo) {
         if (turnInfo.getLastActionResult().isOk() && newPosition != null) {
             Cell cell = maze.updateLocation(newPosition);
@@ -138,6 +144,11 @@ public abstract class KI {
         return new Action(Command.GO, direction);
     }
 
+    /** An internal function used by the A * algorithm to construct a List of Cells to visit by a map that combines neighbour cells
+     * @param path The map (cell -> neighbour Cell) that describes the path
+     * @param current The starting cell of the path
+     * @return
+     */
     private List<Cell> reconstructPath(Map<Cell, Cell> path, Cell current) {
         List<Cell> totalPath = new ArrayList<>();
         totalPath.add(current);
@@ -148,22 +159,43 @@ public abstract class KI {
         return totalPath;
     }
 
+    /** An implementation of the A * algorithm that constructs a good path between the given starting cell and the given finish cell
+     * @param start The starting cell of the path
+     * @param finish The last cell of the path
+     *
+     * @see <a href="https://en.wikipedia.org/wiki/A*_search_algorithm">A* algorithm</a>
+     *
+     * @return The calculated path
+     */
     protected List<Cell> aStar(Cell start, Cell finish) {
         Output.logDebug("Start: " + start + "\nZiel: " + finish);
+        //The set of discovered nodes that will be expanded
         Set<Cell> openSet = new HashSet<>();
+        //Starting with the start cell
         openSet.add(start);
+        //A map that represents the path to take with (cell -> neighbour cell)
         Map<Cell, Cell> path = new HashMap<>();
+        //Maps a cell to the cost of the cheapest path from start to the cell
         Map<Cell, Integer> gScore = new HashMap<>();
         gScore.put(start, 0);
+        //Maps a cell to the expected cost of the path over this cell (gScore + estimateDistance)
         Map<Cell, Integer> fScore = new HashMap<>();
         fScore.put(start, estimateDistance(start, finish));
+        //Discovered nodes are left
         while (!openSet.isEmpty()) {
-            Cell current = fScore.entrySet().stream().filter(e -> openSet.contains(e.getKey()))
+            //Gets the cell in openSet with the lowest fScore value to work on
+            Cell current = fScore.entrySet().stream()
+                    .filter(e -> openSet.contains(e.getKey()))
                     .min(Comparator.comparingInt(Map.Entry::getValue)).get().getKey();
+            //When the finish cell has been reached then the path is constructed
             if (finish.equals(current)) return reconstructPath(path, current);
+            //Working on this cell so it does not need to be expanded again
             openSet.remove(current);
-            for (Cell neighbour : current.getNotDeadNeighbours()) {
+            //Iterates over all neighbour cells of the current cell that the bot can walk on
+            for (Cell neighbour : current.getNavigableNeighbours()) {
+                //The neighbour is one step away, so the cost is increased by one
                 int tentativeGScore = gScore.get(current) + 1;
+                //A better way has been found
                 if (tentativeGScore < gScore.getOrDefault(neighbour, Integer.MAX_VALUE)) {
                     path.put(neighbour, current);
                     gScore.put(neighbour, tentativeGScore);
@@ -172,21 +204,37 @@ public abstract class KI {
                 }
             }
         }
-        return null;
+        //No path has been found
+        return new ArrayList<>();
     }
 
+    /** Estimates the distance between the two given cells
+     * @param from The fist cell
+     * @param to The second cell
+     * @return The estimated distance
+     */
     protected int estimateDistance(Cell from, Cell to) {
         return maze.getDistance(from, to);
     }
 
+    /** Generates and returns the Action the bot should perform to get towards the given cell.
+     * Uses the A* algorithm to navigate
+     * @param cell The cell to navigate to
+     * @return The generated Action
+     */
     protected Action navigateToCell(Cell cell) {
+        //No path for this cell has been calculated
         if (pathToTake.getOrDefault(cell, new ArrayList<>()).isEmpty()) {
+            //Forgets previous paths
             pathToTake.clear();
+            //Calculates the path and puts it in the map
             pathToTake.put(cell, aStar(maze.getCurrentCell(), cell));
-            // Output.logDebug("Calculated path: " + pathToTake.get(cell));
+            //The first cell has to be removed because it is the cell the bot is currently standing on
             pathToTake.get(cell).remove(0);
         }
+        //Removes the next cell from the path
         Cell c = pathToTake.get(cell).remove(0);
+        //Return a GO action towards the direction of the next cell
         return go(maze.getCurrentCell().getDirection(c));
     }
 }

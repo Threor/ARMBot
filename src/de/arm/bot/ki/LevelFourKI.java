@@ -127,7 +127,7 @@ public class LevelFourKI extends LevelThreeKI {
                 //Maps to work on the neighbour cells
                 .map(cell -> {
                     //For all accessible neighbours
-                    cell.getNotDeadNeighbours().forEach(c -> {
+                    cell.getNavigableNeighbours().forEach(c -> {
                         //If the cell is not in the current flood and it is visited, then set the status to FLOOR and remember it
                         if (!currentFlood.contains(c) && c.isVisited() && !maze.getCurrentCell().equals(c)) {
                             floodedCells.add(c);
@@ -135,7 +135,7 @@ public class LevelFourKI extends LevelThreeKI {
                         }
                     });
                     //Maps to the neighbours
-                    return cell.getNotDeadNeighbours();
+                    return cell.getNavigableNeighbours();
                 })
                 //Flat maps a stream of lists to a stream of cells
                 .flatMap(Collection::stream)
