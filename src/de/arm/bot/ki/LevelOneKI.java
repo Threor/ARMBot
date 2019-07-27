@@ -83,35 +83,50 @@ public class LevelOneKI extends KI {
             //Let's try again
             return getGOAction();
         }
-        //Map all cell with
+        //Map all cells with there heuristic cost
         Map<Cell, Double> heuristicCostToCell = toSearchFor.stream()
                 .collect(Collectors.toMap(cell -> cell, this::calculateHeuristicCost));
-        // Output.logDebug(heuristicCostToCell.toString());
-        //maze.logCellsSimple();
+        //Calculate the minimal cost
         double minCost = heuristicCostToCell.values().stream().min(Comparator.comparingDouble(Double::valueOf)).orElse(0d);
+        //Only get the cells with best cost
         List<Cell> possibleCells = heuristicCostToCell.entrySet()
                 .stream()
                 .filter(entry -> entry.getValue() == minCost)
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
-        //Output.logDebug(possibleCells.size()+" cost: "+minCost);
-        //Output.logDebug(possibleCells.toString());
+        //Return one of the best cells randomly
         return navigateToCell(possibleCells.get(ThreadLocalRandom.current().nextInt(0, possibleCells.size())));
     }
 
+    /** Calculates the heuristic cost of a cell.
+     * The heuristic cost is defined by: (hdist-mzscore*1,25-ndnc*0.5), with hdist beeing the estimated distance, mzscore being the calculated MZScore and ndnc being the count of not discovered neighbours of the given cell)
+     * @param cell The given cell
+     * @return The calculated cost
+     */
     private double calculateHeuristicCost(Cell cell) {
-        //TODO Fine tuning
         return estimateDistance(maze.getCurrentCell(), cell) - (calculateMZScore(cell) * 1.25) - (cell.getNotDiscoveredNeighbourCount() * 0.5);
     }
 
+    /** Calculates the MZScore of a given cell as defined by the MZA
+     * @param cell The given cell
+     * @return The calculated score
+     */
     private double calculateMZScore(Cell cell) {
         return maze.calculateMZScore(mzVector, maze.calculateCellVector(cell));
     }
 
+    /**
+     * Performs a "big flood".
+     * A big flood is used when the whole maze has been explored but there are still forms or finish cells to be found-.
+     * The big flood forgets some information in order for the getGoAlgorithm to search for these missing cells
+     */
     protected void bigFlood() {
         maze.performBigFlood();
     }
 
+    /** Finds and returns the cells the getGoAlgorithm should search for
+     * @return The best cells for the algorithm to visit
+     */
     protected List<Cell> getBestCells() {
         return maze.getPreferableCells();
     }

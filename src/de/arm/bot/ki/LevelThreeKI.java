@@ -4,8 +4,17 @@ import de.arm.bot.info.Action;
 import de.arm.bot.info.TurnInfo;
 import de.arm.bot.model.Maze;
 
+/**
+ * An implementation of the KI used for level 3. Inherits all functionality of level 2
+ *
+ * @author Team ARM
+ */
 public class LevelThreeKI extends LevelTwoKI {
 
+    /**
+     * The last action the bot took. This is used, because this action could fail if the bot is currently talking.
+     * If this happens, the action will be repeated
+     */
     protected Action lastAction;
 
     /**
@@ -17,10 +26,19 @@ public class LevelThreeKI extends LevelTwoKI {
         super(maze);
     }
 
+    /**
+     * Processes the given TurnInfo and splices the information into the maze.
+     * If the bot was talking during the last action, the last action will be repeated.
+     * Afterwards calculates the next action and returns it
+     *
+     * @param turnInfo The information of the current Turn as given by the game
+     * @return The generated Next action
+     */
     @Override
     public Action generateNextTurn(TurnInfo turnInfo) {
-        //maze.logCellsVerySimple();
+        //Last Action failed
         if (!processTurnInfo(turnInfo)) {
+            //Bot was talking
             if (turnInfo.getLastActionResult().getMessage().equalsIgnoreCase("talking")) return lastAction;
         }
         lastAction = calculateMove(turnInfo);

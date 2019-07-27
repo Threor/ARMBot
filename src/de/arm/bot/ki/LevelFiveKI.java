@@ -28,9 +28,7 @@ public class LevelFiveKI extends LevelFourKI {
 
     @Override
     public Action calculateMove(TurnInfo turnInfo) {
-        //TODO Possible bugs: form got kicked to alreadyPut, but it's unlikely that it will happen
         if (alreadyPut.contains(maze.getCurrentCell()) || onFinishWay()) return super.calculateMove(turnInfo);
-        //TODO Could use maze.getCurrentCell().getStatus() for consistency
         if (turnInfo.getCellStatus().get(null).getStatus() == ENEMY_FORM) {
             if (maze.getPlayer().getSheetCount() > 0) {
                 put = true;

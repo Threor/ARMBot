@@ -19,28 +19,53 @@ import java.util.Map.Entry;
 import static de.arm.bot.model.PrimitiveStatus.FINISH;
 import static de.arm.bot.model.PrimitiveStatus.FORM;
 
+/**
+ * An implementation of the KI used for level 2. Inherits all functionality of level 1
+ *
+ * @author Team ARM
+ */
 public class LevelTwoKI extends LevelOneKI {
 
+    /**
+     * The number of forms to be found. A finish cell contains the number of forms.
+     */
     protected int formCount;
 
+    /**
+     * The number of forms that have been found.
+     */
     private int foundForms;
 
+    /**
+     * The finish cell
+     */
     protected Cell finish;
 
+    /**
+     * A map for found form cells mapped (formId - cell)
+     */
     protected final Map<Integer, Cell> formCells;
 
+    /**
+     * Indicates whether a take was performed in the last turn
+     */
     private boolean performedTake;
 
+    /** Default constructor for the KI, initializes all fields and sets the current maze
+     * @param maze The maze the KI should work om
+     */
     public LevelTwoKI(Maze maze) {
         super(maze);
         this.formCount = -1;
         this.formCells = new HashMap<>();
     }
 
+    /** Calculates the next move the bot should take.
+     * @param turnInfo The information of the current Turn as given by the game
+     * @return The calculated Action
+     */
     @Override
     public Action calculateMove(TurnInfo turnInfo) {
-        Output.logDebug("Found: " + foundForms);
-        Output.logDebug("Count: " + formCount);
         //Found all forms and on FINISH
         if (turnInfo.getCellStatus().get(null).getStatus() == FINISH && foundForms == formCount) return new Action(Command.FINISH);
         //Found all previous forms and on FORM
@@ -57,10 +82,18 @@ public class LevelTwoKI extends LevelOneKI {
         return getGOAction();
     }
 
+    /** Indicates whether the bot is on the way towards the finish cell
+     * @return True, if the bot is on the specified way
+     */
     protected boolean onFinishWay() {
         return foundForms == formCount && finish != null;
     }
 
+    /** Processes the given TurnInfo and updates the information
+     *
+     * @param turnInfo The information of the current Turn as given by the game
+     * @return True if the TurnInfo could be processed successfully
+     */
     @Override
     protected boolean processTurnInfo(TurnInfo turnInfo) {
         if (!super.standardProcess(turnInfo)) return false;
@@ -68,6 +101,10 @@ public class LevelTwoKI extends LevelOneKI {
         return true;
     }
 
+    /** The standard Level 2 procedure fo processing information.
+     *  Saves found finish and form cells
+     * @param turnInfo The given TurnInfo
+     */
     protected void processLevelTwo(TurnInfo turnInfo) {
         if (performedTake) {
             performedTake = false;
@@ -91,6 +128,9 @@ public class LevelTwoKI extends LevelOneKI {
         }
     }
 
+    /**
+     * Performs a big flood, but remembers all ways to all found finish and form cells
+     */
     @Override
     protected void bigFlood() {
         List<Cell> toExclude = new ArrayList<>();

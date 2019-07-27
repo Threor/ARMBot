@@ -72,6 +72,8 @@ public abstract class KI {
      * May be overwritten in later implementations to consider future features and mechanics
      *
      * @param turnInfo The information of the current Turn as given by the game
+     *
+     * @return True if the TurnInfo could be processed successfully
      */
     protected boolean processTurnInfo(TurnInfo turnInfo) {
         return standardProcess(turnInfo);
