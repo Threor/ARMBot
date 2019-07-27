@@ -1,6 +1,5 @@
 package de.arm.bot.info;
 
-import de.arm.bot.io.Output;
 import de.arm.bot.model.PrimitiveStatus;
 import de.arm.bot.model.Status;
 

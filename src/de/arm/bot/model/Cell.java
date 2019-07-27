@@ -1,6 +1,7 @@
 package de.arm.bot.model;
 
 //import com.sun.javafx.geom.Vec2d;
+
 import de.arm.bot.info.Direction;
 import de.arm.bot.io.Output;
 import de.arm.bot.model.math.Vector2d;
@@ -10,7 +11,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static de.arm.bot.model.PrimitiveStatus.*;
+import static de.arm.bot.model.PrimitiveStatus.FINISH;
+import static de.arm.bot.model.PrimitiveStatus.NOT_DISCOVERED;
 
 /**
  * A class representing a cell of the maze

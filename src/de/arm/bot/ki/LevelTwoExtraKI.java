@@ -2,7 +2,6 @@ package de.arm.bot.ki;
 
 import de.arm.bot.info.Action;
 import de.arm.bot.info.TurnInfo;
-import de.arm.bot.io.Output;
 import de.arm.bot.model.*;
 
 import java.util.Collections;
