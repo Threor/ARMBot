@@ -10,23 +10,43 @@ public class Status {
 
     private Integer additionalInfo;
 
+    /**
+     * constructor that initializes status and additionalInfo.
+     * @param status
+     * @param additionalInfo
+     * 
+     */
     public Status(PrimitiveStatus status, Integer additionalInfo) {
         this.status = status;
         this.additionalInfo = additionalInfo;
     }
-
+    /**
+     * constructor that initializes status
+     * @param status
+     */
     public Status(PrimitiveStatus status) {
         this.status=status;
     }
-
+    
+	/**
+	 * getter for the attribute status
+	 * @return status
+	 */
     public PrimitiveStatus getStatus() {
         return status;
     }
-
+    /**
+     * setter for the attribute status
+     * @param status
+     */
     public void setStatus(PrimitiveStatus status) {
         this.status = status;
     }
 
+    /** 
+     * getter for the attribute additionalInfo
+     * @returns additionalInfo if set 
+     */
     public Integer getAdditionalInfo() {
         return additionalInfo==null?-1:additionalInfo;
     }

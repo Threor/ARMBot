@@ -110,6 +110,10 @@ public class Player {
         sheetCount++;
     }
 
+    /**
+     * Decrements the amount of sheets after putting one down if the bot has sheets left
+     * 
+     */
     public void removeSheet() {
         if (sheetCount <= 0) {
             Output.logDebug("ERR Trying to remove a sheet while having none!");
