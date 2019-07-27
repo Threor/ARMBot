@@ -51,7 +51,9 @@ public class LevelTwoKI extends LevelOneKI {
      */
     private boolean performedTake;
 
-    /** Default constructor for the KI, initializes all fields and sets the current maze
+    /**
+     * Default constructor for the KI, initializes all fields and sets the current maze
+     *
      * @param maze The maze the KI should work om
      */
     public LevelTwoKI(Maze maze) {
@@ -60,14 +62,17 @@ public class LevelTwoKI extends LevelOneKI {
         this.formCells = new HashMap<>();
     }
 
-    /** Calculates the next move the bot should take.
+    /**
+     * Calculates the next move the bot should take.
+     *
      * @param turnInfo The information of the current Turn as given by the game
      * @return The calculated Action
      */
     @Override
     public Action calculateMove(TurnInfo turnInfo) {
         //Found all forms and on FINISH
-        if (turnInfo.getCellStatus().get(null).getStatus() == FINISH && foundForms == formCount) return new Action(Command.FINISH);
+        if (turnInfo.getCellStatus().get(null).getStatus() == FINISH && foundForms == formCount)
+            return new Action(Command.FINISH);
         //Found all previous forms and on FORM
         if (turnInfo.getCellStatus().get(null).getStatus() == FORM && turnInfo.getCellStatus().get(null).getAdditionalInfo() == (foundForms) + 1) {
             performedTake = true;
@@ -82,14 +87,17 @@ public class LevelTwoKI extends LevelOneKI {
         return getGOAction();
     }
 
-    /** Indicates whether the bot is on the way towards the finish cell
+    /**
+     * Indicates whether the bot is on the way towards the finish cell
+     *
      * @return True, if the bot is on the specified way
      */
     protected boolean onFinishWay() {
         return foundForms == formCount && finish != null;
     }
 
-    /** Processes the given TurnInfo and updates the information
+    /**
+     * Processes the given TurnInfo and updates the information
      *
      * @param turnInfo The information of the current Turn as given by the game
      * @return True if the TurnInfo could be processed successfully
@@ -101,8 +109,10 @@ public class LevelTwoKI extends LevelOneKI {
         return true;
     }
 
-    /** The standard Level 2 procedure fo processing information.
-     *  Saves found finish and form cells
+    /**
+     * The standard Level 2 procedure fo processing information.
+     * Saves found finish and form cells
+     *
      * @param turnInfo The given TurnInfo
      */
     protected void processLevelTwo(TurnInfo turnInfo) {

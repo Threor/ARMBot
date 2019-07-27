@@ -12,20 +12,20 @@ public class Vector2d {
     }
 
     public Vector2d() {
-        this(0,0);
+        this(0, 0);
     }
 
     public Vector2d add(Vector2d vector2d) {
-        this.x+=vector2d.x;
-        this.y+=vector2d.y;
+        this.x += vector2d.x;
+        this.y += vector2d.y;
         return this;
     }
 
     public Vector2d norm() {
         if (x == 0 && y == 0) return this;
-        double temp=Math.max(Math.abs(x),Math.abs(y));
-        this.x/=temp;
-        this.y/=temp;
+        double temp = Math.max(Math.abs(x), Math.abs(y));
+        this.x /= temp;
+        this.y /= temp;
         return this;
     }
 

@@ -36,7 +36,7 @@ public enum PrimitiveStatus {
     /**
      * A value for the enemies finish cell, used by the LevelTwoExtraKI to distinct between map 4 and 5
      */
-    ENEMY_FINISH(true,1),
+    ENEMY_FINISH(true, 1),
     /**
      * A value representing a cell that has been blocked by a sheet
      */

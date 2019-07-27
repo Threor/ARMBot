@@ -17,7 +17,7 @@ import static de.arm.bot.model.PrimitiveStatus.*;
  * We know, that with this step we will sell our souls to the devil.
  * But at least it is warm down there.
  */
-public class LevelTwoExtraKI extends LevelTwoKI{
+public class LevelTwoExtraKI extends LevelTwoKI {
 
     /**
      * The length of the maze that will be used if it is not possible to recognize the maze before the first turn.
@@ -29,8 +29,10 @@ public class LevelTwoExtraKI extends LevelTwoKI{
      */
     private Player temporaryPlayer;
 
-    /** Default constructor for the KI, initializes all fields and sets the current maze.
-     *  Also retrieves known information from the game
+    /**
+     * Default constructor for the KI, initializes all fields and sets the current maze.
+     * Also retrieves known information from the game
+     *
      * @param maze The maze the KI should work om
      */
     public LevelTwoExtraKI(Maze maze) {
@@ -38,14 +40,16 @@ public class LevelTwoExtraKI extends LevelTwoKI{
         retrieveMazeInfos();
     }
 
-    /** Constructor used if the maze can only be loaded during the first turn
+    /**
+     * Constructor used if the maze can only be loaded during the first turn
+     *
      * @param length The known length of the maze
      * @param player The known player instance for this maze
      */
     public LevelTwoExtraKI(int length, Player player) {
         super(null);
-        this.temporaryPlayer=player;
-        this.temporaryLength=length;
+        this.temporaryPlayer = player;
+        this.temporaryLength = length;
     }
 
     /**
@@ -53,10 +57,10 @@ public class LevelTwoExtraKI extends LevelTwoKI{
      * Used if the maze is known and could be loaded
      */
     private void retrieveMazeInfos() {
-        List<Cell> cells=maze.getCellsIn(Collections.singletonList(FORM));
-        this.formCount=cells.size();
-        cells.forEach(c->formCells.put(c.getStatus().getAdditionalInfo(),c));
-        this.finish= maze.getCellsIn(Collections.singletonList(FINISH)).get(0);
+        List<Cell> cells = maze.getCellsIn(Collections.singletonList(FORM));
+        this.formCount = cells.size();
+        cells.forEach(c -> formCells.put(c.getStatus().getAdditionalInfo(), c));
+        this.finish = maze.getCellsIn(Collections.singletonList(FINISH)).get(0);
     }
 
     /**
@@ -69,26 +73,26 @@ public class LevelTwoExtraKI extends LevelTwoKI{
      */
     @Override
     public Action generateNextTurn(TurnInfo turnInfo) {
-        if(temporaryPlayer!=null) {
+        if (temporaryPlayer != null) {
             //3 or 9
-            if(temporaryLength==11) {
-                this.maze=new Maze(Mazes.MAZE3AND9,temporaryPlayer);
-                formCount+=maze.adjustForLevel3or9(turnInfo.getCellStatus().get(WEST));
+            if (temporaryLength == 11) {
+                this.maze = new Maze(Mazes.MAZE3AND9, temporaryPlayer);
+                formCount += maze.adjustForLevel3or9(turnInfo.getCellStatus().get(WEST));
                 retrieveMazeInfos();
-                temporaryPlayer=null;
+                temporaryPlayer = null;
             }
             //4 or 5
-            if(temporaryLength==10) {
+            if (temporaryLength == 10) {
                 //The maze 4 has a finish cell of an enemy nearby, the maze 5 does not
-                if(turnInfo.getCellStatus().values().contains(new Status(ENEMY_FINISH))){
-                    this.maze=new Maze(Mazes.MAZE4,temporaryPlayer);
-                }else {
-                    this.maze=new Maze(Mazes.MAZE5,temporaryPlayer);
+                if (turnInfo.getCellStatus().values().contains(new Status(ENEMY_FINISH))) {
+                    this.maze = new Maze(Mazes.MAZE4, temporaryPlayer);
+                } else {
+                    this.maze = new Maze(Mazes.MAZE5, temporaryPlayer);
                 }
                 retrieveMazeInfos();
-                temporaryPlayer=null;
+                temporaryPlayer = null;
             }
-            newPosition=maze.getCurrentPosition();
+            newPosition = maze.getCurrentPosition();
         }
         return super.generateNextTurn(turnInfo);
     }

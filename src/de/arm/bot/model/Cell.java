@@ -55,7 +55,7 @@ public class Cell {
      * @see PrimitiveStatus
      */
     Cell(int x, int y, Map<Direction, Cell> neighbours) {
-       this(x,y,neighbours,new Status(NOT_DISCOVERED));
+        this(x, y, neighbours, new Status(NOT_DISCOVERED));
     }
 
     Cell(int x, int y, Map<Direction, Cell> neighbours, Status status) {

@@ -1,6 +1,7 @@
 package de.arm.bot.ki;
 
 //import com.sun.javafx.geom.Vec2d;
+
 import de.arm.bot.info.Action;
 import de.arm.bot.info.Command;
 import de.arm.bot.info.TurnInfo;
@@ -30,16 +31,20 @@ public class LevelOneKI extends KI {
      */
     private Vector2d mzVector;
 
-    /**Default constructor for the KI, initializes all fields and sets the current maze
+    /**
+     * Default constructor for the KI, initializes all fields and sets the current maze
+     *
      * @param maze The maze the KI should work on
      */
     public LevelOneKI(Maze maze) {
         super(maze);
     }
 
-    /** Calculates the next move the bot should take.
+    /**
+     * Calculates the next move the bot should take.
      * If the bot stands on a finish cell he will try to finish.
      * Otherwise he will look for the finish cell
+     *
      * @param turnInfo The information of the current Turn as given by the game
      * @return The calculated Action
      */
@@ -54,8 +59,10 @@ public class LevelOneKI extends KI {
         return getGOAction();
     }
 
-    /** As the heart of every bot this method will be used to explore the maze in order to gather new Information.
+    /**
+     * As the heart of every bot this method will be used to explore the maze in order to gather new Information.
      * This is accomplished by choosing a target cell based on heuristics and then calculating a path towards it
+     *
      * @return The next Action to take
      */
     protected Action getGOAction() {
@@ -98,8 +105,10 @@ public class LevelOneKI extends KI {
         return navigateToCell(possibleCells.get(ThreadLocalRandom.current().nextInt(0, possibleCells.size())));
     }
 
-    /** Calculates the heuristic cost of a cell.
+    /**
+     * Calculates the heuristic cost of a cell.
      * The heuristic cost is defined by: (hdist-mzscore*1,25-ndnc*0.5), with hdist beeing the estimated distance, mzscore being the calculated MZScore and ndnc being the count of not discovered neighbours of the given cell)
+     *
      * @param cell The given cell
      * @return The calculated cost
      */
@@ -107,7 +116,9 @@ public class LevelOneKI extends KI {
         return estimateDistance(maze.getCurrentCell(), cell) - (calculateMZScore(cell) * 1.25) - (cell.getNotDiscoveredNeighbourCount() * 0.5);
     }
 
-    /** Calculates the MZScore of a given cell as defined by the MZA
+    /**
+     * Calculates the MZScore of a given cell as defined by the MZA
+     *
      * @param cell The given cell
      * @return The calculated score
      */
@@ -124,7 +135,9 @@ public class LevelOneKI extends KI {
         maze.performBigFlood();
     }
 
-    /** Finds and returns the cells the getGoAlgorithm should search for
+    /**
+     * Finds and returns the cells the getGoAlgorithm should search for
+     *
      * @return The best cells for the algorithm to visit
      */
     protected List<Cell> getBestCells() {

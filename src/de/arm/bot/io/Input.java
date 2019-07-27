@@ -100,10 +100,10 @@ public class Input {
         int id = Integer.valueOf(args[1]);
         PrimitiveStatus ret = PrimitiveStatus.valueOf(args[0]);
         if (ret == FORM) {
-            if (id == playerId) return new Status(ret,Integer.valueOf(args[2]));
+            if (id == playerId) return new Status(ret, Integer.valueOf(args[2]));
             return new Status(ENEMY_FORM);
         } else {
-            if (id == playerId) return new Status(ret,Integer.valueOf(args[2]));
+            if (id == playerId) return new Status(ret, Integer.valueOf(args[2]));
             return new Status(ENEMY_FINISH);
         }
     }

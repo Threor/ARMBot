@@ -20,8 +20,10 @@ public class ActionResult {
      */
     private final String message;
 
-    /** The constructor of this class used internally to initialize all fields
-     * @param ok Indicates if the last action was successful
+    /**
+     * The constructor of this class used internally to initialize all fields
+     *
+     * @param ok      Indicates if the last action was successful
      * @param message The message additionally given by the game
      */
     private ActionResult(boolean ok, String message) {
@@ -29,7 +31,9 @@ public class ActionResult {
         this.message = message;
     }
 
-    /** Creates a new ActionResult based on the resultLine that was given by the game
+    /**
+     * Creates a new ActionResult based on the resultLine that was given by the game
+     *
      * @param resultLine The line of the information given by the game that represent the result
      * @return The created ActionResult
      */
@@ -40,14 +44,18 @@ public class ActionResult {
         return new ActionResult(args[0].equals("OK"), message);
     }
 
-    /** Getter for the attribute message
+    /**
+     * Getter for the attribute message
+     *
      * @return The message of this action
      */
     public String getMessage() {
         return message;
     }
 
-    /** Getter for the attribute ok
+    /**
+     * Getter for the attribute ok
+     *
      * @return The boolean ok
      */
     public boolean isOk() {

@@ -42,7 +42,7 @@ public abstract class KI {
      */
     protected KI(Maze maze) {
         this.maze = maze;
-        this.newPosition = maze==null?null:new Point(maze.getCurrentPosition());
+        this.newPosition = maze == null ? null : new Point(maze.getCurrentPosition());
         this.pathToTake = new HashMap<>();
     }
 
@@ -72,16 +72,17 @@ public abstract class KI {
      * May be overwritten in later implementations to consider future features and mechanics
      *
      * @param turnInfo The information of the current Turn as given by the game
-     *
      * @return True if the TurnInfo could be processed successfully
      */
     protected boolean processTurnInfo(TurnInfo turnInfo) {
         return standardProcess(turnInfo);
     }
 
-    /** The standard procedure executed every turn.
+    /**
+     * The standard procedure executed every turn.
      * Updates the position if the last action was successful.
      * Also updates the status of all nearby cells
+     *
      * @param turnInfo The TurnInfo of the last turn
      * @return True if the position could be updated
      */
@@ -146,8 +147,10 @@ public abstract class KI {
         return new Action(Command.GO, direction);
     }
 
-    /** An internal function used by the A * algorithm to construct a List of Cells to visit by a map that combines neighbour cells
-     * @param path The map (cell -> neighbour Cell) that describes the path
+    /**
+     * An internal function used by the A * algorithm to construct a List of Cells to visit by a map that combines neighbour cells
+     *
+     * @param path    The map (cell -> neighbour Cell) that describes the path
      * @param current The starting cell of the path
      * @return
      */
@@ -161,13 +164,13 @@ public abstract class KI {
         return totalPath;
     }
 
-    /** An implementation of the A * algorithm that constructs a good path between the given starting cell and the given finish cell
-     * @param start The starting cell of the path
+    /**
+     * An implementation of the A * algorithm that constructs a good path between the given starting cell and the given finish cell
+     *
+     * @param start  The starting cell of the path
      * @param finish The last cell of the path
-     *
-     * @see <a href="https://en.wikipedia.org/wiki/A*_search_algorithm">A* algorithm</a>
-     *
      * @return The calculated path
+     * @see <a href="https://en.wikipedia.org/wiki/A*_search_algorithm">A* algorithm</a>
      */
     protected List<Cell> aStar(Cell start, Cell finish) {
         Output.logDebug("Start: " + start + "\nZiel: " + finish);
@@ -210,17 +213,21 @@ public abstract class KI {
         return new ArrayList<>();
     }
 
-    /** Estimates the distance between the two given cells
+    /**
+     * Estimates the distance between the two given cells
+     *
      * @param from The fist cell
-     * @param to The second cell
+     * @param to   The second cell
      * @return The estimated distance
      */
     protected int estimateDistance(Cell from, Cell to) {
         return maze.getDistance(from, to);
     }
 
-    /** Generates and returns the Action the bot should perform to get towards the given cell.
+    /**
+     * Generates and returns the Action the bot should perform to get towards the given cell.
      * Uses the A* algorithm to navigate
+     *
      * @param cell The cell to navigate to
      * @return The generated Action
      */

@@ -24,30 +24,38 @@ public class TurnInfo {
      */
     private final Map<Direction, Status> cellStatus;
 
-    /** Constructor for this class that initializes all fields
+    /**
+     * Constructor for this class that initializes all fields
+     *
      * @param lastActionResult The result of the last action
-     * @param cellStatus The status of nearby cells and the current cell
+     * @param cellStatus       The status of nearby cells and the current cell
      */
     public TurnInfo(ActionResult lastActionResult, Map<Direction, Status> cellStatus) {
         this.lastActionResult = lastActionResult;
         this.cellStatus = cellStatus;
     }
 
-    /** Getter for the attribute cellStatus
+    /**
+     * Getter for the attribute cellStatus
+     *
      * @return The map of the status nearby the current cell.
      */
     public Map<Direction, Status> getCellStatus() {
         return cellStatus;
     }
 
-    /** Getter for the attribute lastActionResult
+    /**
+     * Getter for the attribute lastActionResult
+     *
      * @return The result of the last action
      */
     public ActionResult getLastActionResult() {
         return lastActionResult;
     }
 
-    /** Checks if the cellStatus contains at least one entry with the given Status as value
+    /**
+     * Checks if the cellStatus contains at least one entry with the given Status as value
+     *
      * @param status The PrimitiveStatus to check for
      * @return True if the cellStatus contains one or more entries with the given PrimitiveStatus as value
      */

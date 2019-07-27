@@ -1,6 +1,7 @@
 package de.arm.bot.model;
 
 //import com.sun.javafx.geom.Vec2d;
+
 import de.arm.bot.info.Direction;
 import de.arm.bot.io.Output;
 import de.arm.bot.model.math.Vector2d;
@@ -71,28 +72,28 @@ public class Maze {
     }
 
     public Maze(String maze, Player player) {
-        String[] mazeLines=maze.split("\n");
-        String[][] mazeString=Arrays.stream(mazeLines)
-                .map(line->{
-                    List<String> lines=new ArrayList<>();
-                    while(line.length()>1){
-                        lines.add(line.substring(0,2));
-                        line=line.substring(2);
+        String[] mazeLines = maze.split("\n");
+        String[][] mazeString = Arrays.stream(mazeLines)
+                .map(line -> {
+                    List<String> lines = new ArrayList<>();
+                    while (line.length() > 1) {
+                        lines.add(line.substring(0, 2));
+                        line = line.substring(2);
                     }
                     return lines.toArray(new String[0]);
                 }).collect(Collectors.toList()).toArray(new String[0][0]);
         this.length = mazeString[0].length;
         this.height = mazeString.length;
         this.player = player;
-        cells=new Cell[mazeString[0].length][mazeString.length];
-        for(int i=0;i<length;i++) {
-            for(int j=0;j<height;j++) {
+        cells = new Cell[mazeString[0].length][mazeString.length];
+        for (int i = 0; i < length; i++) {
+            for (int j = 0; j < height; j++) {
                 Map<Direction, Cell> neighbours = new HashMap<>();
                 neighbours.put(NORTH, cells[i][j == 0 ? height - 1 : j - 1]);
                 neighbours.put(SOUTH, cells[i][j >= height - 1 ? 0 : j + 1]);
                 neighbours.put(WEST, cells[i == 0 ? length - 1 : i - 1][j]);
                 neighbours.put(EAST, cells[i >= length - 1 ? 0 : i + 1][j]);
-                Cell cell = new Cell(i, j, neighbours, Status.ofString(mazeString[j][i],player.getId()));
+                Cell cell = new Cell(i, j, neighbours, Status.ofString(mazeString[j][i], player.getId()));
                 cells[i][j] = cell;
             }
         }
@@ -333,23 +334,23 @@ public class Maze {
     }
 
     public int adjustForLevel3or9(Status westStatus) {
-        if(player.getId()==3) {
-            if(westStatus.equals(FORM)) {
-                cells[4][2].setStatus(new Status(FORM,2));
+        if (player.getId() == 3) {
+            if (westStatus.equals(FORM)) {
+                cells[4][2].setStatus(new Status(FORM, 2));
                 return 1;
-            }else {
-                cells[1][2].setStatus(new Status(FORM,1));
-                cells[4][8].setStatus(new Status(FORM,2));
+            } else {
+                cells[1][2].setStatus(new Status(FORM, 1));
+                cells[4][8].setStatus(new Status(FORM, 2));
                 return 2;
             }
         }
-        if(player.getId()==4) {
-            if(westStatus.equals(FORM)) {
-                cells[4][8].setStatus(new Status(FORM,2));
+        if (player.getId() == 4) {
+            if (westStatus.equals(FORM)) {
+                cells[4][8].setStatus(new Status(FORM, 2));
                 return 1;
-            }else {
-                cells[1][8].setStatus(new Status(FORM,1));
-                cells[4][2].setStatus(new Status(FORM,2));
+            } else {
+                cells[1][8].setStatus(new Status(FORM, 1));
+                cells[4][2].setStatus(new Status(FORM, 2));
                 return 2;
             }
         }
