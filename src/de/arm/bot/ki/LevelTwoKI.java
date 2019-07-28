@@ -131,7 +131,7 @@ public class LevelTwoKI extends LevelOneKI {
             if (entry == null) {
                 Output.logDebug("After finding FINISH in TurnInfo, unable to get FINISH from TurnInfo!\n This should not happen!\n If it does, then you are cursed");
             } else {
-                //Remember the form count and the fnish cell
+                //Remember the form count and the finish cell
                 this.formCount = entry.getValue().getAdditionalInfo();
                 this.finish = maze.getCurrentCell().getNeighbour(entry.getKey());
             }
