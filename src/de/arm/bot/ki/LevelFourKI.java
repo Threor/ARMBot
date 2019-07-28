@@ -69,7 +69,6 @@ public class LevelFourKI extends LevelThreeKI {
 
     @Override
     protected boolean processTurnInfo(TurnInfo turnInfo) {
-        //FIXME This shit is fucking ugly! FIX!
         if (!super.standardProcess(turnInfo)) return false;
         turnInfo.getCellStatus().forEach((key, value) -> {
             //Nearby is a FORM cell
@@ -80,8 +79,8 @@ public class LevelFourKI extends LevelThreeKI {
                     Output.logDebug(key + " > " + value);
                     //Stream
                     formCells.entrySet().stream()
-                            //Filter to find the current value
-                            .filter(e -> e.getValue() != null && e.getValue().equals(maze.getCurrentCell().getNeighbour(key)))
+                            //Filter to find the current value and check that its not an old form that is missing
+                            .filter(e -> e.getValue() != null && e.getValue().equals(maze.getCurrentCell().getNeighbour(key))&&e.getKey()>foundForms)
                             //If Present (it should be present)
                             .findFirst().ifPresent(entry -> {
                         //Remove from found formCells

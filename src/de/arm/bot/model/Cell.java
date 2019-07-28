@@ -31,7 +31,7 @@ public class Cell {
     private final int y;
 
     /**
-     * The current primitiveStatus of the cell
+     * The current status of the cell
      */
     private Status status;
 
@@ -89,7 +89,7 @@ public class Cell {
     /**
      * Getter for the attribute status
      *
-     * @return status The current primitiveStatus of the cell
+     * @return status The current status of the cell
      */
     public Status getStatus() {
         return status;
@@ -113,9 +113,9 @@ public class Cell {
     }
 
     /**
-     * Updates the primitiveStatus for the current cell and for all neighbours
+     * Updates the status for the current cell and for all neighbours
      *
-     * @param cellStatus The map of the new primitiveStatus of all neighbour cells and the current cell (null as direction indicates the current cell)
+     * @param cellStatus The map of the new status of all neighbour cells and the current cell (null as direction indicates the current cell)
      */
     public void updateCells(Map<Direction, Status> cellStatus) {
         this.setStatus(cellStatus.get(null));
@@ -126,8 +126,7 @@ public class Cell {
 
     /**
      * Gets and return the neighbour cell of the current cell in the given direction
-     *
-     * @param direction The direction of the neigbour cell
+     * @param direction The direction of the neighbour cell
      * @return The gotten neighbour
      */
     public Cell getNeighbour(Direction direction) {
@@ -165,7 +164,7 @@ public class Cell {
 
     @Override
     public String toString() {
-        return String.format("Cell [x=%s, y=%s, primitiveStatus=%s, visited=%s]", x, y, status, visited);
+        return String.format("Cell [x=%s, y=%s, status=%s, visited=%s]", x, y, status, visited);
     }
 
     /**

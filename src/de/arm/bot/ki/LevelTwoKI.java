@@ -34,7 +34,7 @@ public class LevelTwoKI extends LevelOneKI {
     /**
      * The number of forms that have been found.
      */
-    private int foundForms;
+    protected int foundForms;
 
     /**
      * The finish cell
@@ -116,6 +116,7 @@ public class LevelTwoKI extends LevelOneKI {
      * @param turnInfo The given TurnInfo
      */
     protected void processLevelTwo(TurnInfo turnInfo) {
+        Output.logDebug(formCells.toString());
         if (performedTake) {
             performedTake = false;
             if (turnInfo.getLastActionResult().isOk()&&!(turnInfo.getCellStatus().get(null).getStatus()==FORM)) {
@@ -134,8 +135,9 @@ public class LevelTwoKI extends LevelOneKI {
         if (turnInfo.hasCell(FORM)) {
             turnInfo.getCellStatus().entrySet().stream()
                     .filter(e -> e.getValue().getStatus() == FORM)
-                    .forEach(e -> formCells.put(e.getValue().getAdditionalInfo(), maze.getCurrentCell().getNeighbour(e.getKey())));
+                    .forEach(e -> formCells.put(e.getValue().getAdditionalInfo(),e.getKey()==null?maze.getCurrentCell():maze.getCurrentCell().getNeighbour(e.getKey())));
         }
+        Output.logDebug(formCells.toString());
     }
 
     /**
