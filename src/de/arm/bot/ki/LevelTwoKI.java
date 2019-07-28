@@ -118,7 +118,7 @@ public class LevelTwoKI extends LevelOneKI {
     protected void processLevelTwo(TurnInfo turnInfo) {
         if (performedTake) {
             performedTake = false;
-            if (turnInfo.getLastActionResult().isOk()) {
+            if (turnInfo.getLastActionResult().isOk()&&!(turnInfo.getCellStatus().get(null).getStatus()==FORM)) {
                 foundForms++;
             }
         }
