@@ -20,7 +20,9 @@ public class Main {
         }
     }
 
-    /** The entry point of this application
+    /**
+     * The entry point of this application
+     *
      * @param args The cmd args
      */
     public static void main(String[] args) {

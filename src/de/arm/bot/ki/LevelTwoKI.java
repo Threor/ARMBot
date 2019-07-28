@@ -27,25 +27,21 @@ import static de.arm.bot.model.PrimitiveStatus.FORM;
 public class LevelTwoKI extends LevelOneKI {
 
     /**
+     * A map for found form cells mapped (formId - cell)
+     */
+    protected final Map<Integer, Cell> formCells;
+    /**
      * The number of forms to be found. A finish cell contains the number of forms.
      */
     protected int formCount;
-
     /**
      * The number of forms that have been found.
      */
     protected int foundForms;
-
     /**
      * The finish cell
      */
     protected Cell finish;
-
-    /**
-     * A map for found form cells mapped (formId - cell)
-     */
-    protected final Map<Integer, Cell> formCells;
-
     /**
      * Indicates whether a take was performed in the last turn
      */
@@ -120,7 +116,7 @@ public class LevelTwoKI extends LevelOneKI {
         if (performedTake) {
             performedTake = false;
             //The Action was successful
-            if (turnInfo.getLastActionResult().isOk()&&!(turnInfo.getCellStatus(null).getStatus()==FORM)) {
+            if (turnInfo.getLastActionResult().isOk() && !(turnInfo.getCellStatus(null).getStatus() == FORM)) {
                 foundForms++;
             }
         }
@@ -141,7 +137,7 @@ public class LevelTwoKI extends LevelOneKI {
             //Filter all form cells and remember each one
             turnInfo.getCellStatus().entrySet().stream()
                     .filter(e -> e.getValue().getStatus() == FORM)
-                    .forEach(e -> formCells.put(e.getValue().getAdditionalInfo(),e.getKey()==null?maze.getCurrentCell():maze.getCurrentCell().getNeighbour(e.getKey())));
+                    .forEach(e -> formCells.put(e.getValue().getAdditionalInfo(), e.getKey() == null ? maze.getCurrentCell() : maze.getCurrentCell().getNeighbour(e.getKey())));
         }
     }
 

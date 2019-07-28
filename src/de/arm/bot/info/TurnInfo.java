@@ -1,6 +1,5 @@
 package de.arm.bot.info;
 
-import de.arm.bot.io.Output;
 import de.arm.bot.model.PrimitiveStatus;
 import de.arm.bot.model.Status;
 
@@ -45,11 +44,13 @@ public class TurnInfo {
         return cellStatus;
     }
 
-    /** Finds and gets the status of the cell at the given direction
+    /**
+     * Finds and gets the status of the cell at the given direction
+     *
      * @param direction The direction the cell is on
      * @return The status of the cell
      */
-    public Status getCellStatus(Direction direction){
+    public Status getCellStatus(Direction direction) {
         return cellStatus.get(direction);
     }
 

@@ -4,7 +4,6 @@ import de.arm.bot.info.Action;
 import de.arm.bot.info.Command;
 import de.arm.bot.info.Direction;
 import de.arm.bot.info.TurnInfo;
-import de.arm.bot.io.Output;
 import de.arm.bot.model.Cell;
 import de.arm.bot.model.Maze;
 import de.arm.bot.model.Status;
@@ -15,9 +14,9 @@ import java.util.stream.Collectors;
 import static de.arm.bot.model.PrimitiveStatus.*;
 
 /**
- *  An implementation of the KI used for level 4. Inherits all functionality of level 3.
- *  Adds the IPSA or Incremental Panic Search Algorithm. This algorithm is used to find remembered forms that were kicked somewhere else.
- *  This is accomplished by "forgetting" cells (setting them as not visited). Each "forgetting step" is a flood
+ * An implementation of the KI used for level 4. Inherits all functionality of level 3.
+ * Adds the IPSA or Incremental Panic Search Algorithm. This algorithm is used to find remembered forms that were kicked somewhere else.
+ * This is accomplished by "forgetting" cells (setting them as not visited). Each "forgetting step" is a flood
  *
  * @author Team ARM
  */
@@ -27,16 +26,14 @@ public class LevelFourKI extends LevelThreeKI {
      * A map of missing forms mapped as formId - cell
      */
     private final Map<Integer, Cell> formsToLookFor;
-
-    /**
-     * All cells in the current IPSA flood
-     */
-    private List<Cell> currentFlood;
-
     /**
      * A cell that were flooded during the current IPSA run
      */
     private final List<Cell> floodedCells;
+    /**
+     * All cells in the current IPSA flood
+     */
+    private List<Cell> currentFlood;
 
     /**
      * Default constructor for the KI, initializes all fields and sets the current maze
@@ -112,7 +109,7 @@ public class LevelFourKI extends LevelThreeKI {
                 if (value.getStatus() != FORM) {
                     formCells.entrySet().stream()
                             //Filter to find the current value and check that its not an old form that is missing
-                            .filter(e -> e.getValue() != null && e.getValue().equals(maze.getCurrentCell().getNeighbour(key))&&e.getKey()>foundForms)
+                            .filter(e -> e.getValue() != null && e.getValue().equals(maze.getCurrentCell().getNeighbour(key)) && e.getKey() > foundForms)
                             //If Present (it should be present)
                             .findFirst().ifPresent(entry -> {
                         //Remove from found formCells

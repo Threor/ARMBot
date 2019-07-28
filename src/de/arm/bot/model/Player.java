@@ -10,6 +10,10 @@ import de.arm.bot.io.Output;
 public class Player {
 
     /**
+     * The id of the Player as given by the engine
+     */
+    private final int id;
+    /**
      * The x-coordinate the bot currently stands on
      */
     private int x;
@@ -17,12 +21,6 @@ public class Player {
      * The y-coordinate the bot currently stands on
      */
     private int y;
-
-    /**
-     * The id of the Player as given by the engine
-     */
-    private final int id;
-
     /**
      * The count of sheets the player holds at the moment
      * Introduced in level 5.
@@ -104,6 +102,7 @@ public class Player {
 
     /**
      * Getter for the attribute sheetCount
+     *
      * @return The sheetCount
      */
     public int getSheetCount() {
@@ -119,7 +118,6 @@ public class Player {
 
     /**
      * Decrements the amount of sheets after putting one down if the bot has sheets left
-     * 
      */
     public void removeSheet() {
         if (sheetCount <= 0) {

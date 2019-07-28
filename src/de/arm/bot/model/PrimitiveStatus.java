@@ -66,14 +66,9 @@ public enum PrimitiveStatus {
         this.cost = cost;
     }
 
-    /** Getter for the attribute navigable
-     * @return The attribute navigable
-     */
-    public boolean isNavigable() {
-        return navigable;
-    }
-
-    /**Returns a list of all PrimitiveStatus that are navigable
+    /**
+     * Returns a list of all PrimitiveStatus that are navigable
+     *
      * @return The list
      */
     public static List<PrimitiveStatus> getNavigableStatus() {
@@ -82,7 +77,18 @@ public enum PrimitiveStatus {
                 .collect(Collectors.toList());
     }
 
-    /** Getter for the attribute cost
+    /**
+     * Getter for the attribute navigable
+     *
+     * @return The attribute navigable
+     */
+    public boolean isNavigable() {
+        return navigable;
+    }
+
+    /**
+     * Getter for the attribute cost
+     *
      * @return The cost of walking on a cell with this PrimitiveStatus
      */
     public int getCost() {

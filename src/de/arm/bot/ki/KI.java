@@ -21,19 +21,17 @@ import java.util.*;
 public abstract class KI {
 
     /**
+     * A map containing paths calculated by the A* algorithm for chosen goal cells
+     */
+    protected final HashMap<Cell, List<Cell>> pathToTake;
+    /**
      * The maze containing all gotten information of the current maze
      */
     protected Maze maze;
-
     /**
      * A point containing the position, the player should reach in the next turn if his action was successful
      */
     protected Point newPosition;
-
-    /**
-     * A map containing paths calculated by the A* algorithm for chosen goal cells
-     */
-    protected final HashMap<Cell, List<Cell>> pathToTake;
 
     /**
      * Default constructor for the KI, initializes all fields and sets the current maze
@@ -151,7 +149,7 @@ public abstract class KI {
      *
      * @param path    The map (cell -> neighbour Cell) that describes the path
      * @param current The starting cell of the path
-     * @return
+     * @return The constructed path as list
      */
     private List<Cell> reconstructPath(Map<Cell, Cell> path, Cell current) {
         List<Cell> totalPath = new ArrayList<>();

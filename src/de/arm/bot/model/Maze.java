@@ -47,7 +47,7 @@ public class Maze {
     private final Player player;
 
     /**
-     * The defaultly used constructor for the maze
+     * The default constructor for the maze
      *
      * @param player The Player
      * @param length The length of the maze
@@ -71,8 +71,10 @@ public class Maze {
         }
     }
 
-    /** Constructor for Level2 when the maze is known
-     * @param maze The string representation of the maze
+    /**
+     * Constructor for Level2 when the maze is known
+     *
+     * @param maze   The string representation of the maze
      * @param player The current player
      */
     public Maze(String maze, Player player) {
@@ -137,14 +139,6 @@ public class Maze {
     }
 
     /**
-     * Logs all discovered cells of the maze in the debug channel
-     */
-    public void logCells() {
-        getAllDiscoveredCells()
-                .forEach(c -> Output.logDebug(c.getX() + " " + c.getY() + " " + c.getStatus()));
-    }
-
-    /**
      * Logs all cells of the maze simply, used for debugging
      */
     public void logCellsSimple() {
@@ -182,31 +176,6 @@ public class Maze {
         }
     }
 
-    public void logCellsVerySimple() {
-        for (int i = 0; i < cells[0].length; i++) {
-            StringBuilder temp = new StringBuilder();
-            for (int j = 0; j < cells.length; j++) {
-                if (player.getX() == j && player.getY() == i) {
-                    temp.append("x");
-                    continue;
-                }
-                temp.append(cells[j][i].getStatus().getStatus() == NOT_DISCOVERED ? 0 : 1);
-            }
-            Output.logDebug(temp.toString());
-        }
-    }
-
-    /**
-     * Returns all discovered cells of the maze
-     *
-     * @return A List of all discovered cells
-     */
-    private List<Cell> getAllDiscoveredCells() {
-        return cellStream()
-                .filter(c -> !c.getStatus().equals(PrimitiveStatus.NOT_DISCOVERED))
-                .collect(Collectors.toList());
-    }
-
     /**
      * Getter for the attribute length
      *
@@ -225,7 +194,9 @@ public class Maze {
         return height;
     }
 
-    /** Gets and returns all cells that have on of the the given status
+    /**
+     * Gets and returns all cells that have on of the the given status
+     *
      * @param primitiveStatuses The given status
      * @return The specified list
      */
@@ -235,7 +206,9 @@ public class Maze {
                 .collect(Collectors.toList());
     }
 
-    /** Gets and returns all navigable cells that have not been visited and have undiscovered cells nearby
+    /**
+     * Gets and returns all navigable cells that have not been visited and have undiscovered cells nearby
+     *
      * @return The specified list
      */
     public List<Cell> getPreferableCells() {
@@ -274,9 +247,11 @@ public class Maze {
         return xCost + yCost;
     }
 
-    /** Calculates the distance (x or y) between the givevn cells using the given direction
-     * @param from The first cell
-     * @param to The second cell
+    /**
+     * Calculates the distance (x or y) between the given cells using the given direction
+     *
+     * @param from      The first cell
+     * @param to        The second cell
      * @param direction The given direction
      * @return The calculated distance
      */
@@ -296,9 +271,11 @@ public class Maze {
         return ret;
     }
 
-    /** Checks whether it is possible to wrap (the last cell of the specified row/column is navigable)
+    /**
+     * Checks whether it is possible to wrap (the last cell of the specified row/column is navigable)
+     *
      * @param direction The given Direction
-     * @param on The index of the row/column to check
+     * @param on        The index of the row/column to check
      * @return True, if it is possible to wrap
      */
     private boolean canWrap(Direction direction, int on) {
@@ -316,14 +293,18 @@ public class Maze {
         }
     }
 
-    /** Getter for the attribute Player
+    /**
+     * Getter for the attribute Player
+     *
      * @return The Player
      */
     public Player getPlayer() {
         return player;
     }
 
-    /** Creates a stream of all cells of this maze
+    /**
+     * Creates a stream of all cells of this maze
+     *
      * @return The created stream
      */
     private Stream<Cell> cellStream() {
@@ -338,7 +319,9 @@ public class Maze {
         performBigFlood(new ArrayList<>());
     }
 
-    /** Performs a big flood but excludes the given cells
+    /**
+     * Performs a big flood but excludes the given cells
+     *
      * @param toExclude The cells to exclude
      */
     public void performBigFlood(List<Cell> toExclude) {
@@ -352,8 +335,10 @@ public class Maze {
                 });
     }
 
-    /** Calculates the current MZVector as defined in the MZA
-     * @return
+    /**
+     * Calculates the current MZVector as defined in the MZA
+     *
+     * @return The calculated MZVector
      */
     public Vector2d calculateMZVector() {
         return cellStream()
@@ -362,7 +347,9 @@ public class Maze {
                 .collect(Collector.of(Vector2d::new, (Vector2d::add), Vector2d::add));
     }
 
-    /** Calculates the vector between the current cell and the given cell
+    /**
+     * Calculates the vector between the current cell and the given cell
+     *
      * @param cell The given cell
      * @return The calculated vector
      */
@@ -370,8 +357,10 @@ public class Maze {
         return getCurrentCell().calculateDirection(cell).norm();
     }
 
-    /** Calculates and return the MZScore as defined by the MZA with the given MZVector and the given TCVector
-     * @param mzVector The given MZVector
+    /**
+     * Calculates and return the MZScore as defined by the MZA with the given MZVector and the given TCVector
+     *
+     * @param mzVector         The given MZVector
      * @param targetCellVector The given TCVector
      * @return The calculated score
      */
@@ -379,7 +368,9 @@ public class Maze {
         return Math.acos(mzVector.dotProduct(targetCellVector) / (mzVector.getLength() * targetCellVector.getLength()));
     }
 
-    /** Adjusts the form data for this maze if it is performing on level 2 and maze 3 or 9
+    /**
+     * Adjusts the form data for this maze if it is performing on level 2 and maze 3 or 9
+     *
      * @param westStatus The status that indicates on which maze is currently played
      * @return The number of added forms
      */

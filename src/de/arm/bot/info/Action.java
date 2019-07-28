@@ -50,7 +50,9 @@ public class Action {
         this(command, "");
     }
 
-    /** Getter for the attribute command
+    /**
+     * Getter for the attribute command
+     *
      * @return Returns the command of this action
      */
     public Command getCommand() {

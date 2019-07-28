@@ -107,7 +107,7 @@ public class LevelOneKI extends KI {
 
     /**
      * Calculates the heuristic cost of a cell.
-     * The heuristic cost is defined by: (hdist-mzscore*1,25-ndnc*0.5), with hdist beeing the estimated distance, mzscore being the calculated MZScore and ndnc being the count of not discovered neighbours of the given cell)
+     * The heuristic cost is defined by: (hdist-mzscore*1,25-ndnc*0.5), with hdist being the estimated distance, mzscore being the calculated MZScore and ndnc being the count of not discovered neighbours of the given cell)
      *
      * @param cell The given cell
      * @return The calculated cost

@@ -14,27 +14,25 @@ import static de.arm.bot.model.PrimitiveStatus.ENEMY_FORM;
 import static de.arm.bot.model.PrimitiveStatus.SHEET;
 
 /**
- *  An implementation of the KI used for level 5. Inherits all functionality of level 4.
- *  Also adds functionality for working with sheets
+ * An implementation of the KI used for level 5. Inherits all functionality of level 4.
+ * Also adds functionality for working with sheets
  *
  * @author Team ARM
  */
 public class LevelFiveKI extends LevelFourKI {
 
     /**
+     * A List of all cells the bot has performed a put action on
+     */
+    private final List<Cell> alreadyPut;
+    /**
      * Indicates whether the bot took a sheet
      */
     private boolean took;
-
     /**
      * Indicates whether the bot put a sheet down
      */
     private boolean put;
-
-    /**
-     * A List of all cells the bot has performed a put action on
-     */
-    private final List<Cell> alreadyPut;
 
     /**
      * Default constructor for the KI, initializes all fields and sets the current maze

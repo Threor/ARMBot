@@ -17,7 +17,9 @@ public class Vector2d {
      */
     private double y;
 
-    /** Default constructor, initializes all field
+    /**
+     * Default constructor, initializes all field
+     *
      * @param x The x-value of the vector
      * @param y The y-value of the vector
      */
@@ -33,7 +35,9 @@ public class Vector2d {
         this(0, 0);
     }
 
-    /** Adds the coordinates of two vectors
+    /**
+     * Adds the coordinates of two vectors
+     *
      * @param vector2d The second vector
      * @return The new Vector
      */
@@ -43,7 +47,9 @@ public class Vector2d {
         return this;
     }
 
-    /** Normalizes a vector (not mathematically), so that the long side has a value of 1
+    /**
+     * Normalizes a vector (not mathematically), so that the long side has a value of 1
+     *
      * @return The normalizes vector
      */
     public Vector2d norm() {
@@ -54,28 +60,36 @@ public class Vector2d {
         return this;
     }
 
-    /** Getter for the attribute x
+    /**
+     * Getter for the attribute x
+     *
      * @return The x-value of the vector
      */
     public double getX() {
         return x;
     }
 
-    /** Getter for the attribute y
+    /**
+     * Getter for the attribute y
+     *
      * @return The y-value of the vector
      */
     public double getY() {
         return y;
     }
 
-    /** Calculates and returns the length of the vector
+    /**
+     * Calculates and returns the length of the vector
+     *
      * @return The length of the vector
      */
     public double getLength() {
         return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
     }
 
-    /** Calculates and returns the dot product of this vector and another one
+    /**
+     * Calculates and returns the dot product of this vector and another one
+     *
      * @param vector2d The second vector
      * @return The calculates dot product
      */
