@@ -60,12 +60,7 @@ public class Maze {
         this.cells = new Cell[length][height];
         for (int i = 0; i < length; i++) {
             for (int j = 0; j < height; j++) {
-                Map<Direction, Cell> neighbours = new HashMap<>();
-                neighbours.put(NORTH, cells[i][j == 0 ? height - 1 : j - 1]);
-                neighbours.put(SOUTH, cells[i][j >= height - 1 ? 0 : j + 1]);
-                neighbours.put(WEST, cells[i == 0 ? length - 1 : i - 1][j]);
-                neighbours.put(EAST, cells[i >= length - 1 ? 0 : i + 1][j]);
-                Cell cell = new Cell(i, j, neighbours);
+                Cell cell = new Cell(i, j, createNeighboursMap(i,j));
                 cells[i][j] = cell;
             }
         }
@@ -94,15 +89,24 @@ public class Maze {
         cells = new Cell[mazeString[0].length][mazeString.length];
         for (int i = 0; i < length; i++) {
             for (int j = 0; j < height; j++) {
-                Map<Direction, Cell> neighbours = new HashMap<>();
-                neighbours.put(NORTH, cells[i][j == 0 ? height - 1 : j - 1]);
-                neighbours.put(SOUTH, cells[i][j >= height - 1 ? 0 : j + 1]);
-                neighbours.put(WEST, cells[i == 0 ? length - 1 : i - 1][j]);
-                neighbours.put(EAST, cells[i >= length - 1 ? 0 : i + 1][j]);
-                Cell cell = new Cell(i, j, neighbours, Status.ofString(mazeString[j][i], player.getId()));
+                Cell cell = new Cell(i, j, createNeighboursMap(i,j), Status.ofString(mazeString[j][i], player.getId()));
                 cells[i][j] = cell;
             }
         }
+    }
+
+    /** Creates a map of neighbour for the cell with the specified indexes
+     * @param i The i-index
+     * @param j The j-index
+     * @return The created map
+     */
+    private Map<Direction,Cell> createNeighboursMap(int i, int j) {
+        Map<Direction, Cell> neighbours = new HashMap<>();
+        neighbours.put(NORTH, cells[i][j == 0 ? height - 1 : j - 1]);
+        neighbours.put(SOUTH, cells[i][j >= height - 1 ? 0 : j + 1]);
+        neighbours.put(WEST, cells[i == 0 ? length - 1 : i - 1][j]);
+        neighbours.put(EAST, cells[i >= length - 1 ? 0 : i + 1][j]);
+        return neighbours;
     }
 
     /**
