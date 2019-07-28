@@ -1,8 +1,11 @@
 package de.arm.bot.ki;
 
 import de.arm.bot.info.Action;
+import de.arm.bot.info.Command;
 import de.arm.bot.info.TurnInfo;
 import de.arm.bot.model.Maze;
+
+import static de.arm.bot.model.PrimitiveStatus.FORM;
 
 /**
  * An implementation of the KI used for level 3. Inherits all functionality of level 2
@@ -39,7 +42,9 @@ public class LevelThreeKI extends LevelTwoKI {
         //Last Action failed
         if (!processTurnInfo(turnInfo)) {
             //Bot was talking
-            if (turnInfo.getLastActionResult().getMessage().equalsIgnoreCase("talking")) return lastAction;
+            if (turnInfo.getLastActionResult().getMessage().equalsIgnoreCase("talking")){
+                if(!(lastAction.getCommand()== Command.TAKE&&!(turnInfo.getCellStatus().get(null).getStatus()==FORM)))return lastAction;
+            }
         }
         lastAction = calculateMove(turnInfo);
         return lastAction;

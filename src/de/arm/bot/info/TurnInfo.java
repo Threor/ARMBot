@@ -1,5 +1,6 @@
 package de.arm.bot.info;
 
+import de.arm.bot.io.Output;
 import de.arm.bot.model.PrimitiveStatus;
 import de.arm.bot.model.Status;
 
@@ -33,6 +34,7 @@ public class TurnInfo {
     public TurnInfo(ActionResult lastActionResult, Map<Direction, Status> cellStatus) {
         this.lastActionResult = lastActionResult;
         this.cellStatus = cellStatus;
+        Output.logDebug(this.toString());
     }
 
     /**
