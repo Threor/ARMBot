@@ -116,28 +116,33 @@ public class LevelTwoKI extends LevelOneKI {
      * @param turnInfo The given TurnInfo
      */
     protected void processLevelTwo(TurnInfo turnInfo) {
-        Output.logDebug(formCells.toString());
+        //The bot took something
         if (performedTake) {
             performedTake = false;
+            //The Action was successful
             if (turnInfo.getLastActionResult().isOk()&&!(turnInfo.getCellStatus(null).getStatus()==FORM)) {
                 foundForms++;
             }
         }
+        //The finish cell is nearby
         if (turnInfo.hasCell(FINISH)) {
+            //Find the Entry
             Entry<Direction, Status> entry = turnInfo.getCellStatus().entrySet().stream().filter(e -> e.getValue().getStatus() == PrimitiveStatus.FINISH).findAny().orElse(null);
             if (entry == null) {
                 Output.logDebug("After finding FINISH in TurnInfo, unable to get FINISH from TurnInfo!\n This should not happen!\n If it does, then you are cursed");
             } else {
+                //Remember the form count and the fnish cell
                 this.formCount = entry.getValue().getAdditionalInfo();
                 this.finish = maze.getCurrentCell().getNeighbour(entry.getKey());
             }
         }
+        //One or more form cells are nearby
         if (turnInfo.hasCell(FORM)) {
+            //Filter all form cells and remember each one
             turnInfo.getCellStatus().entrySet().stream()
                     .filter(e -> e.getValue().getStatus() == FORM)
                     .forEach(e -> formCells.put(e.getValue().getAdditionalInfo(),e.getKey()==null?maze.getCurrentCell():maze.getCurrentCell().getNeighbour(e.getKey())));
         }
-        Output.logDebug(formCells.toString());
     }
 
     /**

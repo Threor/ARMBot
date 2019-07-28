@@ -43,6 +43,7 @@ public class LevelThreeKI extends LevelTwoKI {
         if (!processTurnInfo(turnInfo)) {
             //Bot was talking
             if (turnInfo.getLastActionResult().getMessage().equalsIgnoreCase("talking")){
+                //Only repeat a take action if the bot is still standing on the form
                 if(!(lastAction.getCommand()== Command.TAKE&&!(turnInfo.getCellStatus(null).getStatus()==FORM)))return lastAction;
             }
         }
