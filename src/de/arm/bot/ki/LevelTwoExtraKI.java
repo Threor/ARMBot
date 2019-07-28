@@ -11,7 +11,7 @@ import static de.arm.bot.info.Direction.WEST;
 import static de.arm.bot.model.PrimitiveStatus.*;
 
 /**
- * A special implementation of the KI used for level 2 that operates on known mazes.
+ * A special implementation of the KI used for Level 2 that operates on known mazes.
  * We, as Team ARM are sorry for using this kind of technology. We know, that we will hurt many other teams with this step.
  * But in order to remain competitive we are forced to do this. Again, we are sorry.
  * We know, that with this step we will sell our souls to the devil.
@@ -25,7 +25,7 @@ public class LevelTwoExtraKI extends LevelTwoKI {
     private int temporaryLength;
 
     /**
-     * The player instance that will be used if the maze could not be identified before the fisr turn
+     * The player instance that will be used if the maze could not be identified before the first turn
      */
     private Player temporaryPlayer;
 
@@ -33,7 +33,7 @@ public class LevelTwoExtraKI extends LevelTwoKI {
      * Default constructor for the KI, initializes all fields and sets the current maze.
      * Also retrieves known information from the game
      *
-     * @param maze The maze the KI should work om
+     * @param maze The maze the KI should work on
      */
     public LevelTwoExtraKI(Maze maze) {
         super(maze);
