@@ -60,6 +60,7 @@ public enum PrimitiveStatus {
      * The default constructor for the enumeration
      *
      * @param navigable Indicates whether the bot can navigate over a cell or not
+     * @param cost The cost of walking on a cell with this status
      */
     PrimitiveStatus(boolean navigable, int cost) {
         this.navigable = navigable;
