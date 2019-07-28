@@ -71,6 +71,10 @@ public class Maze {
         }
     }
 
+    /** Constructor for Level2 when the maze is known
+     * @param maze The string representation of the maze
+     * @param player The current player
+     */
     public Maze(String maze, Player player) {
         String[] mazeLines = maze.split("\n");
         String[][] mazeString = Arrays.stream(mazeLines)
@@ -221,12 +225,19 @@ public class Maze {
         return height;
     }
 
+    /** Gets and returns all cells that have on of the the given status
+     * @param primitiveStatuses The given status
+     * @return The specified list
+     */
     public List<Cell> getCellsIn(List<PrimitiveStatus> primitiveStatuses) {
         return cellStream()
                 .filter(c -> primitiveStatuses.contains(c.getStatus().getStatus()))
                 .collect(Collectors.toList());
     }
 
+    /** Gets and returns all navigable cells that have not been visited and have undiscovered cells nearby
+     * @return The specified list
+     */
     public List<Cell> getPreferableCells() {
         return getCellsIn(PrimitiveStatus.getNavigableStatus()).stream()
                 .filter(c -> !getCurrentCell().equals(c) && !c.isVisited() && c.hasUndiscoveredNearby())
@@ -263,6 +274,12 @@ public class Maze {
         return xCost + yCost;
     }
 
+    /** Calculates the distance (x or y) between the givevn cells using the given direction
+     * @param from The first cell
+     * @param to The second cell
+     * @param direction The given direction
+     * @return The calculated distance
+     */
     private int calculateDistance(Cell from, Cell to, Direction direction) {
         int ret = 0;
         if (direction == NORTH || direction == SOUTH) {
@@ -279,6 +296,11 @@ public class Maze {
         return ret;
     }
 
+    /** Checks whether it is possible to wrap (the last cell of the specified row/column is navigable)
+     * @param direction The given Direction
+     * @param on The index of the row/column to check
+     * @return True, if it is possible to wrap
+     */
     private boolean canWrap(Direction direction, int on) {
         switch (direction) {
             case NORTH:
@@ -294,19 +316,31 @@ public class Maze {
         }
     }
 
+    /** Getter for the attribute Player
+     * @return The Player
+     */
     public Player getPlayer() {
         return player;
     }
 
+    /** Creates a stream of all cells of this maze
+     * @return The created stream
+     */
     private Stream<Cell> cellStream() {
         return Arrays.stream(cells)
                 .flatMap(Arrays::stream);
     }
 
+    /**
+     * Performs a big flood (forgets the status of a good amount of cells)
+     */
     public void performBigFlood() {
         performBigFlood(new ArrayList<>());
     }
 
+    /** Performs a big flood but excludes the given cells
+     * @param toExclude The cells to exclude
+     */
     public void performBigFlood(List<Cell> toExclude) {
         cellStream()
                 .filter(c -> !c.equals(getCurrentCell()) && c.isVisited())
@@ -318,6 +352,9 @@ public class Maze {
                 });
     }
 
+    /** Calculates the current MZVector as defined in the MZA
+     * @return
+     */
     public Vector2d calculateMZVector() {
         return cellStream()
                 .filter(cell -> !(cell.isVisited() || cell.getStatus().getStatus() == WALL))
@@ -325,14 +362,27 @@ public class Maze {
                 .collect(Collector.of(Vector2d::new, (Vector2d::add), Vector2d::add));
     }
 
+    /** Calculates the vector between the current cell and the given cell
+     * @param cell The given cell
+     * @return The calculated vector
+     */
     public Vector2d calculateCellVector(Cell cell) {
         return getCurrentCell().calculateDirection(cell).norm();
     }
 
+    /** Calculates and return the MZScore as defined by the MZA with the given MZVector and the given TCVector
+     * @param mzVector The given MZVector
+     * @param targetCellVector The given TCVector
+     * @return The calculated score
+     */
     public double calculateMZScore(Vector2d mzVector, Vector2d targetCellVector) {
         return Math.acos(mzVector.dotProduct(targetCellVector) / (mzVector.getLength() * targetCellVector.getLength()));
     }
 
+    /** Adjusts the form data for this maze if it is performing on level 2 and maze 3 or 9
+     * @param westStatus The status that indicates on which maze is currently played
+     * @return The number of added forms
+     */
     public int adjustForLevel3or9(Status westStatus) {
         if (player.getId() == 3) {
             if (westStatus.equals(FORM)) {

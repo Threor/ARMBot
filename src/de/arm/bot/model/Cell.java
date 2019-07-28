@@ -35,6 +35,9 @@ public class Cell {
      */
     private Status status;
 
+    /**
+     * Indicates whether the cell was visited before
+     */
     private boolean visited;
 
     /**
@@ -46,7 +49,7 @@ public class Cell {
     private final Map<Direction, Cell> neighbours;
 
     /**
-     * The defaultly used constructor for the class cell
+     * The default constructor for the class cell
      * Additionally to setting all attributes it links all neighbour cells
      *
      * @param x          The current x-coordinate of the cell
@@ -58,11 +61,18 @@ public class Cell {
         this(x, y, neighbours, new Status(NOT_DISCOVERED));
     }
 
+    /** The constructor used on Level 2 for a cell when its status is known. Otherwise acts lice the normal constructor
+     * @param x The current x-coordinate of the cell
+     * @param y The current y-coordinate of the cell
+     * @param neighbours A map of all neighbour cells of the current cell
+     * @param status The status of the cell
+     */
     Cell(int x, int y, Map<Direction, Cell> neighbours, Status status) {
         this.x = x;
         this.y = y;
         this.status = status;
         this.neighbours = neighbours;
+        //Sets this cell as neighbour for each cell
         neighbours.entrySet().stream()
                 .filter(e -> e.getValue() != null && e.getValue().getNeighbour(e.getKey().getOpposite()) == null)
                 .forEach(e -> e.getValue().setNeighbour(e.getKey().getOpposite(), this));
@@ -104,10 +114,16 @@ public class Cell {
         this.status = status;
     }
 
+    /** Getter for the attribute visited
+     * @return True, if the cell was visited
+     */
     public boolean isVisited() {
         return visited;
     }
 
+    /** Setter for the attribute visited
+     * @param visited Indicates whether the cell was visited
+     */
     public void setVisited(boolean visited) {
         this.visited = visited;
     }
@@ -205,17 +221,25 @@ public class Cell {
         return hasNearby(NOT_DISCOVERED);
     }
 
+    /** Checks whether one of the neighbour cells of the current cell has the specified PrimitiveStatus
+     * @param primitiveStatus The PrimitiveStatus
+     * @return True if the condiotions are met
+     */
     private boolean hasNearby(PrimitiveStatus primitiveStatus) {
         return neighbours.values().stream().anyMatch(c -> c.getStatus().getStatus() == primitiveStatus);
     }
 
-    /**
-     * @return
+    /** Calculates and returns the count of neighbour cells with the status NOT_DISCOVERED
+     * @return The specified count
      */
     public int getNotDiscoveredNeighbourCount() {
         return (int) neighbours.values().stream().filter(c -> c.getStatus().getStatus() == NOT_DISCOVERED).count();
     }
 
+    /** Calculates and returns the vector from this cell to the given cell
+     * @param towards The given cells
+     * @return The calculated vector
+     */
     public Vector2d calculateDirection(Cell towards) {
         return new Vector2d(towards.x - x, towards.y - y);
     }

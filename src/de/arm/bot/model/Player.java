@@ -102,10 +102,17 @@ public class Player {
         return id;
     }
 
+    /**
+     * Getter for the attribute sheetCount
+     * @return The sheetCount
+     */
     public int getSheetCount() {
         return sheetCount;
     }
 
+    /**
+     * Increments the amount of sheets
+     */
     public void addSheet() {
         sheetCount++;
     }

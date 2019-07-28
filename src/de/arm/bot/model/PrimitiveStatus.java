@@ -51,10 +51,13 @@ public enum PrimitiveStatus {
      */
     private final boolean navigable;
 
+    /**
+     * The cost of walking on a cell with this status
+     */
     private final int cost;
 
     /**
-     * The defaultly used constructor for the enumeration
+     * The default constructor for the enumeration
      *
      * @param navigable Indicates whether the bot can navigate over a cell or not
      */
@@ -63,16 +66,25 @@ public enum PrimitiveStatus {
         this.cost = cost;
     }
 
+    /** Getter for the attribute navigable
+     * @return The attribute navigable
+     */
     public boolean isNavigable() {
         return navigable;
     }
 
+    /**Returns a list of all PrimitiveStatus that are navigable
+     * @return The list
+     */
     public static List<PrimitiveStatus> getNavigableStatus() {
         return Arrays.stream(values())
                 .filter(PrimitiveStatus::isNavigable)
                 .collect(Collectors.toList());
     }
 
+    /** Getter for the attribute cost
+     * @return The cost of walking on a cell with this PrimitiveStatus
+     */
     public int getCost() {
         return cost;
     }

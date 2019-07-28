@@ -143,7 +143,6 @@ public abstract class KI {
      */
     private Action go(Direction direction) {
         updatePosition(direction);
-        Output.logDebug("Going " + direction);
         return new Action(Command.GO, direction);
     }
 
@@ -173,7 +172,6 @@ public abstract class KI {
      * @see <a href="https://en.wikipedia.org/wiki/A*_search_algorithm">A* algorithm</a>
      */
     protected List<Cell> aStar(Cell start, Cell finish) {
-        Output.logDebug("Start: " + start + "\nZiel: " + finish);
         //The set of discovered nodes that will be expanded
         Set<Cell> openSet = new HashSet<>();
         //Starting with the start cell

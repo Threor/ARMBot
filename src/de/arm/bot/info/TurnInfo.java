@@ -34,7 +34,6 @@ public class TurnInfo {
     public TurnInfo(ActionResult lastActionResult, Map<Direction, Status> cellStatus) {
         this.lastActionResult = lastActionResult;
         this.cellStatus = cellStatus;
-        Output.logDebug(this.toString());
     }
 
     /**

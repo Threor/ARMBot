@@ -21,8 +21,6 @@ public class Output {
      */
     public static void sendAction(Action action) {
         System.out.println(action);
-        System.err.println(action);
-        System.err.println((System.nanoTime() - cur) / 1_000_000 + " ms");
     }
 
     /**

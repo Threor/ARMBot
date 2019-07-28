@@ -32,7 +32,7 @@ public class Input {
     private int playerId;
 
     /**
-     * Defaultly used constructor for this class, initializes the scanner
+     * Default constructor for this class, initializes the scanner
      */
     public Input() {
         this.scanner = new Scanner(System.in);
