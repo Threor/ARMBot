@@ -11,7 +11,7 @@ import static de.arm.bot.info.Direction.WEST;
 import static de.arm.bot.model.PrimitiveStatus.*;
 
 /**
- * A special implementation of the KI used for Level 2 that operates on known mazes.
+ * A special implementation of the KI used for level 2 that operates on known mazes.
  * We, as Team ARM are sorry for using this kind of technology. We know, that we will hurt many other teams with this step.
  * But in order to remain competitive we are forced to do this. Again, we are sorry.
  * We know, that with this step we will sell our souls to the devil.
