@@ -50,7 +50,7 @@ public class LevelOneKI extends KI {
      */
     @Override
     public Action calculateMove(TurnInfo turnInfo) {
-        if (turnInfo.getCellStatus().get(null).getStatus() == FINISH) {
+        if (turnInfo.getCellStatus(null).getStatus() == FINISH) {
             return new Action(Command.FINISH);
         }
         if (maze.getCurrentCell().hasFinishNearby()) {

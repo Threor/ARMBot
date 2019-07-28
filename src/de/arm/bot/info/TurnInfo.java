@@ -46,6 +46,14 @@ public class TurnInfo {
         return cellStatus;
     }
 
+    /** Finds and gets the status of the cell at the given direction
+     * @param direction The direction the cell is on
+     * @return The status of the cell
+     */
+    public Status getCellStatus(Direction direction){
+        return cellStatus.get(direction);
+    }
+
     /**
      * Getter for the attribute lastActionResult
      *

@@ -29,13 +29,13 @@ public class LevelFiveKI extends LevelFourKI {
     @Override
     public Action calculateMove(TurnInfo turnInfo) {
         if (alreadyPut.contains(maze.getCurrentCell()) || onFinishWay()) return super.calculateMove(turnInfo);
-        if (turnInfo.getCellStatus().get(null).getStatus() == ENEMY_FORM) {
+        if (turnInfo.getCellStatus(null).getStatus() == ENEMY_FORM) {
             if (maze.getPlayer().getSheetCount() > 0) {
                 put = true;
                 return new Action(PUT);
             }
         }
-        if (turnInfo.getCellStatus().get(null).getStatus() == SHEET) {
+        if (turnInfo.getCellStatus(null).getStatus() == SHEET) {
             took = true;
             return new Action(TAKE);
         }

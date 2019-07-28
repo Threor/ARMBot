@@ -43,7 +43,7 @@ public class LevelThreeKI extends LevelTwoKI {
         if (!processTurnInfo(turnInfo)) {
             //Bot was talking
             if (turnInfo.getLastActionResult().getMessage().equalsIgnoreCase("talking")){
-                if(!(lastAction.getCommand()== Command.TAKE&&!(turnInfo.getCellStatus().get(null).getStatus()==FORM)))return lastAction;
+                if(!(lastAction.getCommand()== Command.TAKE&&!(turnInfo.getCellStatus(null).getStatus()==FORM)))return lastAction;
             }
         }
         lastAction = calculateMove(turnInfo);

@@ -52,7 +52,7 @@ public class LevelFourKI extends LevelThreeKI {
             return getGOAction();
         }
 
-        if (turnInfo.getCellStatus().get(null).getStatus() == ENEMY_FORM) {
+        if (turnInfo.getCellStatus(null).getStatus() == ENEMY_FORM) {
             if (Math.random() < 0.25) {
                 Direction d = turnInfo.getCellStatus()
                         .entrySet().stream()

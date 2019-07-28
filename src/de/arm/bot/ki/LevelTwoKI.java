@@ -71,10 +71,10 @@ public class LevelTwoKI extends LevelOneKI {
     @Override
     public Action calculateMove(TurnInfo turnInfo) {
         //Found all forms and on FINISH
-        if (turnInfo.getCellStatus().get(null).getStatus() == FINISH && foundForms == formCount)
+        if (turnInfo.getCellStatus(null).getStatus() == FINISH && foundForms == formCount)
             return new Action(Command.FINISH);
         //Found all previous forms and on FORM
-        if (turnInfo.getCellStatus().get(null).getStatus() == FORM && turnInfo.getCellStatus().get(null).getAdditionalInfo() == (foundForms) + 1) {
+        if (turnInfo.getCellStatus(null).getStatus() == FORM && turnInfo.getCellStatus(null).getAdditionalInfo() == (foundForms) + 1) {
             performedTake = true;
             pathToTake.clear();
             return new Action(Command.TAKE);
@@ -119,7 +119,7 @@ public class LevelTwoKI extends LevelOneKI {
         Output.logDebug(formCells.toString());
         if (performedTake) {
             performedTake = false;
-            if (turnInfo.getLastActionResult().isOk()&&!(turnInfo.getCellStatus().get(null).getStatus()==FORM)) {
+            if (turnInfo.getLastActionResult().isOk()&&!(turnInfo.getCellStatus(null).getStatus()==FORM)) {
                 foundForms++;
             }
         }
