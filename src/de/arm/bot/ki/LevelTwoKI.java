@@ -110,7 +110,7 @@ public class LevelTwoKI extends LevelOneKI {
     }
 
     /**
-     * The standard Level 2 procedure fo processing information.
+     * The standard Level 2 procedure for processing information.
      * Saves found finish and form cells
      *
      * @param turnInfo The given TurnInfo
