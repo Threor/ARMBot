@@ -147,7 +147,7 @@ public abstract class KI {
     /**
      * An internal function used by the A * algorithm to construct a List of Cells to visit by a map that combines neighbour cells
      *
-     * @param path    The map (cell -> neighbour Cell) that describes the path
+     * @param path    The map (cell - neighbour Cell) that describes the path
      * @param current The starting cell of the path
      * @return The constructed path as list
      */

@@ -227,6 +227,9 @@ public class Maze {
      * If it is possible to wrap on all for directions, five different distances will be calculated
      * Returned will be the lowest calculated distance
      *
+     * @param from The first cell
+     * @param to The second cell
+     *
      * @return The calculated lowest distance
      */
     public int getDistance(Cell from, Cell to) {
